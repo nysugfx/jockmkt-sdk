@@ -1,46 +1,40 @@
 import requests
 from datetime import datetime, timedelta
+import json
 import keys
 
-class JockAPIException(Exception):
-    """
-    code -- type -- explanation
-    400 -- bad_request -- required parameter not included or typo in required parameter
-    401 -- not_authorized -- token is not valid; expired or keys not functioning
-    402 -- request_failed -- event status error, user has not joined event, insufficient funds
-    404 -- not_found -- incorrect api endpoint
-    429 -- rate_limit -- max 10 orders (post, delete) per minute, max 250 other requests per minute. This limit resets at the beginning of every new clock minute (e.g 12:00:00, 12:01:00)
-    50x -- internal_error -- request failed due to platform error
-    """
-    
-    def __init__(self, response):
-        _error_dict = {
-        'bad_request': "try fixing your parameters, or check if you're missing one!",
-        'not_authorized': 'Double check your secret keys, or that your auth token is valid',
-        'event_status': 'Please wait for the market to open at ...',
-        'invalid entry':'', #TODO: create entry to the event
-        'not_found': '',
-        'rate_limit': 'You have placed too many orders or requests since {}. Please wait until {}.'.format(datetime.now().strftime("%I:%M"), (datetime.now() + timedelta(minutes = 1)).strftime("%I:%M")), #TODO: store the request so that it can be completed at the start of the following minute
-    }
-        self.code = ""
-        self.message = 'unknown error'
-        self.helper = ''
-        try:
-            json_res = response.json()
-        except ValueError:
-            self.message = response.content
-        else:
-            if 'error' in json_res:
-                self.code = json_res['error']
-                self.message = json_res['message']
-                self.helper = _error_dict[json_res['error']]
-    def _order_error_handler(self):
-        pass
-        
-    def __str__(self):
-        return 'JockAPIException {}: {} \n{}'.format(self.code, self.message, self.helper)
+from exception import JockAPIException
 
-class Event:
+class Team(object):
+    def __init__(self, team_id, location, name, league, abbreviation, sportradar_id):
+        self.team_id = team_id
+        self.location = location
+        self.name = name
+        self.league = league
+        self.abbreviation = abbreviation
+        self.sportradar_id = sportradar_id
+    
+    def filter_teams(self, **kwargs):
+        pass
+
+    def get_team_players(self, **kwargs): # perhaps this should go under Entity
+        pass
+
+    def get_team_games(self, **kwargs): # perhaps this should go under Games
+        pass
+
+    def get_team_events(self, **kwargs): # perhaps this should go under Event
+        pass
+
+class Game(object):
+    def __init__(self):
+        pass
+
+class GameLog(object):
+    def __init__(self):
+        pass
+
+class Event(object):
     def __init__(self, id, name, desc, type, league, status, ipo_start, ipo_end, amt_completed):
         self.id = id
         self.name = name
@@ -58,6 +52,248 @@ class Event:
     def print_event(self):
         print('\nevent_id: ' + self.id, '\nevent_name: ' + self.name, '\ndescription: ' + self.desc, '\ntype: ' + self.type, ' league: ' + self.league, '\nipo_start: ' + str(self.ipo_start), ' ipo_end: ' + str(self.ipo_end), ' amount_completed: ' + str(self.amt_completed), '\n\t profit/loss: ' + str(self.pnl), '  fees_paid: ')
 
+class Tradeable(object):
+    def __init__(self):
+        pass
+
+class Entry(object):
+    def __init__(self):
+        pass
+
+class Order(object):
+    def __init__(self):
+        pass
+
+class Position(object):
+    def __init__(self):
+        pass
+
+class AccountActivity(object):
+    def __init__(self):
+        pass
+
+class Entity(object): #this got incredibly convoluted fairly quickly. I'm sure there's a better way to do it but by the time I realized that I was mostly done anyways
+    def __init__(self, entity):
+        self.entity = self._league_filter(entity)
+
+    def _league_filter(self, entity):
+        print(entity)
+        if entity['league'] == 'nascar':
+            self.id = entity['id']
+            self.league = 'nascar'
+            self.name = entity['name']
+            self.first_name = entity['first_name']
+            self.last_name = entity['last_name']
+            self.status = entity['status']
+            self.image_url = entity['image_url']
+            self.points_eligible = entity['points_eligible']
+            self.in_chase = entity['in_chase']
+            if len(entity['cars']) > 1:
+                self.car_number = entity['cars'][0]['number']
+                self.car_manufacturer = entity['cars'][0]['manufacturer']
+                self.car_engine = entity['cars'][0]['engine']
+                self.car_sportradar_id = entity['cars'][0]['sportradar_id']
+            try:
+                self.team_id = entity['current_team_id']
+                self.team_name = entity['team']['name']
+                self.team_location = entity['team']['location']
+                self.team_abbreviation = entity['team']['abbreviation']
+            except KeyError:
+                self.team_id = None
+                self.team_name = None
+                self.team_location = None
+                self.team_abbreviation = None
+            try:
+                self.birthday = entity['birthday']
+            except:
+                self.birthday = None
+            try:
+                self.birthplace = entity['birth_place']
+            except:
+                self.birthplace = None
+            try:
+                self.rookie_year = entity['rookie_year']
+            except KeyError:
+                self.rookie_year = None
+            try:
+                self.injury_status = entity['injury']['status']
+                self.injury_type = entity['injury']['type']
+            except KeyError:
+                self.injury = None
+            self.updated = entity['updated_at']
+
+        if entity['league'] == 'nhl':
+            self.id = entity['id']
+            self.league = 'nhl'
+            self.name = entity['name']
+            self.image_url = entity['image_url']
+            self.team_id = entity['current_team_id']
+            self.team_name = entity['team']['name']
+            self.team_location = entity['team']['location']
+            self.team_abbreviation = entity['team']['abbreviation']
+            self.first_name = entity['first_name']
+            self.preferred_name = entity['preferred_name']
+            self.last_name = entity['last_name']
+            self.status = entity['status']
+            self.position = entity['position']
+            self.jersey_number = entity['jersey_number']
+            self.handedness = entity['handedness']
+            self.height = entity['height']
+            self.weight = entity['weight']
+            self.birthday = entity['birthdate']
+            try:
+                self.rookie_year = entity['rookie_year']
+            except: 
+                self.rookie_year = None
+            try:
+                self.injury_status = entity['injury']['status']
+                self.injury_type = entity['injury']['type']
+            except KeyError:
+                self.injury = None
+            self.updated = entity['updated_at']
+            self.sportradar_id = entity['sportradar_id']
+
+        if entity['league'] == 'nfl':
+            self.id = entity['id']
+            self.league = 'nfl'
+            self.name = entity['name']
+            self.image_url = entity['image_url']
+            try:
+                self.team_id = entity['current_team_id']
+            except:
+                self.team_id = None
+            if self.team_id != None:
+                self.team_name = entity['team']['name']
+                self.team_location = entity['team']['location']
+                self.team_abbreviation = entity['team']['abbreviation']
+            self.first_name = entity['first_name']
+            self.preferred_name = entity['preferred_name']
+            self.last_name = entity['last_name']
+            self.status = entity['status']
+            self.position = entity['position']
+            self.jersey_number = entity['jersey_number']
+            self.height = entity['height']
+            self.weight = entity['weight']
+            self.college = entity['college']
+            try:
+                self.birthday = entity['birthdate']
+            except:
+                self.birthday = None
+            try:
+                self.rookie_year = entity['rookie_year']
+            except: 
+                self.rookie_year = None
+            try:
+                self.injury_status = entity['injury']['status']
+                self.injury_type = entity['injury']['type']
+            except KeyError:
+                self.injury = None
+            self.updated = entity['updated_at']
+            self.sportradar_id = entity['sportradar_id']
+
+        if entity['league'] == 'pga':
+            self.id = entity['id']
+            self.league = 'pga'
+            self.name = entity['name']
+            self.image_url = entity['image_url']
+            self.first_name = entity['first_name']
+            self.preferred_name = entity['preferred_name']
+            self.last_name = entity['last_name']
+            try:
+                self.birthdate = entity['birthdate'][:10]
+            except:
+                self.birthdate = None
+            try:
+                self.injury_status = entity['injury']['status']
+                self.injury_type = entity['injury']['type']
+            except KeyError:
+                self.injury = None
+            self.updated = entity['updated_at']
+            self.sportradar_id = entity['sportradar_id']
+            if 'college' in entity.keys():
+                self.college = entity['college']
+            if 'turned_pro' in entity.keys():
+                self.turned_pro = entity['turned_pro']
+            if 'country' in entity.keys():
+                self.country = entity['country']
+                
+        if entity['league'] == 'mlb':
+            self.id = entity['id']
+            self.league = 'mlb'
+            self.name = entity['name']
+            self.image_url = entity['image_url']
+            self.team_id = entity['current_team_id']
+            self.team_name = entity['team']['name']
+            self.team_location = entity['team']['location']
+            self.team_abbreviation = entity['team']['abbreviation']
+            self.first_name = entity['first_name']
+            self.preferred_name = entity['preferred_name']
+            self.last_name = entity['last_name']
+            self.position = entity['position']
+            try:
+                self.jersey_number = entity['jersey_number']
+            except: 
+                self.jersey_number = None
+            try:
+                self.college = entity['college']
+            except:
+                self.college = None
+            try:
+                self.debut = entity['debut']
+            except:
+                self.debut = None
+            self.status = entity['status']
+            self.updated = entity['updated_at']
+            self.sportradar_id = entity['sportradar_id']
+            try:
+                self.birthdate = entity['birthdate']
+            except:
+                self.birthdate = None
+            try:
+                self.injury_status = entity['injury']['status']
+                self.injury_type = entity['injury']['type']
+            except KeyError:
+                self.injury = None
+
+        if entity['league'] == 'nba':
+            self.id = entity['id']
+            self.name = entity['name']
+            self.league = 'nba'
+            self.image_url = entity['image_url']
+            try:
+                self.team_id = entity['current_team_id']
+                self.team_name = entity['team']['name']
+                self.team_location = entity['team']['location']
+                self.team_abbreviation = entity['team']['abbreviation']
+            except:
+                self.team_id = None
+            self.first_name = entity['first_name']
+            self.preferred_name = entity['preferred_name']
+            self.last_name = entity['last_name']
+            self.position = entity['position']
+            self.height = entity['height']
+            self.weight = entity['weight']
+            try:
+                self.jersey_number = entity['jersey_number']
+            except:
+                self.jersey_number = None
+            try:
+                self.college = entity['college']
+            except:
+                self.college = None
+            self.birthdate = entity['birthdate']
+            try:
+                self.rookie_year = entity['rookie_year']
+            except:
+                self.rookie_year = None
+            self.status = entity['status']
+            self.updated = entity['updated_at']
+            self.sportradar_id = entity['sportradar_id']
+            try:
+                self.injury_status = entity['injury']['status']
+                self.injury_type = entity['injury']['type']
+            except KeyError:
+                self.injury = None
 
 class Client(object):
     API_VERSION = 'v1'
@@ -153,7 +389,7 @@ class Client(object):
         """
         pass
 
-    def get_teams(self, league = None):
+    def get_teams(self, league = None) -> list[Team]: 
         """provides a list of teams for all or chosen leagues that have team structure
 
         keyword args:
@@ -171,7 +407,7 @@ class Client(object):
             params = {'start': '0', 'limit': '100', 'league': league}
             return self._get('teams', params = params)
 
-    def get_some_team(self, team_id):
+    def get_some_team(self, team_id) -> Team:
         """fetch a specific entity based on their entity id
 
         Keyword args:
@@ -179,7 +415,7 @@ class Client(object):
         """
         return self._get(f"teams/{team_id}")
 
-    def get_entities(self, qty = 1000, include_team = False, **kwargs):
+    def get_entities(self, qty = 1000, include_team = True, **kwargs) -> list[Entity]: #TODO CHANGE INCLUDE TEAM TO ALWAYS BE TRUE, BETTER INTERACTION WITH ENTITY CLASS
         """fetch entities (players of any sport)
         
         Keyword args:
@@ -191,6 +427,7 @@ class Client(object):
         """
         params = {}
         response = []
+        entities = []
         if 'league' in kwargs:
             params['league'] = kwargs.get('league', "")
         if include_team == True:
@@ -201,9 +438,13 @@ class Client(object):
             res = self._get("entities", params = params)
             for entity in res['entities']:
                 response.append(entity)
-        return response
+        for i in response:
+            print(i)
+        for i in response:
+            entities.append(Entity(i))
+        return entities
 
-    def get_some_entity(self, entity_id, include_team = False):
+    def get_some_entity(self, entity_id: str, include_team = False) -> Entity:
         """fetch a specific entity based on their entity id
 
         Keyword args:
@@ -217,7 +458,7 @@ class Client(object):
 
         return self._get(f"entities/{entity_id}", params = params)
 
-    def get_games(self, league = None, qty = 100): 
+    def get_games(self, league = None, qty = 100) -> list: 
         """provides a list of teams for all or chosen leagues that have team structure
 
         keyword args:
@@ -238,7 +479,7 @@ class Client(object):
                 response.append(game)
         return response
     
-    def get_some_game(self, game_id):
+    def get_some_game(self, game_id: str) -> Game:
         """fetch a specific entity based on their entity id
 
         Keyword args:
@@ -246,7 +487,7 @@ class Client(object):
         """
         return self._get(f"games/{game_id}")
 
-    def get_game_logs(self, qty = 100, include_ent = False, include_game = False, include_team = False, **kwargs):
+    def get_game_logs(self, qty = 100, include_ent = False, include_game = False, include_team = False, **kwargs) -> GameLog:
         """fetch game logs
 
         Keyword args:
@@ -285,7 +526,7 @@ class Client(object):
                 response.append(log)
         return response
 
-    def get_upcoming_events(self, qty = 50):
+    def get_upcoming_events(self, qty = 50) -> list[Event]:
         """Populates event objects with recent and upcoming events
 
         Keyword args:
@@ -310,7 +551,7 @@ class Client(object):
                     list_events.append(Event(event['id'], event['name'], event['description'], event['type'], event['id'], event['status'], datetime.fromtimestamp(int(event['ipo_open_at'])/1000), datetime.fromtimestamp(int(event['live_at_estimated'])/1000), amount_completed))
         return list_events
 
-    def get_some_event(self, event_id, include_games=False, include_payouts=False, include_tradeables=False):
+    def get_some_event(self, event_id: str, include_games=False, include_payouts=False, include_tradeables=False) -> Event:
         """fetch a particular event
 
         Keyword args:
@@ -336,7 +577,7 @@ class Client(object):
         return self._get(f"events/{event_id}", params = params)
 
 
-    def get_event_payouts(self, event_id):
+    def get_event_payouts(self, event_id: str) -> Event:
         """get payouts for each rank of an event
 
         Keyword args:
@@ -345,7 +586,7 @@ class Client(object):
         """
         return self._get(f"events/{event_id}/payouts")
 
-    def get_event_games(self, event_id):
+    def get_event_games(self, event_id: str) -> Game:
         """get all games in an event
 
         Keyword args:
@@ -354,7 +595,7 @@ class Client(object):
         """
         return self._get(f"events/{event_id}/games")
 
-    def get_event_tradeables(self, event_id):
+    def get_event_tradeables(self, event_id: str) -> Tradeable:
         """get all tradeables in an event
 
         Keyword args:
@@ -363,7 +604,7 @@ class Client(object):
         """
         return self._get(f"events/{event_id}/tradeables")
 
-    def get_entries(self, qty = 100, include_event=False, include_payouts=False, include_tradeables=False):
+    def get_entries(self, qty = 100, include_event=False, include_payouts=False, include_tradeables=False) -> Entry:
         """obtain information about events a user has entered
 
         Keyword args:
@@ -394,7 +635,7 @@ class Client(object):
             #TODO: add if loop to display only the most recent few events, and calculate profit and loss for the event (including fees, $ invested, etc.)
         return response
     
-    def get_some_entry(self, entry_id, include_event=False, include_payouts=False, include_tradeables=False):
+    def get_some_entry(self, entry_id: str, include_event=False, include_payouts=False, include_tradeables=False) -> Entry:
         """obtain information about events a user has entered
 
         Keyword args:
@@ -419,13 +660,13 @@ class Client(object):
         # probably should be an addition to "Event" class 
         return self._get(f"entries/{entry_id}", params = params)
 
-    def create_entry(self, event_id):
+    def create_entry(self, event_id: str) -> json:
         """create an entry to an event given an event_id e.g evt_60dbec530d2197a973c5dddcf6f65e12
         """
         data = {'event_id': event_id}
         return self._post(f"entries", data = data)
 
-    def place_order(self, id, price, side = 'buy', phase = 'ipo', qty = 1, *args, **kwargs):
+    def place_order(self, id: str, price: int, side = 'buy', phase = 'ipo', qty = 1, **kwargs) -> json:
         """
         TODO: exception handling, if response to an order is TOO MANY ORDERS, add the order back to the queue
         add functionality for 'market' orders
@@ -493,7 +734,7 @@ class Client(object):
                 response.append(order)
 
         return response
-    def get_some_order(self, order_id):
+    def get_some_order(self, order_id: str) -> Order:
         """get information about a specific order
 
          Keyword args:
@@ -502,7 +743,7 @@ class Client(object):
         """
         return self._get(f"order/{order_id}")
 
-    def delete_order(self, order_id):
+    def delete_order(self, order_id: str) -> json:
         """delete a specific order
 
         Keyword args:
@@ -511,15 +752,17 @@ class Client(object):
         """
         return self._delete(f"order/{order_id}")
 
-    def get_positions(self):
+    def get_positions(self) -> Position:
         """returns a user's open positions in all current events
         """
         return self._get("positions")
 
-    def get_account_activity(self, qty = 100):
+    def get_account_activity(self, qty = 100) -> AccountActivity:
         params = {}
         for page in range(int(qty/100)):
             params['start'] = str(page*100)
             params['limit'] = '100'
 
             return self._get('account/activity', params = params)
+
+auth = Client(secret = keys.secret, api_key = keys.key)
