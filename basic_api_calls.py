@@ -2,6 +2,8 @@ import requests
 from datetime import datetime, timedelta
 import json
 import keys
+import entity as ent
+
 
 from exception import JockAPIException
 
@@ -71,229 +73,6 @@ class Position(object):
 class AccountActivity(object):
     def __init__(self):
         pass
-
-class Entity(object): #this got incredibly convoluted fairly quickly. I'm sure there's a better way to do it but by the time I realized that I was mostly done anyways
-    def __init__(self, entity):
-        self.entity = self._league_filter(entity)
-
-    def _league_filter(self, entity):
-        print(entity)
-        if entity['league'] == 'nascar':
-            self.id = entity['id']
-            self.league = 'nascar'
-            self.name = entity['name']
-            self.first_name = entity['first_name']
-            self.last_name = entity['last_name']
-            self.status = entity['status']
-            self.image_url = entity['image_url']
-            self.points_eligible = entity['points_eligible']
-            self.in_chase = entity['in_chase']
-            if len(entity['cars']) > 1:
-                self.car_number = entity['cars'][0]['number']
-                self.car_manufacturer = entity['cars'][0]['manufacturer']
-                self.car_engine = entity['cars'][0]['engine']
-                self.car_sportradar_id = entity['cars'][0]['sportradar_id']
-            try:
-                self.team_id = entity['current_team_id']
-                self.team_name = entity['team']['name']
-                self.team_location = entity['team']['location']
-                self.team_abbreviation = entity['team']['abbreviation']
-            except KeyError:
-                self.team_id = None
-                self.team_name = None
-                self.team_location = None
-                self.team_abbreviation = None
-            try:
-                self.birthday = entity['birthday']
-            except:
-                self.birthday = None
-            try:
-                self.birthplace = entity['birth_place']
-            except:
-                self.birthplace = None
-            try:
-                self.rookie_year = entity['rookie_year']
-            except KeyError:
-                self.rookie_year = None
-            try:
-                self.injury_status = entity['injury']['status']
-                self.injury_type = entity['injury']['type']
-            except KeyError:
-                self.injury = None
-            self.updated = entity['updated_at']
-
-        if entity['league'] == 'nhl':
-            self.id = entity['id']
-            self.league = 'nhl'
-            self.name = entity['name']
-            self.image_url = entity['image_url']
-            self.team_id = entity['current_team_id']
-            self.team_name = entity['team']['name']
-            self.team_location = entity['team']['location']
-            self.team_abbreviation = entity['team']['abbreviation']
-            self.first_name = entity['first_name']
-            self.preferred_name = entity['preferred_name']
-            self.last_name = entity['last_name']
-            self.status = entity['status']
-            self.position = entity['position']
-            self.jersey_number = entity['jersey_number']
-            self.handedness = entity['handedness']
-            self.height = entity['height']
-            self.weight = entity['weight']
-            self.birthday = entity['birthdate']
-            try:
-                self.rookie_year = entity['rookie_year']
-            except: 
-                self.rookie_year = None
-            try:
-                self.injury_status = entity['injury']['status']
-                self.injury_type = entity['injury']['type']
-            except KeyError:
-                self.injury = None
-            self.updated = entity['updated_at']
-            self.sportradar_id = entity['sportradar_id']
-
-        if entity['league'] == 'nfl':
-            self.id = entity['id']
-            self.league = 'nfl'
-            self.name = entity['name']
-            self.image_url = entity['image_url']
-            try:
-                self.team_id = entity['current_team_id']
-            except:
-                self.team_id = None
-            if self.team_id != None:
-                self.team_name = entity['team']['name']
-                self.team_location = entity['team']['location']
-                self.team_abbreviation = entity['team']['abbreviation']
-            self.first_name = entity['first_name']
-            self.preferred_name = entity['preferred_name']
-            self.last_name = entity['last_name']
-            self.status = entity['status']
-            self.position = entity['position']
-            self.jersey_number = entity['jersey_number']
-            self.height = entity['height']
-            self.weight = entity['weight']
-            self.college = entity['college']
-            try:
-                self.birthday = entity['birthdate']
-            except:
-                self.birthday = None
-            try:
-                self.rookie_year = entity['rookie_year']
-            except: 
-                self.rookie_year = None
-            try:
-                self.injury_status = entity['injury']['status']
-                self.injury_type = entity['injury']['type']
-            except KeyError:
-                self.injury = None
-            self.updated = entity['updated_at']
-            self.sportradar_id = entity['sportradar_id']
-
-        if entity['league'] == 'pga':
-            self.id = entity['id']
-            self.league = 'pga'
-            self.name = entity['name']
-            self.image_url = entity['image_url']
-            self.first_name = entity['first_name']
-            self.preferred_name = entity['preferred_name']
-            self.last_name = entity['last_name']
-            try:
-                self.birthdate = entity['birthdate'][:10]
-            except:
-                self.birthdate = None
-            try:
-                self.injury_status = entity['injury']['status']
-                self.injury_type = entity['injury']['type']
-            except KeyError:
-                self.injury = None
-            self.updated = entity['updated_at']
-            self.sportradar_id = entity['sportradar_id']
-            if 'college' in entity.keys():
-                self.college = entity['college']
-            if 'turned_pro' in entity.keys():
-                self.turned_pro = entity['turned_pro']
-            if 'country' in entity.keys():
-                self.country = entity['country']
-                
-        if entity['league'] == 'mlb':
-            self.id = entity['id']
-            self.league = 'mlb'
-            self.name = entity['name']
-            self.image_url = entity['image_url']
-            self.team_id = entity['current_team_id']
-            self.team_name = entity['team']['name']
-            self.team_location = entity['team']['location']
-            self.team_abbreviation = entity['team']['abbreviation']
-            self.first_name = entity['first_name']
-            self.preferred_name = entity['preferred_name']
-            self.last_name = entity['last_name']
-            self.position = entity['position']
-            try:
-                self.jersey_number = entity['jersey_number']
-            except: 
-                self.jersey_number = None
-            try:
-                self.college = entity['college']
-            except:
-                self.college = None
-            try:
-                self.debut = entity['debut']
-            except:
-                self.debut = None
-            self.status = entity['status']
-            self.updated = entity['updated_at']
-            self.sportradar_id = entity['sportradar_id']
-            try:
-                self.birthdate = entity['birthdate']
-            except:
-                self.birthdate = None
-            try:
-                self.injury_status = entity['injury']['status']
-                self.injury_type = entity['injury']['type']
-            except KeyError:
-                self.injury = None
-
-        if entity['league'] == 'nba':
-            self.id = entity['id']
-            self.name = entity['name']
-            self.league = 'nba'
-            self.image_url = entity['image_url']
-            try:
-                self.team_id = entity['current_team_id']
-                self.team_name = entity['team']['name']
-                self.team_location = entity['team']['location']
-                self.team_abbreviation = entity['team']['abbreviation']
-            except:
-                self.team_id = None
-            self.first_name = entity['first_name']
-            self.preferred_name = entity['preferred_name']
-            self.last_name = entity['last_name']
-            self.position = entity['position']
-            self.height = entity['height']
-            self.weight = entity['weight']
-            try:
-                self.jersey_number = entity['jersey_number']
-            except:
-                self.jersey_number = None
-            try:
-                self.college = entity['college']
-            except:
-                self.college = None
-            self.birthdate = entity['birthdate']
-            try:
-                self.rookie_year = entity['rookie_year']
-            except:
-                self.rookie_year = None
-            self.status = entity['status']
-            self.updated = entity['updated_at']
-            self.sportradar_id = entity['sportradar_id']
-            try:
-                self.injury_status = entity['injury']['status']
-                self.injury_type = entity['injury']['type']
-            except KeyError:
-                self.injury = None
 
 class Client(object):
     API_VERSION = 'v1'
@@ -388,6 +167,17 @@ class Client(object):
         """decorator function for requests that require multiple pages of response
         """
         pass
+    
+    def _case_switch(self, entity):
+            switch = {
+                'nba': ent.nbaEntity(entity),
+                'nfl': ent.nflEntity(entity),
+                'nascar': ent.nascarEntity(entity),
+                'mlb': ent.mlbEntity(entity),
+                "nhl": ent.nhlEntity(entity),
+                "pga": ent.pgaEntity(entity)
+                }
+            return switch.get(entity['league'])
 
     def get_teams(self, league = None) -> list[Team]: 
         """provides a list of teams for all or chosen leagues that have team structure
@@ -415,7 +205,7 @@ class Client(object):
         """
         return self._get(f"teams/{team_id}")
 
-    def get_entities(self, qty = 1000, include_team = True, **kwargs) -> list[Entity]: #TODO CHANGE INCLUDE TEAM TO ALWAYS BE TRUE, BETTER INTERACTION WITH ENTITY CLASS
+    def get_entities(self, qty = 1000, include_team = True, **kwargs) -> list[ent.Entity]: #TODO CHANGE INCLUDE TEAM TO ALWAYS BE TRUE, BETTER INTERACTION WITH ENTITY CLASS
         """fetch entities (players of any sport)
         
         Keyword args:
@@ -425,6 +215,7 @@ class Client(object):
         \tlimit -- default: 1000 #TODO default limits by sports based on # players
         #TODO: build entity class
         """
+
         params = {}
         response = []
         entities = []
@@ -438,13 +229,27 @@ class Client(object):
             res = self._get("entities", params = params)
             for entity in res['entities']:
                 response.append(entity)
-        for i in response:
-            print(i)
-        for i in response:
-            entities.append(Entity(i))
+        # for i in response:
+        #     print(i)
+        for entity in response:
+            print(entity['league'])
+            if entity['league'] == 'nba':
+                entities.append(ent.nbaEntity(entity))
+            elif entity['league'] == 'nfl':
+                entities.append(ent.nflEntity(entity))
+            elif entity['league'] == 'nascar':
+                entities.append(ent.nascarEntity(entity))
+            elif entity['league'] == 'mlb':
+                entities.append(ent.mlbEntity(entity))
+            elif entity['league'] == 'nhl':
+                entities.append(ent.nhlEntity(entity))
+            elif entity['league'] == 'pga':
+                entities.append(ent.pgaEntity(entity))
+            
+            # entities.append(self._case_switch) <- attempt at using casing instead of if/else, see line 171
         return entities
 
-    def get_some_entity(self, entity_id: str, include_team = False) -> Entity:
+    def get_some_entity(self, entity_id: str, include_team = False) -> ent.Entity:
         """fetch a specific entity based on their entity id
 
         Keyword args:
@@ -766,3 +571,8 @@ class Client(object):
             return self._get('account/activity', params = params)
 
 auth = Client(secret = keys.secret, api_key = keys.key)
+
+test_ent = Client(keys.secret, keys.key).get_entities(league = 'pga')
+
+for item in test_ent:
+    print(item.country)

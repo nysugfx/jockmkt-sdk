@@ -1,7 +1,8 @@
+#league filtering now done in Client class using if/else statements
+
 class Entity(object):
     def __init__(self, entity):
         self.entity = self._populate_universal_fields(entity)
-        self.case = self._case(self.league, entity)
  
     def _populate_universal_fields(self, entity):
         self.id = entity['id']
@@ -11,23 +12,11 @@ class Entity(object):
         self.last_name = entity['last_name']
         self.image_url = entity['image_url']
         self.updated_at = entity['updated_at']
-        self.full_ent_data = entity
+        self.full_ent_dict = entity
         
-
-    def _case(self, league, entity):
-        switcher = {
-            'nba': nbaEntity(entity),
-            'nfl': nflEntity(entity),
-            'nascar': nascarEntity(entity),
-            'mlb': mlbEntity(entity),
-            'nhl': nhlEntity(entity),
-            'pga': pgaEntity(entity),
-        }
-
-        return switcher.get(league)
-
 class nbaEntity(Entity):
     def __init__(self, entity):
+        Entity.__init__(self, entity)
         try:
             self.team_id = entity['current_team_id']
             self.team_name = entity['team']['name']
@@ -63,6 +52,7 @@ class nbaEntity(Entity):
 
 class nflEntity(Entity):
     def __init__(self, entity):
+        Entity.__init__(self, entity)
         try:
             self.team_id = entity['current_team_id']
         except KeyError:
@@ -95,6 +85,7 @@ class nflEntity(Entity):
     
 class nascarEntity(Entity):
     def __init__(self, entity):
+        Entity.__init__(self, entity)
         self.id = entity['id']
         self.league = 'nascar'
         self.name = entity['name']
@@ -140,6 +131,7 @@ class nascarEntity(Entity):
 
 class nhlEntity(Entity):
     def __init__(self, entity):
+        Entity.__init__(self, entity)
         self.team_id = entity['current_team_id']
         self.team_name = entity['team']['name']
         self.team_location = entity['team']['location']
@@ -165,6 +157,14 @@ class nhlEntity(Entity):
 
 class pgaEntity(Entity):
     def __init__(self, entity):
+        Entity.__init__(self, entity)
+        # print('pga object!')
+        # for key in entity:
+        #     self.__dict__[key] = entity[key]
+        #     if type(entity[key]) == dict:
+        #         for k in entity[key]:
+        #             self.__dict__[key + '_' + k] = entity[key][k]
+
         self.preferred_name = entity['preferred_name']
         try:
             self.birthdate = entity['birthdate'][:10]
@@ -176,15 +176,22 @@ class pgaEntity(Entity):
         except KeyError:
             self.injury = None
         self.sportradar_id = entity['sportradar_id']
-        if 'college' in entity.keys():
+        try:
             self.college = entity['college']
-        if 'turned_pro' in entity.keys():
+        except:
+            self.college = None
+        try:
             self.turned_pro = entity['turned_pro']
-        if 'country' in entity.keys():
+        except:
+            self.turned_pro = None
+        try:
             self.country = entity['country']
+        except:
+            self.country = None
 
 class mlbEntity(Entity):
     def __init__(self, entity):
+        Entity.__init__(self, entity)
         self.team_id = entity['current_team_id']
         self.team_name = entity['team']['name']
         self.team_location = entity['team']['location']
@@ -214,3 +221,4 @@ class mlbEntity(Entity):
             self.injury_type = entity['injury']['type']
         except KeyError:
             self.injury = None
+
