@@ -1,113 +1,41 @@
 import requests
-from datetime import datetime, timedelta
 import json
-import keys
-import entity as ent
-
-
 from exception import JockAPIException
+from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+    _case_switch_ent
 
-class Team(object):
-    def __init__(self, team_id, location, name, league, abbreviation, sportradar_id):
-        self.team_id = team_id
-        self.location = location
-        self.name = name
-        self.league = league
-        self.abbreviation = abbreviation
-        self.sportradar_id = sportradar_id
-    
-    def filter_teams(self, **kwargs):
-        pass
-
-    def get_team_players(self, **kwargs): # perhaps this should go under Entity
-        pass
-
-    def get_team_games(self, **kwargs): # perhaps this should go under Games
-        pass
-
-    def get_team_events(self, **kwargs): # perhaps this should go under Event
-        pass
-
-class Game(object):
-    def __init__(self):
-        pass
-
-class GameLog(object):
-    def __init__(self):
-        pass
-
-class Event(object):
-    def __init__(self, id, name, desc, type, league, status, ipo_start, ipo_end, amt_completed):
-        self.id = id
-        self.name = name
-        self.desc = desc
-        self.type = type
-        self.status = status
-        self.league = league
-        self.ipo_start = ipo_start
-        self.ipo_end = ipo_end
-        self.amt_completed = amt_completed
-        self.pnl = None
-        self.fees_paid = None
-        self.entered = False
-        
-    def print_event(self):
-        print('\nevent_id: ' + self.id, '\nevent_name: ' + self.name, '\ndescription: ' + self.desc, '\ntype: ' + self.type, ' league: ' + self.league, '\nipo_start: ' + str(self.ipo_start), ' ipo_end: ' + str(self.ipo_end), ' amount_completed: ' + str(self.amt_completed), '\n\t profit/loss: ' + str(self.pnl), '  fees_paid: ')
-
-class Tradeable(object):
-    def __init__(self):
-        pass
-
-class Entry(object):
-    def __init__(self):
-        pass
-
-class Order(object):
-    def __init__(self):
-        pass
-
-class Position(object):
-    def __init__(self):
-        pass
-
-class AccountActivity(object):
-    def __init__(self):
-        pass
 
 class Client(object):
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
+    _AUTH_TOKEN = {}
 
-    def __init__(self, secret, api_key, request_params = None):
+    def __init__(self, secret, api_key, request_params=None):
         self.secret = secret
         self.api_key = api_key
         self._request_params = request_params
-        self.token = self._get_auth_token()
+        _AUTH_TOKEN = self._get_auth_token()
         self.balance = self._get_account_bal()
 
-    def _create_path(self, path, api_version = None):
+    def _create_path(self, path, api_version=None):
         api_version = api_version or self.API_VERSION
         return '/{}/{}'.format(api_version, path)
 
     def _get_auth_token(self):
-            payload = {
-                'grant_type' : 'client_credentials',
-                'key' : str(self.api_key),
-                'secret' : str(self.secret)
-            }
-            response = requests.post(f'{self.BASE_URL}/{self.API_VERSION}/oauth/tokens', data = payload).json()
-            if response['status'] == 'error':
-                raise KeyError("Your authorization keys are not valid!")
-            else:
-                expiration_date = datetime.fromtimestamp(response['token']['expired_at']/1000).strftime("%Y-%m-%d %I:%M %p")
-                print(f'\nyour token will expire at: {expiration_date}\n')
-            self.token = {'Authorization' : 'Bearer ' + response['token']['access_token']}
-            return self.token
+        payload = {
+            'grant_type': 'client_credentials',
+            'key': str(self.api_key),
+            'secret': str(self.secret)
+        }
+        response = requests.post(f'{self.BASE_URL}/{self.API_VERSION}/oauth/tokens', data=payload).json()
+        if response['status'] == 'error':
+            raise KeyError("Your authorization keys are not valid!")
+        self.token = {'Authorization': 'Bearer ' + response['token']['access_token']}
+        return self.token
 
-    def _request(self, method, path, api_version=None, **kwargs):
+    def _request(self, method, path, api_version=None, **kwargs) -> json:
         if self._request_params:
             kwargs.update(self._request_params)
-        
         kwargs['data'] = kwargs.get('data', {})
         kwargs['params'] = kwargs.get('params', {})
 
@@ -120,7 +48,8 @@ class Client(object):
                 kwargs['payload'] = kwargs['params']
             else:
                 kwargs['payload'] = {}
-            response = requests.get('{}{}'.format(self.BASE_URL, full_path), params=kwargs['payload'], headers=self.token)
+            response = requests.get('{}{}'.format(self.BASE_URL, full_path), params=kwargs['payload'],
+                                    headers=self.token)
 
         if method == 'post':
             if kwargs['data']:
@@ -129,28 +58,31 @@ class Client(object):
                 kwargs['payload'] = kwargs['params']
             else:
                 kwargs['payload'] = {}
-            response = requests.post('{}{}'.format(self.BASE_URL, full_path), data=kwargs['payload'], headers=self.token)
+            response = requests.post('{}{}'.format(self.BASE_URL, full_path), data=kwargs['payload'],
+                                     headers=self.token)
 
         if method == 'delete':
             response = requests.delete('{}{}'.format(self.BASE_URL, full_path), headers=self.token)
 
         res = self._handle_response(response)
-        #TODO: add functionality for response[path]
+        # TODO: add functionality for response[path]
         return res
 
     @staticmethod
-    def _handle_response(response):
-        '''helper to handle api responses and determine errors
-        '''
-        if not str(response.status_code).startswith('2'):
-            raise JockAPIException(response)
+    def _handle_response(json_response):
+        """helper to handle api responses and determine errors
+        """
+        if not str(json_response.status_code).startswith('2'):
+            raise JockAPIException(json_response)
         try:
-            res = response.json()
+            res = json_response.json()
             return res
         except ValueError:
-            raise JockAPIException('Invalid Response: %s' % response.text)
-            
-    
+            raise JockAPIException('Invalid Response: %s' % json_response.text)
+
+    def _throttle_requests(self, func):
+        pass
+
     def _get(self, path, api_version=None, **kwargs):
         return self._request('get', path, api_version, **kwargs)
 
@@ -163,144 +95,134 @@ class Client(object):
     def _get_account_bal(self):
         return round(self._get("balances")['balances'][0]['buying_power'], 2)
 
-    def _start_over_100(self):
+    def _fetch_all(self):
         """decorator function for requests that require multiple pages of response
         """
         pass
-    
-    def _case_switch(self, entity):
-            switch = {
-                'nba': ent.nbaEntity(entity),
-                'nfl': ent.nflEntity(entity),
-                'nascar': ent.nascarEntity(entity),
-                'mlb': ent.mlbEntity(entity),
-                "nhl": ent.nhlEntity(entity),
-                "pga": ent.pgaEntity(entity)
-                }
-            return switch.get(entity['league'])
 
-    def get_teams(self, league = None) -> list[Team]: 
-        """provides a list of teams for all or chosen leagues that have team structure
+    def get_teams(self, start: int = 0, league: str = None) -> list[Team]:
+        """provides a list of teams for all or chosen leagues that have team structure.
+        displays only the first page, the user can paginate via:
+        for i in range(n):
+            get_teams(league = x, start = i)
 
         keyword args:
-        \tleague -- default: None (Any), or nba, nfl, mlb, nhl, nascar
-
-        note: range default to 1 since there are only 146 total teams 
-
-        TODO: build team class
+        \tstart -- default: 0 (first 100 responses)
+        \tleague -- default: None (Any), or nba, nfl, mlb, nhl, nascar (lowercase)
         """
-        if league == None:
-            for page in range(1):
-                params = {'start': str(page*100), 'limit': '100'}
-                return self._get('teams', params = params)
-        else:
-            params = {'start': '0', 'limit': '100', 'league': league}
-            return self._get('teams', params = params)
+        teams = []
+        params = {'start': str(start * 100),
+                  'limit': '100'}
+        if league is not None:
+            params['league'] = league
+        res = self._get('teams', params=params)
+        print('status: ' + res['status'])
+        print('start: ' + str(res['start']))
+        print('limit: ' + str(res['limit']))
+        print('count: ' + str(res['count']))
+        for team in res:
+            teams.append(Team(team_id=team['id'], location=team['location'], name=team['name'],
+                              league=team['league'], abbreviation=team['abbreviation']))
+        return teams
 
-    def get_some_team(self, team_id) -> Team:
+    def get_team(self, team_id: str) -> Team:
         """fetch a specific entity based on their entity id
 
         Keyword args:
-        \tteam_id: required (str) e.g "team_8fe94ef0d1f0a00e1285301c4092650f"
+        \tteam_id: required (str) e.g. "team_8fe94ef0d1f0a00e1285301c4092650f"
         """
-        return self._get(f"teams/{team_id}")
+        team = self._get(f"teams/{team_id}")['team']
+        return Team(team_id=team['id'], location=team['location'], name=team['name'],
+                    league=team['league'], abbreviation=team['abbreviation'])
 
-    def get_entities(self, qty = 1000, include_team = True, **kwargs) -> list[ent.Entity]: #TODO CHANGE INCLUDE TEAM TO ALWAYS BE TRUE, BETTER INTERACTION WITH ENTITY CLASS
+    def get_entities(self, start: int = 0, include_team: bool = True, league: str = None) -> list[Entity]:
         """fetch entities (players of any sport)
+        the user will have to paginate i.e.
+            for i in range(n):
+                get_entities(start=i)
         
         Keyword args:
-        \tleague -- default: Any, or (str) nba, nfl, mlb, nhl, nascar
+        \tstart -- default: 0 (first 100 responses)
         \tinclude_team -- default: False (bool), or True to include team info
-        \tupdated_after -- default: Any, or (int) ms timestamp (13 digits)
-        \tlimit -- default: 1000 #TODO default limits by sports based on # players
-        #TODO: build entity class
+        \tleague -- default: Any, or (str) nba, nfl, mlb, nhl, nascar, pga
         """
 
         params = {}
-        response = []
         entities = []
-        if 'league' in kwargs:
-            params['league'] = kwargs.get('league', "")
-        if include_team == True:
+        if league is not None:
+            params['league'] = league
+        if include_team:
             params['include'] = 'team'
-        for page in range(int(qty/100)):
-            params['start'] = str(page*100)
-            params['limit'] = '100'
-            res = self._get("entities", params = params)
-            for entity in res['entities']:
-                response.append(entity)
-        # for i in response:
-        #     print(i)
-        for entity in response:
-            print(entity['league'])
-            if entity['league'] == 'nba':
-                entities.append(ent.nbaEntity(entity))
-            elif entity['league'] == 'nfl':
-                entities.append(ent.nflEntity(entity))
-            elif entity['league'] == 'nascar':
-                entities.append(ent.nascarEntity(entity))
-            elif entity['league'] == 'mlb':
-                entities.append(ent.mlbEntity(entity))
-            elif entity['league'] == 'nhl':
-                entities.append(ent.nhlEntity(entity))
-            elif entity['league'] == 'pga':
-                entities.append(ent.pgaEntity(entity))
-            
-            # entities.append(self._case_switch) <- attempt at using casing instead of if/else, see line 171
+        params['start'] = start
+        params['limit'] = '100'
+        res = self._get("entities", params=params)
+        print('status: ' + res['status'])
+        print('start: ' + str(res['start']))
+        print('limit: ' + str(res['limit']))
+        print('count: ' + str(res['count']))
+        for entity in res['entities']:
+            entities.append(_case_switch_ent(entity))
         return entities
 
-    def get_some_entity(self, entity_id: str, include_team = False) -> ent.Entity:
+    def get_entity(self, entity_id: str, include_team: bool = False) -> Entity:
         """fetch a specific entity based on their entity id
 
         Keyword args:
-        \tentity_id: required (str) e.g en_12d0c14aa5dfd232a0298a737f5a59fc
+        \tentity_id: required (str) e.g. en_12d0c14aa5dfd232a0298a737f5a59fc
         \tinclude_team: option, default: False (bool), True includes team information
         """
-        if include_team == True:
+        if include_team:
             params = {'include': 'team'}
         else:
             params = {}
+        ent = self._get(f"entities/{entity_id}", params=params)['entity']
+        return _case_switch_ent(ent)
 
-        return self._get(f"entities/{entity_id}", params = params)
-
-    def get_games(self, league = None, qty = 100) -> list: 
+    def get_games(self, start: int = 0, league: str = None) -> list[Game]:
         """provides a list of teams for all or chosen leagues that have team structure
+        the user will have to paginate.
+        i.e. for i in range(n):
+                get_games(start=i)
 
         keyword args:
-        \tleague -- default: None (Any), or nba, nfl, mlb, nhl, nascar
-        \tqty -- default: 100 (int), quantity of games the user wishes to see
-
-        TODO: build game class, filter by status etc.
+        \tstart -- default: 0 (int), which page of games the user wishes to see
+        \tleague -- default: None (Any), or nba, nfl, mlb, nhl, nascar, pga
         """
         params = {}
         response = []
-        for page in range(int(qty/100)):
-            params['start'] = str(page*100)
-            params['limit'] = '100'
-            if league != None:
-                params['league'] = league
-            res = self._get('games', params = params)
-            for game in res['games']:
-                response.append(game)
+        params['start'] = start * 100
+        params['limit'] = '100'
+        if league is not None:
+            params['league'] = league
+        res = self._get('games', params=params)
+        print('status: ' + res['status'])
+        print('start: ' + str(res['start']))
+        print('limit: ' + str(res['limit']))
+        print('count: ' + str(res['count']))
+        for game in res['games']:
+            response.append(Game(game))
         return response
-    
-    def get_some_game(self, game_id: str) -> Game:
+
+    def get_game(self, game_id: str) -> Game:
         """fetch a specific entity based on their entity id
 
         Keyword args:
-        game_id -- required, str, e.g "game_60bb686586eaf95a5e8dafa3823d89cb"
+        game_id -- required, str, e.g. "game_60bb686586eaf95a5e8dafa3823d89cb"
         """
-        return self._get(f"games/{game_id}")
+        return Game(self._get(f"games/{game_id}")['game'])
 
-    def get_game_logs(self, qty = 100, include_ent = False, include_game = False, include_team = False, **kwargs) -> GameLog:
+    def get_game_logs(self, start=0, log_id: str = None, entity_id: str = None, game_id: str = None,
+                      include_ent: bool = False,
+                      include_game: bool = False, include_team: bool = False) -> list[GameLog]:
         """fetch game logs
 
         Keyword args:
         \toptional:
-        \tqty -- int, quantity of game logs the user wishes to see
-        \tlog_id -- str or list, filter for a specific game log. e.g "gl_60cde7f973f9e00674785e5e144a802b"
-        \tentity_id -- str, filter all game logs for a specific player, e.g "en_67c8368a3905f8beee69393ccec854e5"
-        \tgame_id -- str, filter all game logs for all players in a specific game, e.g "game_60cde69ee06e791b99ed71e6013fc4a7"
+        \tstart -- default: 0 (int), which page of games the user wishes to see
+        \tlog_id -- str or list, filter for a specific game log. e.g. "gl_60cde7f973f9e00674785e5e144a802b"
+        \tentity_id -- str, filter all game logs for a specific player, e.g. "en_67c8368a3905f8beee69393ccec854e5"
+        \tgame_id -- str, filter all game logs for all players in a specific game,
+            e.g. "game_60cde69ee06e791b99ed71e6013fc4a7"
         \tinclude_ent -- bool, if True, returns entity information attached to the game log (entity name, team, etc.)
         \tinclude_game -- bool, if True, returns game information (game name, teams, status)
         \tinclude_team -- bool, if True, returns team information (team name, location, league, etc.)
@@ -308,12 +230,12 @@ class Client(object):
         params = {}
         include = []
         response = []
-        if 'log_id' in kwargs:
-            params['id'] = kwargs.get('log_id', '')
-        if 'entity_id' in kwargs:
-            params['entity_id'] = kwargs.get('entity_id', '')
-        if 'game_id' in kwargs:
-            params['id'] = kwargs.get('game_id', '')
+        if log_id is not None:
+            params['id'] = log_id
+        if entity_id is not None:
+            params['entity_id'] = entity_id
+        if game_id is not None:
+            params['game_id'] = game_id
         if include_game:
             include.append('game')
         if include_ent:
@@ -322,94 +244,87 @@ class Client(object):
             include.append('team')
         if len(include) != 0:
             params['include'] = str(include)
-        for page in range(int(qty/100)):
-            params['start'] = str(page*100)
-            params['limit'] = '100'
-            print(params)
-            res = self._get("game_logs", params = params)
-            for log in res['game_logs']:
-                response.append(log)
+        params['start'] = start * 100
+        params['limit'] = '100'
+        res = self._get("game_logs", params=params)
+        print('status: ' + res['status'])
+        print('start: ' + str(res['start']))
+        print('limit: ' + str(res['limit']))
+        print('count: ' + str(res['count']))
+        for log in res['game_logs']:
+            response.append(GameLog(log))
         return response
 
-    def get_upcoming_events(self, qty = 50) -> list[Event]:
+    def get_events(self, start: int = 0, league: str = None, include_sims: bool = False) -> list[Event]:
         """Populates event objects with recent and upcoming events
 
         Keyword args:
-        \tqty -- int: default: 50 -- quantity of events the user wishes to populate. No need to adjust this unless your goal is to view historical events
+        \tstart -- default: 0 (int), which page of games the user wishes to see
+        \tleague -- default: None (Any), or nba, nfl, mlb, nhl, nascar, pga
+        \tinclude_sims -- default: False (bool), if True, will return Horse Sims for test use
         """
         list_events = []
-        data = {}
-        for page in range(int(qty/100)):
-            if qty <= 100:
-                data['start'] = 0 
-                data['limit'] = qty
-            else:
-                data['start'] = str(page*100)
-                data['limit'] = str(100)
-            res = self._get('events', data=data)
-            for event in res['events']:
-                if 'horse' not in event['league']:
-                    try:
-                        amount_completed = event['amount_completed']
-                    except:
-                        amount_completed = 0
-                    list_events.append(Event(event['id'], event['name'], event['description'], event['type'], event['id'], event['status'], datetime.fromtimestamp(int(event['ipo_open_at'])/1000), datetime.fromtimestamp(int(event['live_at_estimated'])/1000), amount_completed))
+        data = {'start': str(start), 'limit': '100'}
+        if league is not None:
+            data['league'] = league
+        res = self._get('events', data=data)
+        for event in res['events']:
+            if event['league'] != 'simulated_horse_racing':
+                list_events.append(Event(event))
+            elif include_sims:
+                list_events.append(Event(event))
         return list_events
 
-    def get_some_event(self, event_id: str, include_games=False, include_payouts=False, include_tradeables=False) -> Event:
-        """fetch a particular event
+    def get_event(self, event_id: str) -> Event:
+        """fetch a particular event, by default includes games, payouts and tradeables.
 
         Keyword args:
         \tRequired:
-        \tevent_id -- str, the event_id for your chosen event, e.g evt_60dbec530d2197a973c5dddcf6f65e12
-
-        \tOptional:
-        \tinclude_games -- default: False, include all games that are part of the event
-        \tinclude_payouts -- default: False, include the payouts for each rank of an event
-        \tinclude_tradeables -- default: False, if True, includes all entities participating in the event (name, fpts, event rank, prices, team, stats, etc.)
+        \tevent_id -- str, the event_id for your chosen event, e.g. evt_60dbec530d2197a973c5dddcf6f65e12
         """
         params = {}
-        include = []
-        if include_games:
-            include.append('games')
-        if include_payouts:
-            include.append('payouts')
-        if include_tradeables:
-            include.append('tradeables.entity')
-        if len(include) != 0:
-            params['include'] = str(include)
-
-        return self._get(f"events/{event_id}", params = params)
-
+        include = ['tradeables.entity', 'games', 'payouts']
+        params['include'] = str(include)
+        res = self._get(f"events/{event_id}", params=params)
+        return Event(res['event'])
 
     def get_event_payouts(self, event_id: str) -> Event:
         """get payouts for each rank of an event
 
         Keyword args:
         \tRequired:
-        \tevent_id -- str, the event_id for your chosen event, e.g evt_60dbec530d2197a973c5dddcf6f65e12
+        \tevent_id -- str, the event_id for your chosen event, e.g. evt_60dbec530d2197a973c5dddcf6f65e12
         """
         return self._get(f"events/{event_id}/payouts")
 
-    def get_event_games(self, event_id: str) -> Game:
+    def get_event_games(self, event_id: str) -> list[Game]:
         """get all games in an event
 
         Keyword args:
         \tRequired:
-        \tevent_id -- str, the event_id for your chosen event, e.g evt_60dbec530d2197a973c5dddcf6f65e12
+        \tevent_id -- str, the event_id for your chosen event, e.g. evt_60dbec530d2197a973c5dddcf6f65e12
         """
-        return self._get(f"events/{event_id}/games")
+        games = []
+        res = self._get(f"events/{event_id}/games")
+        for game in res['games']:
+            games.append(Game(game))
+        return games
 
-    def get_event_tradeables(self, event_id: str) -> Tradeable:
+    def get_event_tradeables(self, event_id: str) -> list[Tradeable]:
         """get all tradeables in an event
 
         Keyword args:
         \tRequired:
-        \tevent_id -- str, the event_id for your chosen event, e.g evt_60dbec530d2197a973c5dddcf6f65e12
+        \tevent_id -- str, the event_id for your chosen event, e.g. evt_60dbec530d2197a973c5dddcf6f65e12
         """
-        return self._get(f"events/{event_id}/tradeables")
+        res = self._get(f"events/{event_id}/tradeables")['tradeables']
+        tradeables = []
+        for tdbl in res:
+            tradeables.append(Tradeable(tdbl))
+        return tradeables
 
-    def get_entries(self, qty = 100, include_event=False, include_payouts=False, include_tradeables=False) -> Entry:
+    def get_entries(self, start: int = 0, include_payouts: bool = False, include_tradeables: bool = False) \
+            -> list[Entry]:
         """obtain information about events a user has entered
 
         Keyword args:
@@ -417,11 +332,47 @@ class Client(object):
         \tqty -- default: 50, number of events the user wishes to display
         \tinclude_event -- default: False, include event information
         \tinclude_payouts -- default: False, include the payouts for each rank of an event
-        \tinclude_tradeables -- default: False, if True, includes all tradeables participating in the event (id, fpts, event rank, prices, stats, etc.)
+        \tinclude_tradeables -- default: False, if True, includes all tradeables participating in the event
+            (id, fpts, event rank, prices, stats, etc.)
+        """
+        params = {'start': start * 100, 'limit': '5'}
+        include = ['event']
+        if include_payouts:
+            include.append('payouts')
+        if include_tradeables:
+            include.append('payouts.tradeable')
+        params['include'] = str(include)
+        print(params)
+        response_list = []
+        res = self._get("entries", params=params)
+        print('status: ' + res['status'])
+        print('start: ' + str(res['start']))
+        print('limit: ' + str(res['limit']))
+        print('count: ' + str(res['count']))
+        for entry in res['entries']:
+            response_list.append(entry)
+
+            # TODO: add if loop to display only the most recent few events, and calculate profit and loss for the event
+            #  (including fees, $ invested, etc.)
+        return response_list
+
+    def calculate_pnl(self, entry_id: str):
+        pass
+
+    def get_entry(self, entry_id: str, include_event=False, include_payouts=False,
+                  include_tradeables=False) -> Entry:
+        """obtain information about events a user has entered
+
+        Keyword args:
+        \tOptional:
+        \tqty -- default: 50, number of events the user wishes to display
+        \tinclude_event -- default: False, include event information
+        \tinclude_payouts -- default: False, include the payouts for each rank of an event
+        \tinclude_tradeables -- default: False, if True, includes all tradeables participating in the event
+            (provides information about positions/payouts and their underlying tradeables)
         """
         params = {}
         include = []
-        response = []
         if include_event:
             include.append('event')
         if include_payouts:
@@ -430,48 +381,23 @@ class Client(object):
             include.append('payouts.tradeable')
         if len(include) != 0:
             params['include'] = str(include)
-        for page in range(int(qty/100)):
-            params['start'] = str(page*100)
-            params['limit'] = '100'
-            res = self._get("entries", params = params)
-            for entry in res['entries']:
-                response.append(entry)
-
-            #TODO: add if loop to display only the most recent few events, and calculate profit and loss for the event (including fees, $ invested, etc.)
-        return response
-    
-    def get_some_entry(self, entry_id: str, include_event=False, include_payouts=False, include_tradeables=False) -> Entry:
-        """obtain information about events a user has entered
-
-        Keyword args:
-        \tOptional:
-        \tqty -- default: 50, number of events the user wishes to display
-        \tinclude_event -- default: False, include event information
-        \tinclude_payouts -- default: False, include the payouts for each rank of an event
-        \tinclude_tradeables -- default: False, if True, includes all tradeables participating in the event (id, fpts, event rank, prices, stats, etc.)
-        """
-        params = {}
-        include = []
-        if include_event:
-            include.append('event')
-        if include_payouts:
-            include.append('payouts')
-        if include_tradeables:
-            include.append('payouts.tradeable')
-        if len(include) != 0:
-            params['include'] = str(include)
-
-        #TODO: add if loop to display pnl, fees, 
-        # probably should be an addition to "Event" class 
-        return self._get(f"entries/{entry_id}", params = params)
+        entry = self._get(f"entries/{entry_id}", params=params)['entry']
+        return Entry(entry)
 
     def create_entry(self, event_id: str) -> json:
-        """create an entry to an event given an event_id e.g evt_60dbec530d2197a973c5dddcf6f65e12
+        """create an entry to an event given an event_id e.g. evt_60dbec530d2197a973c5dddcf6f65e12
         """
-        data = {'event_id': event_id}
-        return self._post(f"entries", data = data)
+        return self._post(f"entries", data={'event_id': event_id})
 
-    def place_order(self, id: str, price: int, side = 'buy', phase = 'ipo', qty = 1, **kwargs) -> json:
+    _order_cache = []
+
+    @staticmethod
+    def _order_counter(self, func):
+        def _helper(*args, **kwargs):
+            pass
+        pass
+
+    def place_order(self, id: str, price: int, side: str = 'buy', phase: str = 'ipo', qty: int = 1, **kwargs) -> json:
         """
         TODO: exception handling, if response to an order is TOO MANY ORDERS, add the order back to the queue
         add functionality for 'market' orders
@@ -494,27 +420,20 @@ class Client(object):
 
         if 'order_size' in kwargs:
             size = kwargs.get('order_size', 0)
-            print(size)
             qty = size // price
-            print(qty)
 
         price = "{:.2f}".format(price)
 
-        order = {
-            'tradeable_id': id,
-            'side': side,
-            'type': 'limit',
-            'phase': phase,
-            'quantity': str(qty),
-            'limit_price': str(price)
-        }
+        order = {'tradeable_id': id, 'side': side, 'type': 'limit', 'phase': phase, 'quantity': str(qty),
+                 'limit_price': str(price)}
+        order_response = self._post('orders', data=order)
+        print(order_response)
 
-        print(order)
-        return self._post('orders', data = order)
+        return order_response
 
-#NOTE: the docs for order object > status contain 'outbid' twice
+    # NOTE: the docs for order object > status contain 'outbid' twice
 
-    def get_orders(self, qty = 100, **kwargs):
+    def get_orders(self, start=0, event_id: str = None, active: bool = False, updated_after: int = None):
         """get all of a user's orders
         Keyword args:
         \toptional:
@@ -523,56 +442,67 @@ class Client(object):
         \tactive -- bool, include only orders marked (created or accepted, not filled, canceled, outbid, or expired)
         \tupdated_after -- int, ms timestamp 13 digits, includes orders only after the timestamp
         """
-        params = {}
-        response = []
-        if 'event_id' in kwargs:
-            params['event_id'] = kwargs.get('event_id', '')
-        if 'active' in kwargs:
-            params['active'] = kwargs.get("active", False)
-        if 'updated_after' in kwargs:
-            params['updated_after'] = kwargs.get('updated_after', '')
-        for page in range(int(qty/100)):
-            params['start'] = str(page*100)
-            params['limit'] = '100'
-            res = self._get('orders', params = params)
-            for order in res['orders']:
-                response.append(order)
+        params = {'start': start * 100, 'limit': '100'}
+        orders = []
+        if event_id is not None:
+            params['event_id'] = str(event_id)
+        if active:
+            params['active'] = str(True)
+        if updated_after is not None:
+            params['updated_after'] = str(updated_after)
+        orders_response = self._get('orders', params=params)
+        print('status: ' + orders_response['status'])
+        print('start: ' + str(orders_response['start']))
+        print('limit: ' + str(orders_response['limit']))
+        print('count: ' + str(orders_response['count']))
+        for order in orders_response['orders']:
+            orders.append(Order(order))
+        return orders
 
-        return response
-    def get_some_order(self, order_id: str) -> Order:
+    def get_order(self, order_id: str) -> Order:
         """get information about a specific order
 
          Keyword args:
         \trequired:
-        \torder_id -- str, e.g ord_601b5ad6538ec34875ee1687c4a657f8
+        \torder_id -- str, e.g. ord_601b5ad6538ec34875ee1687c4a657f8
         """
-        return self._get(f"order/{order_id}")
+        return Order(self._get(f"orders/{order_id}")['order'])
 
     def delete_order(self, order_id: str) -> json:
         """delete a specific order
 
         Keyword args:
         \trequired:
-        \torder_id -- str, e.g ord_601b5ad6538ec34875ee1687c4a657f8
+        \torder_id -- str, e.g. ord_601b5ad6538ec34875ee1687c4a657f8
         """
-        return self._delete(f"order/{order_id}")
+        deletion_res = self._delete(f"orders/{order_id}")
+        if deletion_res['status'] == 'success':
+            print('order successfully canceled')
+            print(deletion_res)
+        return deletion_res
 
-    def get_positions(self) -> Position:
+    def get_positions(self) -> list[Position]:
         """returns a user's open positions in all current events
         """
-        return self._get("positions")
+        positions = []
+        positions_res = self._get("positions")
+        print('status: ' + positions_res['status'])
+        print('count: ' + str(positions_res['count']))
+        for position in positions_res['positions']:
+            positions.append(Position(position))
+        return positions
 
-    def get_account_activity(self, qty = 100) -> AccountActivity:
-        params = {}
-        for page in range(int(qty/100)):
-            params['start'] = str(page*100)
-            params['limit'] = '100'
+    def get_account_activity(self, start: int = 0) -> list[AccountActivity]:
+        params = {'start': str(start * 100), 'limit': '100'}
+        activity_res = self._get('account/activity', params=params)
+        acct_activity = []
+        for aact in activity_res['activity']:
+            acct_activity.append(AccountActivity(aact))
+        return acct_activity
 
-            return self._get('account/activity', params = params)
-
-auth = Client(secret = keys.secret, api_key = keys.key)
-
-test_ent = Client(keys.secret, keys.key).get_entities(league = 'pga')
-
-for item in test_ent:
-    print(item.country)
+    @staticmethod
+    def fetch_all(self, func, pages: int, **kwargs) -> object:
+        func_res = []
+        for i in range(pages):
+            func_res.extend(func(**kwargs, start=i))
+        return func_res
