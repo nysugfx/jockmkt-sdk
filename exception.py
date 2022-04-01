@@ -22,6 +22,7 @@ class JockAPIException(Exception):
             'not_found': '',
             'rate_limit': 'You have placed too many orders or requests since {}. Please wait until {}.'.format(
                 now, rate_limit_reset),
+            'request_failed': 'You have already entered the event or deleted your order'
             # TODO: store the request so that it can be completed at the start of the following minute
         }
         self.code = ""

@@ -14,10 +14,6 @@ def _case_switch_ent(entity: dict):
             return NASCAREntity(entity)
 
 
-def _case_switch_aact(aact):
-    pass
-
-
 class Entity(object):
     def __init__(self, entity: dict):
         self._populate_universal_fields(entity)
@@ -28,23 +24,22 @@ class Entity(object):
         self.name = entity.get('name')
         self.first_name = entity.get('first_name')
         self.last_name = entity.get('last_name')
-        # self.image_url = entity.get('image_url')
         self.updated_at = entity.get('updated_at')
-        # self.sportradar_id = entity['sportradar_id'] #don't really need this for now.
         self.news = entity.get('latest_news', {})
 
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
 
 
 class NBAEntity(Entity):
     def __init__(self, entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
-        team = entity.get('team', {})
-        self.team_name = team.get('name')
-        self.team_location = team.get('location')
-        self.team_abbreviation = team.get('abbreviation')
+        team = entity.get('team', {})  # turn this into a Team object, and do so for all team sports
+        self.team = Team(team)
         self.preferred_name = entity.get('preferred_name')
         self.position = entity.get('position')
         self.height = entity.get('height')
@@ -64,9 +59,7 @@ class NFLEntity(Entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
         team = entity.get('team', {})
-        self.team_name = team.get('name')
-        self.team_location = team.get('location')
-        self.team_abbreviation = team.get('abbreviation')
+        self.team = Team(team)
         self.preferred_name = entity.get('preferred_name')
         self.position = entity.get('position')
         self.height = entity.get('height')
@@ -86,9 +79,7 @@ class NASCAREntity(Entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
         team = entity.get('team', {})
-        self.team_name = team.get('name')
-        self.team_location = team.get('location')
-        self.team_abbreviation = team.get('abbreviation')
+        self.team = Team(team)
         self.points_eligible = entity.get('points_eligible', False)
         self.in_chase = entity.get('in_chase', False)
         self.cars = entity.get("cars", [])
@@ -106,9 +97,7 @@ class NHLEntity(Entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
         team = entity.get('team', {})
-        self.team_name = team.get('name')
-        self.team_location = team.get('location')
-        self.team_abbreviation = team.get('abbreviation')
+        self.team = Team(team)
         self.preferred_name = entity.get('preferred_name')
         self.position = entity.get('position')
         self.height = entity.get('height')
@@ -146,9 +135,7 @@ class MLBEntity(Entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
         team = entity.get('team', {})
-        self.team_name = team.get('name')
-        self.team_location = team.get('location')
-        self.team_abbreviation = team.get('abbreviation')
+        self.team = Team(team)
         self.preferred_name = entity.get('preferred_name')
         self.position = entity.get('position')
         self.jersey_number = entity.get('jersey_number')
@@ -161,16 +148,13 @@ class MLBEntity(Entity):
         self.injury_type = injury.get('type')
 
 
-class Team(object):  # probably not so important for v0
-    def __init__(self, team_id, location, name, league, abbreviation):
-        self.team_id = team_id
-        self.location = location
-        self.name = name
-        self.league = league
-        self.abbreviation = abbreviation
-        # self.sportradar_id = sportradar_id
-        # going to skip sportradar_id for now, not important in my experience --
-        # the user will not likely have access to sportradar
+class Team(object):
+    def __init__(self, team):
+        self.team_id = team.get('id')
+        self.location = team.get('location')
+        self.name = team.get('name')
+        self.league = team.get('league')
+        self.abbreviation = team.get('abbreviation')
 
     def filter_teams(self, **kwargs):
         pass
@@ -183,6 +167,15 @@ class Team(object):  # probably not so important for v0
 
     def get_team_events(self, **kwargs):  # perhaps this should go under Event
         pass
+
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
+    def __str__(self):
+        return str(self.__dict__) + '\n'
 
 
 class Game(object):
@@ -214,8 +207,14 @@ class Game(object):
     def update_team_names(self, team_id):
         pass
 
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
 
 
 class GameLog(object):
@@ -237,10 +236,23 @@ class GameLog(object):
         for k in stats:
             self.__dict__['actual_' + k] = stats[k]
         self.league = stats.get('league', projected_stats.get('league'))
+        entity = game_log.get('entity', {})
+        self.entity = _case_switch_ent(entity)
+        game = game_log.get('game', {})
+        self.game = Game(game)
+        team = game_log.get('team', {})
+        self.team = Team(team)
+
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
 
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
 
+#
 
 class Event(object):
     def __init__(self, event):
@@ -254,30 +266,38 @@ class Event(object):
         self.ipo_end = event.get('live_at_estimated')
         self.amt_completed = event.get('amount_completed')
         self.updated_at = event.get('updated_at')
-        self.payouts = event.get('payouts')
+        self.payouts = event.get('payouts', [])
         games = event.get('games', {})
+        self.games = []
         for game in games:
-            self.__dict__[game['name']] = Game(game)
+            self.games.append(Game(game))
         tradeables = event.get('tradeables', {})
         self.tradeables = []
         for tdbl in tradeables:
             self.tradeables.append(Tradeable(tdbl))
+        self.contest = event.get('contest', {})
 
     def _is_entered(self):
         pass
 
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + "\n"
 
 
-class Tradeable(object):
+class Tradeable(object):  # may be worth somehow implementing an auto-updating system for this
     def __init__(self, tradeable):
         self.tradeable_id = tradeable.get('id')
         self.league = tradeable.get('league')
         self.entity_id = tradeable.get('entity_id')
         self.event_id = tradeable.get('event_id')
         self.game_id = tradeable.get('focus_game_id')
-        points = tradeable.get('point', {})
+        points = tradeable.get('points', {})
         self.fpts_proj_pregame = points.get('projected')
         self.fpts_proj_live = points.get('projected_live')
         self.fpts_scored = points.get('scored')
@@ -291,14 +311,24 @@ class Tradeable(object):
         self.ask = price.get('ask')
         self.final = price.get('final')
         stats = tradeable.get('stats', {})
-        for key in stats[0]:
-            self.__dict__[key] = stats[0][key]
+        if type(stats) != dict and len(stats) > 0:
+            for key in stats[0]:
+                self.__dict__[key] = stats[0][key]
+        else:
+            for key in stats:
+                self.__dict__[key] = stats[key]
         entity = tradeable.get('entity', {'league': tradeable['league']})
         self.name = entity.get('name')
         self.entity = _case_switch_ent(entity)
 
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
 
 
 class Entry(object):
@@ -313,6 +343,15 @@ class Entry(object):
         event = entry.get('event', {})
         self.event = Event(event)
         self.payouts = entry.get('payouts')
+
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
+    def __str__(self):
+        return str(self.__dict__) + '\n'
 
 
 class Position(object):
@@ -329,8 +368,14 @@ class Position(object):
         self.proceeds_all_time = position.get("proceeds_all_time")
         self.updated_at = position.get('updated_at')
 
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
 
 
 class Order(object):
@@ -354,11 +399,17 @@ class Order(object):
         self.filled_at = order.get('filled_at')
         self.cancellation_requested_at = order.get('cancellation_requested_at')
 
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
 
 
-class AccountActivity(object):
+class AccountActivity(object):  # will need to get more advanced with the way aact objects are handled in future
     def __init__(self, aact):
         for key in aact:
             if key == 'event':
@@ -368,5 +419,11 @@ class AccountActivity(object):
             else:
                 self.__dict__[key] = aact[key]
 
+    def available_attributes(self):
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
     def __str__(self):
-        return str(self.__dict__)
+        return str(self.__dict__) + '\n'
