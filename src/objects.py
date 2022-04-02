@@ -1,4 +1,7 @@
 def _case_switch_ent(entity: dict):
+    """
+    case switching for entity responses -- there is significant variation between entities & their data
+    """
     match entity['league']:
         case 'nba':
             return NBAEntity(entity)
@@ -15,6 +18,11 @@ def _case_switch_ent(entity: dict):
 
 
 class Entity(object):
+    """
+    parent class for all entity objects, containing all universal fields shared between entity types
+
+    the user can print any entity object via print(entity) -- see docs for information regarding responses
+    """
     def __init__(self, entity: dict):
         self._populate_universal_fields(entity)
 
@@ -35,6 +43,9 @@ class Entity(object):
 
 
 class NBAEntity(Entity):
+    """
+    NBA-specific entity data
+    """
     def __init__(self, entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
@@ -55,6 +66,9 @@ class NBAEntity(Entity):
 
 
 class NFLEntity(Entity):
+    """
+    NFL-specific entity data
+    """
     def __init__(self, entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
@@ -75,6 +89,9 @@ class NFLEntity(Entity):
 
 
 class NASCAREntity(Entity):
+    """
+    Nascar-specific entity data
+    """
     def __init__(self, entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
@@ -93,6 +110,9 @@ class NASCAREntity(Entity):
 
 
 class NHLEntity(Entity):
+    """
+    NHL-specific entity data
+    """
     def __init__(self, entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')
@@ -112,6 +132,9 @@ class NHLEntity(Entity):
 
 
 class PGAEntity(Entity):
+    """
+    PGA-specific entity data
+    """
     def __init__(self, entity):
         super().__init__(entity)
         self.preferred_name = entity.get('preferred_name')
@@ -131,6 +154,9 @@ class PGAEntity(Entity):
 
 
 class MLBEntity(Entity):
+    """
+    MLB-specific entity data
+    """
     def __init__(self, entity):
         super().__init__(entity)
         self.team_id = entity.get('current_team_id')

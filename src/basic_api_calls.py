@@ -6,6 +6,15 @@ from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Positio
 
 
 class Client(object):
+    """
+    Client object automatically obtains an auth token & user balance using the user provided secret & api keys
+
+    :param secret: the user's 32 digit long secret key
+    :type secret: str
+
+    :param api_key: the user's api_key, starting with jm_api_
+    :type api_key: str
+    """
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
     _AUTH_TOKEN = {}
@@ -16,12 +25,19 @@ class Client(object):
         self._request_params = request_params
         _AUTH_TOKEN = self._get_auth_token()
         self.balance = self._get_account_bal()
+        self.account = self._get_account()
 
     def _create_path(self, path, api_version=None):
+        """
+        generates a path for self._request
+        """
         api_version = api_version or self.API_VERSION
         return '/{}/{}'.format(api_version, path)
 
     def _get_auth_token(self):
+        """
+        obtains the user's auth token using provided api and secret keys, generating a BearerAuth header
+        """
         payload = {
             'grant_type': 'client_credentials',
             'key': str(self.api_key),
@@ -34,6 +50,9 @@ class Client(object):
         return self.token
 
     def _request(self, method, path, api_version=None, **kwargs) -> json:
+        """
+        method by which all requests are made
+        """
         if self._request_params:
             kwargs.update(self._request_params)
         kwargs['data'] = kwargs.get('data', {})
@@ -69,7 +88,8 @@ class Client(object):
 
     @staticmethod
     def _handle_response(json_response):
-        """helper to handle api responses and determine errors
+        """
+        helper to handle api responses and determine exceptions
         """
         if not str(json_response.status_code).startswith('2'):
             raise JockAPIException(json_response)
@@ -80,22 +100,44 @@ class Client(object):
             raise JockAPIException('Invalid Response: %s' % json_response.text)
 
     def _throttle_requests(self, func):
+        """
+        method designed to throttle certain user requests
+        """
         pass
 
     def _get(self, path, api_version=None, **kwargs):
+        """
+        method for get requests
+        """
         return self._request('get', path, api_version, **kwargs)
 
     def _post(self, path, api_version=None, **kwargs):
+        """
+        method for post requests
+        """
         return self._request('post', path, api_version, **kwargs)
 
     def _delete(self, path, api_version=None, **kwargs):
+        """
+        method for delete requests, used exclusively for order deletion
+        """
         return self._request('delete', path, api_version, **kwargs)
 
     def _get_account_bal(self):
+        """
+        method retreiving user's USD balance
+        """
         return round(self._get("balances")['balances'][0]['buying_power'], 2)
 
+    def _get_account(self):
+        """
+        method retreiving user's account balance
+        """
+        return self._get("account")['account']
+
     def get_teams(self, start: int = 0, league: str = None) -> list[Team]:
-        """provides a list of teams for all or chosen leagues that have team structure.
+        """
+        provides a list of teams for all or chosen leagues that have team structure.
         displays only the first page, the user can paginate via:
         for i in range(n):
             get_teams(league = x, start = i)
@@ -126,26 +168,34 @@ class Client(object):
         team = self._get(f"teams/{team_id}")['team']
         return Team(team)
 
-    def get_entities(self, start: int = 0, include_team: bool = True, league: str = None) -> list[Entity]:
+    def get_entities(self, start: int = 0, limit: int = 100, include_team: bool = True, league: str = None) -> list[Entity]:
         """fetch entities (players of any sport)
         the user will have to paginate i.e.
             for i in range(n):
                 get_entities(start=i)
         
         Keyword args:
-            start -- default: 0 (first 100 responses)
-            include_team -- default: True (bool), or False to drop team info
-            league -- default: Any, or (str) nba, nfl, mlb, nhl, nascar, pga
-        """
+            :param start: page at which the user wants to start their search, default: 0
+            :type start: int
 
+            :param limit: number of entities the user wants to display, default: 100
+            :type limit: int
+
+
+            :param include_team: include team information for the entity, default: False
+            :type include_team: bool
+
+            :param league: filter by league, either 'nba', 'nhl, 'nfl', 'pga', 'mlb', 'nascar'
+            :type league: str
+        """
         params = {}
         entities = []
         if league is not None:
             params['league'] = league
         if include_team:
             params['include'] = 'team'
-        params['start'] = start
-        params['limit'] = '100'
+        params['start'] = start * limit
+        params['limit'] = limit
         res = self._get("entities", params=params)
         print('status: ' + res['status'])
         print('start: ' + str(res['start']))
@@ -159,8 +209,11 @@ class Client(object):
         """fetch a specific entity based on their entity id
 
         Keyword args:
-            entity_id: required (str) e.g. en_12d0c14aa5dfd232a0298a737f5a59fc
-            include_team: option, default: False (bool), True includes team information
+            :param entity_id: the chosen entity's id, required
+            :type entity_id: str
+
+            :param include_team: include team information for the entity, default: False
+            :type include_team: bool
         """
         if include_team:
             params = {'include': 'team'}
@@ -404,6 +457,7 @@ class Client(object):
         add functionality for take_profit/stop_loss
         add functionality for fill or kill/good until
         add functionality to allow user to place order at JockMkt estimated price
+        get event status and auto choose phase
 
         keyword args:
             id -- your player's tradeable id, which can be obtained by...
@@ -442,6 +496,8 @@ class Client(object):
             event_id -- str, orders relating to a specific event
             active -- bool, include only orders marked (created or accepted, not filled, canceled, outbid, or expired)
             updated_after -- int, ms timestamp 13 digits, includes orders only after the timestamp
+
+        # TODO Order counter, pass tradeables with open orders
         """
         params = {'start': start * limit, 'limit': limit}
         orders = []
@@ -494,6 +550,15 @@ class Client(object):
         return positions
 
     def get_account_activity(self, start: int = 0, limit: int = 100) -> list[AccountActivity]:
+        """
+        returns a user's most recent account activity
+        :param start: the page of account activity which the user wants to display
+        :type start: int
+        :default start: 0
+        :param limit: the quantitiy of account activity objects the user wants to see, max = 100
+        :type limit: int
+        :default limit: 100
+        """
         params = {'start': str(start * limit), 'limit': limit}
         activity_res = self._get('account/activity', params=params)
         acct_activity = []

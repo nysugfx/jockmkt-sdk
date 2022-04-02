@@ -10,7 +10,7 @@ class JockAPIException(Exception):
     the beginning of every new clock minute (e.g 12:00:00, 12:01:00) 50x -- internal_error -- request failed due to
     platform error
     """
-    
+
     def __init__(self, response):
         now = datetime.now().strftime("%I:%M")
         rate_limit_reset = (datetime.now() + timedelta(minutes=1)).strftime("%I:%M")
@@ -41,6 +41,6 @@ class JockAPIException(Exception):
 
     def _order_error_handler(self):
         pass
-        
+
     def __str__(self):
         return 'JockAPIException {}: {} \n{}'.format(self.code, self.message, self.helper)

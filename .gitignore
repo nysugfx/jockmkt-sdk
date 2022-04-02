@@ -2,3 +2,7 @@ keys.py
 *.ipynb
 __pycache__
 .ipynb_checkpoints
+venv
+venv2
+src/keys.py
+.idea
