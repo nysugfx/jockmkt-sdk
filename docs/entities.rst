@@ -21,11 +21,9 @@ These methods return league-specific entity objects. Entities is a list of them,
 
 Returns:
 
-.. code-block:: python
+.. object:: object.NBAEntity
 
-    >>> objects.NBAEntity
-
-    >>> {'entity_id': 'en_0066178b3093f39afbd80612d1b1f04d',
+.. object:: {'entity_id': 'en_0066178b3093f39afbd80612d1b1f04d',
         'league': 'nba',
         'name': "E'Twaun Moore",
         'first_name': "E'Twaun",
@@ -51,6 +49,7 @@ Returns:
         'injury_type': 'Knee'}
 
     >>> object.NFLEntity
+
     >>> {'entity_id': 'en_0163a8ae7659f447a5493ee42b56be05',
         'league': 'nfl',
         'name': 'Brandon Bolden',

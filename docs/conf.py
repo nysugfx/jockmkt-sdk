@@ -37,6 +37,7 @@ intersphinx_mapping = {
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
 }
 intersphinx_disabled_domains = ['std']
+autodoc_inherit_docstrings = True
 
 templates_path = ['_templates']
 

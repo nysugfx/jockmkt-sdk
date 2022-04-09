@@ -35,7 +35,7 @@ The aim of this SDK is to build a host of easy-to-use tools for users to interac
 
 
 Installation (via PyPi)
-----
+-----------------------
 .. code-block:: bash
 
     pip install jockmkt-sdk
@@ -43,7 +43,7 @@ Installation (via PyPi)
   - pypi link
 
 Contribute
-------
+-----------
   - Source: https://github.com/nysugfx/jockmkt-sdk
   - Issue Tracker: https://github.com/nysugfx/jockmkt-sdk/issues
 
