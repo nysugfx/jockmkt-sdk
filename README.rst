@@ -41,7 +41,7 @@ Installation (via PyPi)
 
     pip install jockmkt-sdk
 
-  - pypi link
+`PyPi Link <https://pypi.org/project/jockmkt-sdk/0.1.2/>`_
 
 Contribute
 -----------
@@ -50,7 +50,7 @@ Contribute
 
 Docs
 ----
-  - readthedocs
+  - readthedocs (coming soon)
 
 Features
 --------
