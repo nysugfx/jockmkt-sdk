@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jockmkt_sdk package &mdash; jockmkt-sdk 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> jockmkt-sdk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">jockmkt_sdk package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-jockmkt_sdk.client">jockmkt_sdk.client module</a></li>
+<li><a class="reference internal" href="#module-jockmkt_sdk.exception">jockmkt_sdk.exception module</a></li>
+<li><a class="reference internal" href="#module-jockmkt_sdk.objects">jockmkt_sdk.objects module</a></li>
+<li><a class="reference internal" href="#module-jockmkt_sdk">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jockmkt-sdk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>jockmkt_sdk package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/jockmkt_sdk.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jockmkt-sdk-package">
+<h1>jockmkt_sdk package<a class="headerlink" href="#jockmkt-sdk-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-jockmkt_sdk.client">
+<span id="jockmkt-sdk-client-module"></span><h2>jockmkt_sdk.client module<a class="headerlink" href="#module-jockmkt_sdk.client" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.client.Client" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Client object automatically obtains an auth token &amp; user balance using the user provided secret &amp; api keys</p>
+<p>The user should initialize an instance of this class and then call .get_auth_token(secret, api_key) to use other
+class methods.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.ACCOUNT">
+<span class="sig-name descname"><span class="pre">ACCOUNT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.ACCOUNT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.API_VERSION">
+<span class="sig-name descname"><span class="pre">API_VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'v1'</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.API_VERSION" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.BASE_URL">
+<span class="sig-name descname"><span class="pre">BASE_URL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://api.jockmkt.net'</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.BASE_URL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.MLB_SCORING">
+<span class="sig-name descname"><span class="pre">MLB_SCORING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.MLB_SCORING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.NASCAR_SCORING">
+<span class="sig-name descname"><span class="pre">NASCAR_SCORING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.NASCAR_SCORING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.NBA_SCORING">
+<span class="sig-name descname"><span class="pre">NBA_SCORING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.NBA_SCORING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.NFL_SCORING">
+<span class="sig-name descname"><span class="pre">NFL_SCORING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.NFL_SCORING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.NHL_SCORING">
+<span class="sig-name descname"><span class="pre">NHL_SCORING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.NHL_SCORING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.PGA_SCORING">
+<span class="sig-name descname"><span class="pre">PGA_SCORING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jockmkt_sdk.client.Client.PGA_SCORING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.create_entry">
+<span class="sig-name descname"><span class="pre">create_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/json/__init__.py'&gt;</span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.create_entry" title="Permalink to this definition"></a></dt>
+<dd><p>create an entry to an event given an event_id e.g. evt_60dbec530d2197a973c5dddcf6f65e12</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.delete_order">
+<span class="sig-name descname"><span class="pre">delete_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/json/__init__.py'&gt;</span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.delete_order" title="Permalink to this definition"></a></dt>
+<dd><p>delete a specific order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) order id for which the user is attempting to delete
+(e.g. ord_601b5ad6538ec34875ee1687c4a657f8)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>json response with information about the order deletion</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_account_activity">
+<span class="sig-name descname"><span class="pre">get_account_activity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.AccountActivity" title="jockmkt_sdk.objects.AccountActivity"><span class="pre">objects.AccountActivity</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_account_activity" title="Permalink to this definition"></a></dt>
+<dd><p>returns a user’s most recent account activity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (optional) the page of account activity which the user wants to display,
+default = 0 (first page of responses)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – (optional) the quantitiy of account activity objects the user wants to see, default = 100</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_auth_token">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_auth_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_auth_token" title="Permalink to this definition"></a></dt>
+<dd><p>obtains the user’s auth token using provided api and secret keys, generating a BearerAuth header</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_entities">
+<span class="sig-name descname"><span class="pre">get_entities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_team</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">league</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Entity" title="jockmkt_sdk.objects.Entity"><span class="pre">objects.Entity</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_entities" title="Permalink to this definition"></a></dt>
+<dd><p>fetch entities (players of any sport)
+The user will have to paginate.</p>
+<ul class="simple">
+<li><p><strong>Params</strong></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - page at which the user wants to start their search,
+default: 0 (first page of entities)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - number of entities the user wants to display, default: 100 (displays 100 entities)</p></li>
+<li><p><strong>include_team</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - include team information for the entity, default: False</p></li>
+<li><p><strong>league</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) - filter by league, must be one of: [‘nba’, ‘nfl’, ‘nhl’, ‘pga’, ‘mlb’, ‘nascar’]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of league-specific Entity objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a>[<a class="reference internal" href="#jockmkt_sdk.objects.Entity" title="jockmkt_sdk.objects.Entity">objects.Entity</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_entity">
+<span class="sig-name descname"><span class="pre">get_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_team</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Entity" title="jockmkt_sdk.objects.Entity"><span class="pre">objects.Entity</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_entity" title="Permalink to this definition"></a></dt>
+<dd><p>fetch a specific entity based on their entity id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - The chosen entity’s id (e.g “en_9af7d442f918404feced51d877989aa0”)</p></li>
+<li><p><strong>include_team</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - include team information for the entity, default: False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a league-specific entity object, one of: <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.NBAEntity</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.NFLEntity</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">objects.NHLEntity</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.NascarEntity</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.PGAEntity</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MLBEntity</span></code>
+which are all children of the <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entity</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Entity" title="jockmkt_sdk.objects.Entity">objects.Entity</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_entries">
+<span class="sig-name descname"><span class="pre">get_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_payouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tradeables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Entry" title="jockmkt_sdk.objects.Entry"><span class="pre">objects.Entry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_entries" title="Permalink to this definition"></a></dt>
+<dd><p>obtain information about events a user has entered</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Page at which the user wants to start their search,
+default: 0 (first page of entries)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Number of entities the user wants to display, default: 10 (displays 10 recent
+and upcoming entries)</p></li>
+<li><p><strong>include_payouts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Option to include payouts of completed entries, default: False</p></li>
+<li><p><strong>include_tradeables</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Option to include entry-relevant <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Tradeable</span></code> objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entry</span></code> objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object.Entity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_entry">
+<span class="sig-name descname"><span class="pre">get_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_payouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tradeables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Entry" title="jockmkt_sdk.objects.Entry"><span class="pre">objects.Entry</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Method to obtain information about events a user has entered</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - The entry_id for which the user wishes to get information
+(e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p></li>
+<li><p><strong>include_event</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Include <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Event</span></code> information related to the entry</p></li>
+<li><p><strong>include_payouts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Include payouts for the user’s holdings of a completed event</p></li>
+<li><p><strong>include_tradeables</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Include relevant event <code class="xref py py-class docutils literal notranslate"><span class="pre">object.Tradeable</span></code> objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entry</span></code> objects, containing the user’s chosen fields</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Entity" title="jockmkt_sdk.objects.Entity">objects.Entity</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_event">
+<span class="sig-name descname"><span class="pre">get_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Event" title="jockmkt_sdk.objects.Event"><span class="pre">objects.Event</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_event" title="Permalink to this definition"></a></dt>
+<dd><p>fetch a particular event, by default includes games, payouts and tradeables. This is easier than
+pulling payouts, tradeables, and games separately</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - The event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Event</span></code>, including its payouts, tradeables and games</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Event" title="jockmkt_sdk.objects.Event">objects.Event</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_event_games">
+<span class="sig-name descname"><span class="pre">get_event_games</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Game" title="jockmkt_sdk.objects.Game"><span class="pre">objects.Game</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_event_games" title="Permalink to this definition"></a></dt>
+<dd><p>get all games in an event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - the event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of event-relevant <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Game</span></code> objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a>[<a class="reference internal" href="#jockmkt_sdk.objects.Game" title="jockmkt_sdk.objects.Game">objects.Game</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_event_payouts">
+<span class="sig-name descname"><span class="pre">get_event_payouts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_event_payouts" title="Permalink to this definition"></a></dt>
+<dd><p>get payouts for each rank of an event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_id</strong> – (Required) - The event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p>
+</dd>
+</dl>
+<p>“type event_id: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dictionary of the chosen event’s payouts</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_event_tradeables">
+<span class="sig-name descname"><span class="pre">get_event_tradeables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Tradeable" title="jockmkt_sdk.objects.Tradeable"><span class="pre">objects.Tradeable</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_event_tradeables" title="Permalink to this definition"></a></dt>
+<dd><p>get all tradeables in an event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - The event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Tradeable</span></code> objects participating in the chosen event</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a>[<a class="reference internal" href="#jockmkt_sdk.objects.Tradeable" title="jockmkt_sdk.objects.Tradeable">objects.Tradeable</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_events">
+<span class="sig-name descname"><span class="pre">get_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">league</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_sims</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Event" title="jockmkt_sdk.objects.Event"><span class="pre">objects.Event</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_events" title="Permalink to this definition"></a></dt>
+<dd><p>Populates event objects with recent and upcoming events</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Page at which the user wants to start their search, default: 0 (first page of events)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Number of entities the user wants to display,
+default: 25 (displays 25 recent and upcoming events)</p></li>
+<li><p><strong>league</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) - Filter by league, must be one of: [‘nba’, ‘nfl’, ‘nhl’, ‘pga’, ‘mlb’, ‘nascar’]</p></li>
+<li><p><strong>include_sims</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Will return all events, including Horse Sims for test use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Events</span></code>, containing the event_id and information for each</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a>[<a class="reference internal" href="#jockmkt_sdk.objects.Event" title="jockmkt_sdk.objects.Event">objects.Event</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_game">
+<span class="sig-name descname"><span class="pre">get_game</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Game" title="jockmkt_sdk.objects.Game"><span class="pre">objects.Game</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_game" title="Permalink to this definition"></a></dt>
+<dd><p>fetch a specific entity based on their entity id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>game_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - a string of the game id (e.g. “game_60bb686586eaf95a5e8dafa3823d89cb”)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Game</span></code> object, containing the relevant fields</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Game" title="jockmkt_sdk.objects.Game">objects.Game</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_game_logs">
+<span class="sig-name descname"><span class="pre">get_game_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">game_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_ent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_game</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_team</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.GameLog" title="jockmkt_sdk.objects.GameLog"><span class="pre">objects.GameLog</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_game_logs" title="Permalink to this definition"></a></dt>
+<dd><p>fetch game logs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Page at which the user wants to start their search, default: 0
+(first page of game_logs)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Number of entities the user wants to display, default: 100 (displays 100 game_logs)</p></li>
+<li><p><strong>log_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>list of str</em>) – (Optional) - Filter for a specific log or list of logs
+(e.g. “gl_60cde7f973f9e00674785e5e144a802b”)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) - Filter all game logs for a specific player,
+(e.g. “en_67c8368a3905f8beee69393ccec854e5”)</p></li>
+<li><p><strong>game_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) - filter all game logs for all players in a specific game,
+(e.g. “game_60cde69ee06e791b99ed71e6013fc4a7”)</p></li>
+<li><p><strong>include_ent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Returns entity information attached to the game log (entity name, team, etc.)</p></li>
+<li><p><strong>include_game</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Returns game information (game name, teams, status)</p></li>
+<li><p><strong>include_team</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) - Returns team information (team name, location, league, etc.)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.GameLogs</span></code>, containing scoring information for a player in a specific game</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.GameLog" title="jockmkt_sdk.objects.GameLog">objects.GameLog</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_games">
+<span class="sig-name descname"><span class="pre">get_games</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">league</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Game" title="jockmkt_sdk.objects.Game"><span class="pre">objects.Game</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_games" title="Permalink to this definition"></a></dt>
+<dd><p>provides a list of teams for all or chosen leagues that have team structure
+the user will have to paginate.
+i.e. for i in range(n):</p>
+<blockquote>
+<div><p>get_games(start=i)</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - page at which the user wants to start their search, default: 0 (first page of games)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - number of entities the user wants to display,
+default: 100 (displays 100 recent and upcoming games)</p></li>
+<li><p><strong>league</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) - filter by league, must be one of: [‘nba’, ‘nfl’, ‘nhl’, ‘pga’, ‘mlb’, ‘nascar’]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Game</span></code> objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_order">
+<span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Order" title="jockmkt_sdk.objects.Order"><span class="pre">objects.Order</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_order" title="Permalink to this definition"></a></dt>
+<dd><p>get information about a specific order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) order id for which the user is searching (e.g. ord_601b5ad6538ec34875ee1687c4a657f8)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Order</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Order" title="jockmkt_sdk.objects.Order">Order</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_orders">
+<span class="sig-name descname"><span class="pre">get_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_orders" title="Permalink to this definition"></a></dt>
+<dd><p>Get all of a user’s orders. The user is required to paginate if they want to see more than 1 page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) Page at which the user wants to start their search, default: 0 (first page of entities)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) Number of entities the user wants to display, default: 100 (displays 100 entities)</p></li>
+<li><p><strong>event_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) the event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p></li>
+<li><p><strong>active</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – (Optional) Whether to display only orders that are active (either created or accepted),
+default = False</p></li>
+<li><p><strong>updated_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) filter orders updated after 13 digit epoch timestamp (orders with fills,
+partial fills, cancellations, outbids, etc. after that time)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Order</span></code> objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Order" title="jockmkt_sdk.objects.Order">objects.Order</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_positions">
+<span class="sig-name descname"><span class="pre">get_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Position" title="jockmkt_sdk.objects.Position"><span class="pre">objects.Position</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_positions" title="Permalink to this definition"></a></dt>
+<dd><p>returns a user’s open positions in all current events</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_team">
+<span class="sig-name descname"><span class="pre">get_team</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Team" title="jockmkt_sdk.objects.Team"><span class="pre">objects.Team</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_team" title="Permalink to this definition"></a></dt>
+<dd><p>fetch a specific team based on their team id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>team_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) - a team id, starting with <a href="#id3"><span class="problematic" id="id4">team_</span></a> (e.g. “team_8fe94ef0d1f0a00e1285301c4092650f”)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dictionary with team information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Team" title="jockmkt_sdk.objects.Team">objects.Team</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_teams">
+<span class="sig-name descname"><span class="pre">get_teams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">league</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Team" title="jockmkt_sdk.objects.Team"><span class="pre">objects.Team</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_teams" title="Permalink to this definition"></a></dt>
+<dd><p>provides a list of teams for all or chosen leagues that have team structure.
+displays only the first page, the user can paginate via:
+for i in range(n):</p>
+<blockquote>
+<div><p>get_teams(league = x, start = i)</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) - Which page the user wants to display. Default: 0 (first 100 teams)</p></li>
+<li><p><strong>league</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) - which league the user is searching for teams, one of:
+[‘nba’, ‘nfl’, ‘nhl’, ‘pga’, ‘mlb’, ‘nascar’]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of Team objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a>[<a class="reference internal" href="#jockmkt_sdk.objects.Team" title="jockmkt_sdk.objects.Team">Team</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.place_order">
+<span class="sig-name descname"><span class="pre">place_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ipo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/json/__init__.py'&gt;</span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.place_order" title="Permalink to this definition"></a></dt>
+<dd><p>Places an order of the user’s chosen tradeable (player) and the chosen price. It defaults to  buy 1 share
+during the ipo phase. The user may specify an amount of money they want to buy and automatically buy x shares at
+the chosen price (param: order_size), such that the total cost is less than their specified amount. If the user
+wants to make a live they must specify phase=’live’, or if they want to sell a share side=’sell’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Required) The chosen player’s tradeable id, obtained by calling a Tradeable object</p></li>
+<li><p><strong>price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Required) The user’s chosen price at which to place their order</p></li>
+<li><p><strong>side</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) default: ‘buy’ - the user must specify ‘sell’ if they wish to sell</p></li>
+<li><p><strong>phase</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – (Optional) default: ‘ipo’ - If the Event.status is ‘ipo’, should be ipo, else specify ‘live’</p></li>
+<li><p><strong>qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – (Optional) default: 1 - The desired number of shares the user wants to buy, the user may specify
+order_size instead.</p></li>
+<li><p><strong>order_size</strong> – (Optional) The user can specify the total amount they wish to spend on shares of a player.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Calculated by:</dt><dd><p>(order_size)//price (it will always round down)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A json response with information about the order that was sent</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-jockmkt_sdk.exception">
+<span id="jockmkt-sdk-exception-module"></span><h2>jockmkt_sdk.exception module<a class="headerlink" href="#module-jockmkt_sdk.exception" title="Permalink to this headline"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="jockmkt_sdk.exception.JockAPIException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.exception.</span></span><span class="sig-name descname"><span class="pre">JockAPIException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.exception.JockAPIException" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>code – type – explanation
+400 – bad_request – required parameter not included or typo in required parameter
+401 – not_authorized – token is not valid; expired or keys not functioning
+402 – request_failed – event status error, user has not joined event, insufficient funds
+404 – not_found – incorrect api endpoint
+429 – rate_limit – max 10 orders (post, delete) per minute, max 250 other requests per minute. This limit resets
+at the beginning of every new clock minute (e.g 12:00:00, 12:01:00)
+50x – internal_error – request failed due to platform error</p>
+</dd></dl>
+
+</section>
+<section id="module-jockmkt_sdk.objects">
+<span id="jockmkt-sdk-objects-module"></span><h2>jockmkt_sdk.objects module<a class="headerlink" href="#module-jockmkt_sdk.objects" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.AccountActivity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">AccountActivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aact</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.AccountActivity" title="Permalink to this definition"></a></dt>
+<dd><p>object dedicated to all different kinds of account activity. There are numerous unique instance vars so the
+user should call self.available_attributes to see what instance vars are available</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.AccountActivity.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.AccountActivity.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Entity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Entity" title="Permalink to this definition"></a></dt>
+<dd><p>parent class for all entity objects, containing all universal fields shared between entity types</p>
+<p>the user can print any entity object via print(entity) – see docs for information regarding responses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_id</strong> – the entity’s ID, which can be used to search for a specific entity’s information</p></li>
+<li><p><strong>league</strong> – the league in which the entity plays</p></li>
+<li><p><strong>name</strong> – the entity’s full name</p></li>
+<li><p><strong>first_name</strong> – the entity’s first name</p></li>
+<li><p><strong>last_name</strong> – the entity’s last name</p></li>
+<li><p><strong>updated_at</strong> – when the entity was last updated</p></li>
+<li><p><strong>news</strong> – a dict containing news related to the entity</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Entry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Entry" title="Permalink to this definition"></a></dt>
+<dd><p>object containing information about a user’s entry into an event, such as profit, leaderboard position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> – the entry’s identifier</p></li>
+<li><p><strong>event_id</strong> – the event’s identifier</p></li>
+<li><p><strong>leaderboard_pos</strong> – the user’s leaderboard position</p></li>
+<li><p><strong>profit</strong> – the user’s profit in this entry, not including fees</p></li>
+<li><p><strong>updated_at</strong> – when this entry was last updated</p></li>
+<li><p><strong>favorites</strong> – a list of favorited tradeables</p></li>
+<li><p><strong>event</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Event</span></code> object containing event specific information</p></li>
+<li><p><strong>payouts</strong> – after the event is finished, a list of payouts made to the user for their holdings</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Entry.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Entry.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Event">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Event" title="Permalink to this definition"></a></dt>
+<dd><p>Class dedicated to storing event-related info. May contain list of Game objects, Tradeable objects and other
+information related to payouts and whether the event is a contest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_id</strong> – event_id for the chosen event, accessed via self.event_id. Used to access other event-specific
+info</p></li>
+<li><p><strong>name</strong> – the event’s name as displayed on the app</p></li>
+<li><p><strong>description</strong> – the event’s description</p></li>
+<li><p><strong>type</strong> – the type of event, either a contest or a cash market</p></li>
+<li><p><strong>status</strong> – the event’s status. One of: scheduled, cancelled, halted, ipo, ipo_closed, live, live_closed,
+payouts_completed, prizes_paid or contests_paid</p></li>
+<li><p><strong>league</strong> – the league to which this event’s scoring, games and players apply</p></li>
+<li><p><strong>ipo_start</strong> – timestamp at which the ipo opens</p></li>
+<li><p><strong>ipo_end</strong> – estimated time at which the ipo should end</p></li>
+<li><p><strong>amt_complted</strong> – percentage of the event completed</p></li>
+<li><p><strong>updated_at</strong> – last timestamp at which the event was updated</p></li>
+<li><p><strong>payouts</strong> – a list of payouts for the event in the following format:
+{‘status’: ‘success’,
+‘count’: 120,
+‘payouts’: [{‘position’: 1, ‘amount’: 25},…, {‘position’: n, ‘amount’: k}]</p></li>
+<li><p><strong>games</strong> – a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Game</span></code> objects</p></li>
+<li><p><strong>tradeables</strong> – a list of :class`objects.Tradeable` objects</p></li>
+<li><p><strong>contest</strong> – information about the contest, if it’s a contest-type market see: <a href="#id1"><span class="problematic" id="id2">:var:`objects.Event.type`</span></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Event.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Event.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Game">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Game</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Game" title="Permalink to this definition"></a></dt>
+<dd><p>Games differ significantly, and you can expect significantly different information under “state” depending on the
+league. See docs for more info, or use self.print_game to get an idea of what the keys are.</p>
+<p>use Game.available_attributes to see available attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>game_id</strong> – Jock MKT’s id for this game</p></li>
+<li><p><strong>game_name</strong> – game’s name (e.g. Lakers vs Warriors)</p></li>
+<li><p><strong>league</strong> – which league the game applies to</p></li>
+<li><p><strong>start</strong> – what time the game is supposed to start</p></li>
+<li><p><strong>venue</strong> – a dict containing venue location, such as whether it is to be played outdoors or venue name</p></li>
+<li><p><strong>status</strong> – is the game scheduled, in_progress or final</p></li>
+<li><p><strong>amount_completed</strong> – percentage of the game that has been completed</p></li>
+<li><p><strong>state</strong> – a dict containing information such as the clock, period/quarter/inning, length, etc.</p></li>
+<li><p><strong>weather</strong> – information about the weather, only applies to some sports &amp; outdoor venues</p></li>
+<li><p><strong>home_info</strong> – information about the home team, such as score, runs, hits, etc.</p></li>
+<li><p><strong>away_info</strong> – information about the away team, such as score, runs, hits, etc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.GameLog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">GameLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game_log</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.GameLog" title="Permalink to this definition"></a></dt>
+<dd><p>different leagues will return different dictionaries of stats/projected. There is currently no league identifier.</p>
+<p>use GameLog.available_attributes() to see what attributes can be called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – Jock MKT’s unique identifier for this game log</p></li>
+<li><p><strong>entity_id</strong> – entity_id for the player to which this game log applies</p></li>
+<li><p><strong>game_id</strong> – game_id to which this game log applies</p></li>
+<li><p><strong>team_id</strong> – team that this player is one</p></li>
+<li><p><strong>scheduled_start</strong> – time that the game was scheduled to start</p></li>
+<li><p><strong>updated_at</strong> – when this log was last updated</p></li>
+<li><p><strong>projected_stats</strong> – a dictionary of stat projections, which will be unique for each league</p></li>
+<li><p><strong>actual_stats</strong> – a dictionary of actual, scored stats, unique by league</p></li>
+<li><p><strong>league</strong> – league to which this game log applies</p></li>
+<li><p><strong>entity</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entity</span></code> information about the entity to which this log applies</p></li>
+<li><p><strong>game</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Game</span></code> information about the game to which this log applies</p></li>
+<li><p><strong>team</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Team</span></code> information about the team this player is on</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.GameLog.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.GameLog.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.NBAEntity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">NBAEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.NBAEntity" title="Permalink to this definition"></a></dt>
+<dd><p>NBA-specific entity data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team_id</strong> – the entity’s team_id for use collecting team info</p></li>
+<li><p><strong>team</strong> – a dict containing team-related information</p></li>
+<li><p><strong>preferred_name</strong> – player’s preferred name</p></li>
+<li><p><strong>position</strong> – player’s position</p></li>
+<li><p><strong>height</strong> – player’s height</p></li>
+<li><p><strong>weight</strong> – player’s weight</p></li>
+<li><p><strong>jersey_number</strong> – player’s jersey number</p></li>
+<li><p><strong>college</strong> – player’s college</p></li>
+<li><p><strong>birthdate</strong> – player’s birthdate</p></li>
+<li><p><strong>rookie_year</strong> – player’s rookie year</p></li>
+<li><p><strong>status</strong> – whether the player is currently active</p></li>
+<li><p><strong>injury_status</strong> – player’s current injury status (day-to-day, injured reserve, etc.)</p></li>
+<li><p><strong>injury_type</strong> – type of injury (concussion, knee, etc.)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Order">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Order" title="Permalink to this definition"></a></dt>
+<dd><p>object dedicated to storing information about orders that the user has placed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_id</strong> – the order’s specific identification</p></li>
+<li><p><strong>tradeable_id</strong> – the tradeable that the order was placed for</p></li>
+<li><p><strong>entity_id</strong> – the underlying entity_id for which the order was placed</p></li>
+<li><p><strong>event_id</strong> – the event in which the order was placed</p></li>
+<li><p><strong>status</strong> – current status, one of: created, accepted, filled, outbid, cancelled, or expired</p></li>
+<li><p><strong>side</strong> – side of the order (buy or sell)</p></li>
+<li><p><strong>phase</strong> – phase during which the order was placed (live or ipo)</p></li>
+</ul>
+</dd>
+</dl>
+<p>ivar quantity:         amount of shares the user wants to buy
+:ivar limit_price:     the price the user specified in their order
+:ivar cost_basis:      how much the user spent on shares (only present on buy orders)
+:ivar fee_paid:        sum of fees paid for the order
+:ivar proceeds:        how much the user received for their sell order (if it was a sell order)
+:ivar filled_quantity: quantity of shares that have been filled,
+:ivar created_at:      timestamp at which the order was created
+:ivar accepted_at:     timestamp at which the order was accepted
+:ivar updated_at:      timestamp at which the order last updated (some shares bought or sold)
+:ivar filled_at:       time at which the order was completely filled
+:ivar cancellation_requested_at: when a cancellation was requested</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Order.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Order.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Position">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Position" title="Permalink to this definition"></a></dt>
+<dd><p>an object containing information about open positions or holdings. Note that instance variables do not
+include fees</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tradeable_id</strong> – the player’s tradeable_id for the position</p></li>
+<li><p><strong>event_id</strong> – identifier for the event to which the position applies</p></li>
+<li><p><strong>bought_count</strong> – total quantity purchased over the course of the event</p></li>
+<li><p><strong>buy_interest</strong> – amount of shares the user is currently trying to buy</p></li>
+<li><p><strong>sell_interest</strong> – amount of shares the user is currently trying to sell</p></li>
+<li><p><strong>quantity_owned</strong> – number of shares the user owns</p></li>
+<li><p><strong>cost_basis</strong> – total amount spent on shares of the player that the user currently owns</p></li>
+<li><p><strong>proceeds</strong> – total amount of income for open position</p></li>
+<li><p><strong>cost_basis_all_time</strong> – total amount spent on shares of the player whether they are currently owned or not</p></li>
+<li><p><strong>proceeds_all_time</strong> – total realized profit and loss for selling shares of this tradeable</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Position.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Position.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Team">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Team</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Team" title="Permalink to this definition"></a></dt>
+<dd><p>Team object containing team-related attributes, such as: team_id, location, name, league and abbreviation</p>
+<p>user can call instance.available_attributes to see what instance variables are available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team_id</strong> – the team’s Jock MKT identifier</p></li>
+<li><p><strong>location</strong> – home city for the team (e.g. Los Angeles, New York, etc.)</p></li>
+<li><p><strong>name</strong> – team’s name (e.g. Lakers, 49ers, etc.)</p></li>
+<li><p><strong>league</strong> – which league the team is a part of (e.g. nfl, nhl, etc.)</p></li>
+<li><p><strong>abbreviation</strong> – shortened team name (e.g. LAL, SF, BKN, etc.)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Team.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Team.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>user can call self.available_attributes to see what instance variables are available for that instance of the
+class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Tradeable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Tradeable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tradeable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Tradeable" title="Permalink to this definition"></a></dt>
+<dd><p>object containing information about an event-specific tradeable object, including prices and projections</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tradeable_id</strong> – this entity’s event-specific identifier, used to place orders</p></li>
+<li><p><strong>league</strong> – league this entity participates in</p></li>
+<li><p><strong>entity_id</strong> – the entity’s unique identifier, event-agnostic</p></li>
+<li><p><strong>event_id</strong> – event to which this tradeable_id applies</p></li>
+<li><p><strong>game_id</strong> – game to which this tradeable applies</p></li>
+<li><p><strong>fpts_proj_pregame</strong> – the tradeable’s pregame projected fantasy points</p></li>
+<li><p><strong>fpts_proj_live</strong> – tradeable’s live projected fantasy points</p></li>
+<li><p><strong>fpts_scored</strong> – tradeable’s fantasy points scored</p></li>
+<li><p><strong>ipo</strong> – price at which the tradeable IPOs. Will be None if the event status is not “live”,
+“live_closed”, or “payouts_completed</p></li>
+<li><p><strong>high</strong> – the highest price at which this tradeable was traded</p></li>
+<li><p><strong>low</strong> – lowest traded price</p></li>
+<li><p><strong>last</strong> – last traded price</p></li>
+<li><p><strong>estimated</strong> – Jock MKT’s estimated price</p></li>
+<li><p><strong>bid</strong> – highest active bid</p></li>
+<li><p><strong>ask</strong> – lowest active ask</p></li>
+<li><p><strong>final</strong> – final payout</p></li>
+<li><p><strong>stats</strong> – a list or dict of applicable statistics</p></li>
+<li><p><strong>name</strong> – the player’s name</p></li>
+<li><p><strong>entity</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">object.Entity</span></code> object containing entity info</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Tradeable.available_attributes">
+<span class="sig-name descname"><span class="pre">available_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Tradeable.available_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>The purpose of this method is to display the available instance variables so the user knows what they can access
+in each instance of the class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="simple">
+<dt>NFLEntity, PGAEntity, NHLEntity, NascarEntity, MLBEntity</dt><dd><dl class="field-list simple">
+<dt class="field-odd">undoc-members</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">show-inheritance</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="module-jockmkt_sdk">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-jockmkt_sdk" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alex Friedman/nysugfx.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

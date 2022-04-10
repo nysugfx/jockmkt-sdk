@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account &mdash; jockmkt-sdk 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> jockmkt-sdk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Account</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jockmkt-sdk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Account</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/account.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="account">
+<h1>Account<a class="headerlink" href="#account" title="Permalink to this headline"></a></h1>
+<p>Account data is generated automatically when you call Client.</p>
+<p>it can be accessed as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">(</span><span class="n">secret_key</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">ACCOUNT</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returns a dictionary of account information:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;DISPLAY_NAME&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;info&#39;</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;acct_xxx&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;account&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[],</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="s1">&#39;xxx@xxx.com&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;active&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="s1">&#39;xxx&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;experience_level&#39;</span><span class="p">:</span> <span class="s1">&#39;expert&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;created_at&#39;</span><span class="p">:</span> <span class="mi">1614735755967</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;updated_at&#39;</span><span class="p">:</span> <span class="mi">1649599679285</span><span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;balances&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;currency&#39;</span><span class="p">:</span> <span class="s1">&#39;usd&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;balance&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;fiat&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="mf">600.00</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;buying_power&#39;</span><span class="p">:</span> <span class="mf">600.00</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;pending&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;updated_at&#39;</span><span class="p">:</span> <span class="mi">1649571297672</span><span class="p">}],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># there may also be information about contest balances as well</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;keys&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;secret_key&#39;</span><span class="p">:</span> <span class="s1">&#39;xxx&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;api_key&#39;</span><span class="p">:</span> <span class="s1">&#39;jm_key_xxx&#39;</span><span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer xxx&#39;</span><span class="p">}</span>
+<span class="go">        }</span>
+<span class="go">    }</span>
+</pre></div>
+</div>
+<p>Account Activity data is a little bit different.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">account_activity</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_account_activity</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Returns a list of all account activity, including orders, payouts, event entries, deposits and withdrawals.</p>
+<p>Some examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">account_activity</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">activity</span> <span class="ow">in</span> <span class="n">account_activity</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returns:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; &lt;class &#39;list&#39;&gt; &lt;- returns a list of AccountActivity objects
+</pre></div>
+</div>
+<p>For example:</p>
+<blockquote>
+<div><p>Payout:</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;aact_6247ed15ed7f8339ead03a510517512c&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;account_activity:payout&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;payouts&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;tradeable_id&#39;</span><span class="p">:</span> <span class="s1">&#39;tdbl_62452742abe97c136151cae9313fed5d&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;quantity&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;cost_basis&#39;</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;cost_basis_all_time&#39;</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;proceeds_all_time&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;tradeable&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">objects</span><span class="o">.</span><span class="n">Tradeable</span><span class="p">},</span> <span class="o">...</span><span class="p">]}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><blockquote>
+<div><p>account_activity:payout is a list of all payouts and respective tradeables from a single event</p>
+</div></blockquote>
+<p>Order:</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;aact_624878935119dbbb29858440504c989e&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;account_activity:order&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;order_id&#39;</span><span class="p">:</span> <span class="s1">&#39;ord_62487893677bd6fec00c68ed47d3a0e2&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;created_at&#39;</span><span class="p">:</span> <span class="mi">1648916627064</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">objects</span><span class="o">.</span><span class="n">Order</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>For more information regarding different types of account activity, please see here:</dt><dd><p><a class="reference external" href="https://docs.jockmkt.com/#accountactivity">Jock MKT API Account Activity Docs</a></p>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alex Friedman/nysugfx.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
