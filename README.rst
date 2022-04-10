@@ -2,13 +2,13 @@
 Jock MKT SDK
 ============
 
-.. image:: https://img.shields.io/pypi/v/jockmkt-sdk
+.. image:: https://img.shields.io/pypi/v/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
 .. image:: https://img.shields.io/github/license/nysugfx/jockmkt-sdk?style=for-the-badge
   :target: https://github.com/nysugfx/jockmkt-sdk/LICENSE.txt
 
-.. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk
+.. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
 
