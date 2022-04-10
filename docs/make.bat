@@ -9,6 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
+set SPHINXPROJ=jockmkt-sdk
 
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (

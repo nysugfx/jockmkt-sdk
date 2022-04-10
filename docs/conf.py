@@ -1,3 +1,7 @@
+import os
+import sys
+import sphinx_rtd_theme
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -13,7 +17,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+sys.path.insert(0, os.path.abspath("../src/jockmkt_sdk/"))
 
 # -- Project information -----------------------------------------------------
 
@@ -27,6 +31,7 @@ extensions = ['myst_parser',
               'sphinx.ext.duration',
               'sphinx.ext.doctest',
               'sphinx.ext.autodoc',
+              'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
               'sphinx.ext.intersphinx',
               'sphinx.ext.inheritance_diagram'

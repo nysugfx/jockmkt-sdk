@@ -5,6 +5,7 @@
 # from the environment for the first two.
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
+SPHINXPROJ.   = jockmkt-sdk
 SOURCEDIR     = .
 BUILDDIR      = _build
 

@@ -1,0 +1,13 @@
+LICENSE.txt
+README.rst
+pyproject.toml
+setup.cfg
+src/jockmkt_sdk/__init__.py
+src/jockmkt_sdk/client.py
+src/jockmkt_sdk/exception.py
+src/jockmkt_sdk/objects.py
+src/jockmkt_sdk.egg-info/PKG-INFO
+src/jockmkt_sdk.egg-info/SOURCES.txt
+src/jockmkt_sdk.egg-info/dependency_links.txt
+src/jockmkt_sdk.egg-info/requires.txt
+src/jockmkt_sdk.egg-info/top_level.txt

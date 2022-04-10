@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entities &amp; Entity Endpoints &mdash; jockmkt-sdk 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> jockmkt-sdk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Entities &amp; Entity Endpoints</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jockmkt-sdk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Entities &amp; Entity Endpoints</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/entities.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="entities-entity-endpoints">
+<h1>Entities &amp; Entity Endpoints<a class="headerlink" href="#entities-entity-endpoints" title="Permalink to this headline"></a></h1>
+<p>Entity Endpoints:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">entities</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entities</span><span class="p">()</span>
+<span class="n">entity</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entity_id</span><span class="o">=</span><span class="s2">&quot;en_6025693d374b384994316c1e13f40416&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These methods return league-specific entity objects. Entities is a list of them, entity returns information about one specific entity.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">entity</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returns:</p>
+<dl class="object">
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">object.NBAEntity</span></span></dt>
+<dd></dd></dl>
+
+<dl class="object">
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">{'entity_id':</span> <span class="pre">'en_0066178b3093f39afbd80612d1b1f04d',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'league':</span> <span class="pre">'nba',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'name':</span> <span class="pre">&quot;E'Twaun</span> <span class="pre">Moore&quot;,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'first_name':</span> <span class="pre">&quot;E'Twaun&quot;,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'last_name':</span> <span class="pre">'Moore',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'updated_at':</span> <span class="pre">1644963000678,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'news':</span> <span class="pre">{},</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'team_id':</span> <span class="pre">'team_11fd5bd23ac17bb67b4d4008cb64583e',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'team':</span> <span class="pre">{'team_id':</span> <span class="pre">'team_11fd5bd23ac17bb67b4d4008cb64583e',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'location':</span> <span class="pre">'Orlando',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'name':</span> <span class="pre">'Magic',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'league':</span> <span class="pre">'nba',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'abbreviation':</span> <span class="pre">'ORL'},</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'preferred_name':</span> <span class="pre">&quot;E'Twaun&quot;,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'position':</span> <span class="pre">'SG',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'height':</span> <span class="pre">75,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'weight':</span> <span class="pre">191,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'jersey_number':</span> <span class="pre">'55',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'college':</span> <span class="pre">'55',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'birthdate':</span> <span class="pre">'1989-02-25',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'rookie_year':</span> <span class="pre">2011,</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'status':</span> <span class="pre">'inactive',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'injury_status':</span> <span class="pre">'out',</span></span></dt>
+<dt class="sig sig-object">
+<span class="sig-name descname"><span class="pre">'injury_type':</span> <span class="pre">'Knee'}</span></span></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">object</span><span class="o">.</span><span class="n">NFLEntity</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;entity_id&#39;</span><span class="p">:</span> <span class="s1">&#39;en_0163a8ae7659f447a5493ee42b56be05&#39;</span><span class="p">,</span>
+<span class="go">    &#39;league&#39;: &#39;nfl&#39;,</span>
+<span class="go">    &#39;name&#39;: &#39;Brandon Bolden&#39;,</span>
+<span class="go">    &#39;first_name&#39;: &#39;Brandon&#39;,</span>
+<span class="go">    &#39;last_name&#39;: &#39;Bolden&#39;,</span>
+<span class="go">    &#39;updated_at&#39;: 1648650568742,</span>
+<span class="go">    &#39;news&#39;: {},</span>
+<span class="go">    &#39;team_id&#39;: &#39;team_c80dd7c0b4258453ea79cee1a585d3ca&#39;,</span>
+<span class="go">    &#39;team&#39;: {&#39;team_id&#39;: &#39;team_c80dd7c0b4258453ea79cee1a585d3ca&#39;,</span>
+<span class="go">            &#39;location&#39;: &#39;Las Vegas&#39;,</span>
+<span class="go">            &#39;name&#39;: &#39;Raiders&#39;,</span>
+<span class="go">            &#39;league&#39;: &#39;nfl&#39;,</span>
+<span class="go">            &#39;abbreviation&#39;: &#39;LV&#39;},</span>
+<span class="go">    &#39;preferred_name&#39;: &#39;Brandon&#39;,</span>
+<span class="go">    &#39;position&#39;: &#39;RB&#39;,</span>
+<span class="go">    &#39;height&#39;: 71,</span>
+<span class="go">    &#39;weight&#39;: 220,</span>
+<span class="go">    &#39;jersey_number&#39;: &#39;0&#39;,</span>
+<span class="go">    &#39;college&#39;: &#39;Ole Miss&#39;,</span>
+<span class="go">    &#39;birthdate&#39;: &#39;1990-01-26&#39;,</span>
+<span class="go">    &#39;rookie_year&#39;: 2012,</span>
+<span class="go">    &#39;status&#39;: &#39;active&#39;,</span>
+<span class="go">    &#39;injury_status&#39;: None,</span>
+<span class="go">    &#39;injury_type&#39;: None}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alex Friedman/nysugfx.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

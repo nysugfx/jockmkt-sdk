@@ -10,22 +10,28 @@ from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Positio
 class Client(object):
     """Client object automatically obtains an auth token & user balance using the user provided secret & api keys
 
-    :param secret: (Required) - the user's 32 digit long secret key
-    :type secret: str
-    :param api_key: (Required) - the user's api_key, starting with jm_api_xxx
-    :type api_key: str
+    The user should initialize an instance of this class and then call .get_auth_token(secret, api_key) to use other
+    class methods.
     """
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
     _AUTH_TOKEN = {}
     _EXPIRATION = None
-    _LEAGUES = ['nba', 'nfl', 'nhl', 'pga', 'mlb', 'nascar']
-    MLB_SCORING = {}
-    NFL_SCORING = {}
-    NBA_SCORING = {}
-    NHL_SCORING = {}
-    PGA_SCORING = {}
-    NASCAR_SCORING = {}
+    LEAGUES = ['nba', 'nfl', 'nhl', 'pga', 'mlb', 'nascar']
+    MLB_SCORING = {'at_bat': 0.5, 'single': 2.5, 'double': 3, 'triple': 3.5, 'home_run': 4, 'walk': 2, 'run': 2,
+                   'rbi': 2, 'stolen_base': 3, 'strikeout': -1}
+    NFL_SCORING = {'pass_yards': 0.04, 'pass_td': 4, 'int_thrown': -3, 'rush_yards': 0.1, 'rush_td': 6, 'reception': 1,
+                   'receiving_yards': 0.1, 'receiving_td': 6, 'return_td': 6, 'two_pt_conversion': 2, 'fumble_lost': -3,
+                   '100_yd_passing_bonus': 1, '100_yd_rushing_bonus': 3, '100_yd_receiving_bonus': 3}
+    NBA_SCORING = {'point': 1, '10_pt_bonus': 1.5, '3pm': 0.5, 'rebound': 1.25, 'assist': 1.5, 'steal': 2, 'block': 2,
+                   'turnover': -0.5, 'missed_fg': -0.5}
+    NHL_SCORING = {'goal': 8.5, 'assist': 5, 'shot_on_goal': 1.5, 'blocked_shot': 2, 'shorthanded_pt': 2,
+                   'shootout_goal': 1.5, 'hat_trick': 3, '3_plus_blocks': 3, '3_plus_pts': 3, 'penalty_mins': -0.5,
+                   'hits': 1, 'goalie_win': 6, 'goalie_save': 0.5, 'goal_allowed': -3.5, 'ot_loss': 2,
+                   '35_plus_saves': 3, 'shutout': 4}
+    PGA_SCORING = {'win': 5, 'albatross': 4, 'eagle': 3, 'birdie': 2, 'par': 1, 'bogey': 0, 'double_bogey': -1,
+                   'triple_bogey': -2, 'quadruple_bogey': -3, 'quintuple_bogey': -4}
+    NASCAR_SCORING = {'lap_complete': 1, 'position': -1, 'win': 10, 'start_bonus': 40}
     ACCOUNT = {}
 
     def __init__(self, request_params=None):
@@ -197,7 +203,7 @@ class Client(object):
 
         - **Params**
         :param start: (Optional) - page at which the user wants to start their search,
-                    default: 0 (first page of entities)
+        default: 0 (first page of entities)
         :type start: int
         :param limit: (Optional) - number of entities the user wants to display, default: 100 (displays 100 entities)
         :type limit: int
@@ -396,7 +402,7 @@ class Client(object):
         """get payouts for each rank of an event
 
         :param event_id: (Required) - The event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)
-        "type event_id: str
+        :type event_id: str
 
         :returns: a dictionary of the chosen event's payouts
         :rtype: dict
