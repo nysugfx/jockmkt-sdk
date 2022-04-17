@@ -1,11 +1,10 @@
 =======================
 Usage & Getting Started
 =======================
-
-.. _installation:
+.. automodule:: jockmkt_sdk.client
 
 Installation
-------------
+============
 
 To use jockmkt-sdk, first install it using pip:
 
@@ -14,9 +13,11 @@ To use jockmkt-sdk, first install it using pip:
     $ pip install jockmkt-sdk
 
 Getting started:
-    import the package and generate a Client object
 
-.. autoclass:: jockmkt-sdk.client.Client
+    import the package and generate a Client object instance
+
+.. autoclass:: Client
+
 .. code-block:: python
 
     from jockmkt_sdk.client import Client
@@ -31,7 +32,7 @@ Getting started:
     client.get_auth_token(secret_key, api_key)
 
 
-You are initializing an instance of the Client class and generating an auth-token,
+You are creating an instance of the Client class and generating an auth-token,
 which you will use for all future api calls.
 
 Each call is a method within the Client class.

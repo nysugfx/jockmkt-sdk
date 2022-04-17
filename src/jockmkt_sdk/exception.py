@@ -34,7 +34,8 @@ class JockAPIException(Exception):
         except ValueError:
             self.message = response.content
         else:
-            if 'error' in json_res and json_res['error'] != 'rate_limit':
+            if 'error' in json_res and json_res['error'] != 'rate_limit' or 'error' in json_res and json_res['error'] \
+                    != 'request_failed':
                 self.code = json_res['error']
                 self.message = json_res['message']
                 self.helper = _error_dict[json_res['error']]
