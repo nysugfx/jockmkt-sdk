@@ -50,7 +50,7 @@ Contribute
 
 Docs
 ----
-  - readthedocs (coming soon)
+  - `ReadTheDocs <https://jockmkt-sdk.readthedocs.io/en/latest/index.html>`_
 
 Features
 --------
@@ -59,11 +59,6 @@ Features
 - Simple auth token generation & use
 - Simple order placement
 
-Todo
-----
-- implement different order types (i.e. market & immediate or cancel)
-- user uploaded projections
-- filter players, events, games, etc. based on team, position, if playing today, etc.
 
 Getting Started
 ===============
