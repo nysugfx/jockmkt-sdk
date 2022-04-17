@@ -27,8 +27,7 @@ author = 'Alex Friedman/nysugfx'
 
 release = '1.0'
 
-extensions = ['myst_parser',
-              'sphinx.ext.duration',
+extensions = ['sphinx.ext.duration',
               'sphinx.ext.doctest',
               'sphinx.ext.autodoc',
               'sphinx.ext.coverage',
