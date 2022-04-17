@@ -18,7 +18,9 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Events" href="events.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,14 +38,25 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Usage &amp; Getting Started</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage &amp; Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entries.html">Entries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="positions.html">Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="games_and_logs.html">Games &amp; Game Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.html">Entities &amp; Entity Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">jockmkt_sdk</a></li>
 </ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -68,18 +81,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="usage-getting-started">
-<h1>Usage &amp; Getting Started<a class="headerlink" href="#usage-getting-started" title="Permalink to this headline"></a></h1>
+  <section id="module-jockmkt_sdk.client">
+<span id="usage-getting-started"></span><h1>Usage &amp; Getting Started<a class="headerlink" href="#module-jockmkt_sdk.client" title="Permalink to this headline"></a></h1>
 <section id="installation">
-<span id="id1"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
 <p>To use jockmkt-sdk, first install it using pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install jockmkt-sdk
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Getting started:</dt><dd><p>import the package and generate a Client object</p>
+<p>Getting started:</p>
+<blockquote>
+<div><p>import the package and generate a Client object instance</p>
+</div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.client.Client" title="Permalink to this definition"></a></dt>
+<dd><p>The user should initialize an instance of this class and then call .get_auth_token(secret, api_key) to use other
+class methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><p><strong>ACCOUNT</strong> – The user’s account information, including their balances and the auth token they generate.</p>
 </dd>
 </dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jockmkt_sdk.client</span> <span class="kn">import</span> <span class="n">Client</span>
 
 <span class="n">secret_key</span> <span class="o">=</span> <span class="s2">&quot;&lt;secret_key: xxx&gt;&quot;</span>
@@ -92,7 +117,7 @@
 <span class="n">client</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">(</span><span class="n">secret_key</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You are initializing an instance of the Client class and generating an auth-token,
+<p>You are creating an instance of the Client class and generating an auth-token,
 which you will use for all future api calls.</p>
 <p>Each call is a method within the Client class.</p>
 <p>For example:</p>
@@ -109,7 +134,10 @@ which you will use for all future api calls.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="events.html" class="btn btn-neutral float-right" title="Events" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Positions" href="positions.html" />
-    <link rel="prev" title="Games &amp; Game Logs" href="games_and_logs.html" /> 
+    <link rel="next" title="Entries" href="entries.html" />
+    <link rel="prev" title="Events" href="events.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,16 +40,22 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage &amp; Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="account.html">Account</a></li>
-<li class="toctree-l1"><a class="reference internal" href="entities.html">Entities &amp; Entity Endpoints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="entries.html">Entries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
-<li class="toctree-l1"><a class="reference internal" href="games_and_logs.html">Games &amp; Game Logs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Orders</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Orders</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#order-endpoints">Order Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#order-object">Order Object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="entries.html">Entries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="positions.html">Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="games_and_logs.html">Games &amp; Game Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.html">Entities &amp; Entity Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">jockmkt_sdk</a></li>
 </ul>
 
         </div>
@@ -78,14 +84,150 @@
              
   <section id="orders">
 <h1>Orders<a class="headerlink" href="#orders" title="Permalink to this headline"></a></h1>
+<section id="order-endpoints">
+<h2>Order Endpoints<a class="headerlink" href="#order-endpoints" title="Permalink to this headline"></a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The user is limited to 10 orders per minute, with a refresh at the start of each new minute. See <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a> for information about how to handle this.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.place_order">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">place_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'buy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ipo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.place_order" title="Permalink to this definition"></a></dt>
+<dd><p>Places an order of the user’s chosen tradeable (player) and the chosen price. It defaults to  buy 1 share
+during the ipo phase. The user may specify an amount of money they want to buy and automatically buy x shares at
+the chosen price (param: order_size), such that the total cost is less than their specified amount. If the user
+wants to make a live they must specify phase=’live’, or if they want to sell a share side=’sell’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>required</em>) – The chosen player’s tradeable id, obtained by calling a Tradeable object</p></li>
+<li><p><strong>price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>required</em>) – The user’s chosen price at which to place their order</p></li>
+<li><p><strong>side</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – default: ‘buy’ - the user must specify ‘sell’ if they wish to sell</p></li>
+<li><p><strong>phase</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – default: ‘ipo’ - If the Event.status is ‘ipo’, should be ipo, else specify ‘live’</p></li>
+<li><p><strong>qty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – default: 1 - The desired number of shares the user wants to buy, the user may specify order_size instead.</p></li>
+<li><p><strong>order_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – The user can specify the total amount they wish to spend on shares of a player. Calculated by: (order_size)//price (it will always round down)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A json response with information about the order that was sent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tradeable</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_event_tradeables</span><span class="p">(</span><span class="n">event_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#the first tradeable in the list</span>
+<span class="n">client</span><span class="o">.</span><span class="n">place_order</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">tradeable</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="s1">&#39;ipo&#39;</span><span class="p">,</span> <span class="n">order_size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="c1"># Side must either be &#39;buy&#39; or &#39;sell&#39;</span>
+<span class="c1"># Phase must either be &#39;live&#39; or &#39;ipo&#39;</span>
+<span class="c1"># param qty is an int, number of shares the user wants to buy</span>
+<span class="c1"># OR order_size is an int, max amount of money the user wants to spend</span>
+<span class="c1"># such that: quantity = order_size // price</span>
+</pre></div>
+</div>
+<p>Raises error if the tradeable id is incorrect, or if the user hits the rate limit</p>
+<p>Returns status of the order being placed</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_orders">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_orders" title="Permalink to this definition"></a></dt>
+<dd><p>Get all of a user’s orders. The user is required to paginate if they want to see more than 1 page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Page at which the user wants to start their search, default: 0 (first page of entities)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Number of entities the user wants to display, default: 100 (displays 100 entities)</p></li>
+<li><p><strong>event_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p></li>
+<li><p><strong>active</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to display only orders that are active (either created or accepted),
+default = False</p></li>
+<li><p><strong>updated_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – filter orders updated after 13 digit epoch timestamp (orders with fills,
+partial fills, cancellations, outbids, etc. after that time)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Order</span></code> objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Order" title="jockmkt_sdk.objects.Order">objects.Order</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Returns a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Order</span></code> objects</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_order">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Order" title="jockmkt_sdk.objects.Order"><span class="pre">jockmkt_sdk.objects.Order</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_order" title="Permalink to this definition"></a></dt>
+<dd><p>get information about a specific order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>required</em>) – Order id for which the user is searching <cite>(e.g. ord_601b5ad6538ec34875ee1687c4a657f8)</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Order</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jockmkt_sdk.objects.Order" title="jockmkt_sdk.objects.Order">Order</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Returns a single <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Order</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.delete_order">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">delete_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.delete_order" title="Permalink to this definition"></a></dt>
+<dd><p>delete a specific order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>required</em>) – order id for which the user is attempting to delete
+(e.g. ord_601b5ad6538ec34875ee1687c4a657f8)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>json response with information about the order deletion</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Can only be used if the order was placed during live trading. Will return information about whether the cancellation was successful</p>
+</section>
+<section id="order-object">
+<h2>Order Object<a class="headerlink" href="#order-object" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Order">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Order" title="Permalink to this definition"></a></dt>
+<dd><p>object dedicated to storing information about orders that the user has placed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_id</strong> – the order’s specific identification</p></li>
+<li><p><strong>tradeable_id</strong> – the tradeable that the order was placed for</p></li>
+<li><p><strong>entity_id</strong> – the underlying entity_id for which the order was placed</p></li>
+<li><p><strong>event_id</strong> – the event in which the order was placed</p></li>
+<li><p><strong>status</strong> – current status, one of: created, accepted, filled, outbid, cancelled, or expired</p></li>
+<li><p><strong>side</strong> – side of the order (buy or sell)</p></li>
+<li><p><strong>phase</strong> – phase during which the order was placed (live or ipo)</p></li>
+<li><p><strong>quantity</strong> – amount of shares the user wants to buy</p></li>
+<li><p><strong>limit_price</strong> – the price the user specified in their order</p></li>
+<li><p><strong>cost_basis</strong> – how much the user spent on shares (only present on buy orders)</p></li>
+<li><p><strong>fee_paid</strong> – sum of fees paid for the order</p></li>
+<li><p><strong>proceeds</strong> – how much the user received for their sell order (if it was a sell order)</p></li>
+<li><p><strong>filled_quantity</strong> – quantity of shares that have been filled,</p></li>
+<li><p><strong>created_at</strong> – timestamp at which the order was created</p></li>
+<li><p><strong>accepted_at</strong> – timestamp at which the order was accepted</p></li>
+<li><p><strong>updated_at</strong> – timestamp at which the order last updated (some shares bought or sold)</p></li>
+<li><p><strong>filled_at</strong> – time at which the order was completely filled</p></li>
+<li><p><strong>cancellation_requested_at</strong> – when a cancellation was requested</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="games_and_logs.html" class="btn btn-neutral float-left" title="Games &amp; Game Logs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="positions.html" class="btn btn-neutral float-right" title="Positions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="events.html" class="btn btn-neutral float-left" title="Events" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="entries.html" class="btn btn-neutral float-right" title="Entries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

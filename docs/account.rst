@@ -1,19 +1,24 @@
 =======
 Account
 =======
+.. Account Data_
 
 Account data is generated automatically when you call Client.
 
 it can be accessed as follows:
 
-.. autoclass:: Client
+.. currentmodule:: jockmkt_sdk.client
+
+.. automethod:: Client.get_auth_token
+
+.. automethod:: Client.get_account
 
 .. code-block:: python
 
     client = Client()
     client.get_auth_token(secret_key, api_key)
-
-    print(client.ACCOUNT)
+    account = client.get_account()
+    print(account)
 
 Returns a dictionary of account information:
 
@@ -39,13 +44,14 @@ Returns a dictionary of account information:
 >>>  'keys': {'secret_key': 'xxx',
 >>>   'api_key': 'jm_key_xxx'},
 >>>  'token': {'Authorization': 'Bearer xxx'}
-        }
-    }
+>>>        }
+>>>    }
+
+.. Account Activity_
 
 Account Activity data is a little bit different.
 
-.. autoclass:: client. Client
-    :members: get_account_activity
+.. automethod:: Client.get_account_activity
 
 .. code-block:: python
 
@@ -63,11 +69,9 @@ Some examples:
 
 Returns:
 
->>> <class 'list'> <- returns a list of AccountActivity objects
+    For example:
 
-For example:
-
-    Payout:
+        Payout:
 
 >>> {'id': 'aact_6247ed15ed7f8339ead03a510517512c',
 >>>    'object': 'account_activity:payout',
@@ -79,7 +83,7 @@ For example:
 >>>                'proceeds_all_time': 6,
 >>>                'tradeable': {objects.Tradeable}, ...]}
 
-                account_activity:payout is a list of all payouts and respective tradeables from a single event
+A payout is a list of all payouts and respective tradeables from a single event
 
     Order:
 

@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Events" href="events.html" />
-    <link rel="prev" title="Entities &amp; Entity Endpoints" href="entities.html" /> 
+    <link rel="next" title="Positions" href="positions.html" />
+    <link rel="prev" title="Orders" href="orders.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,16 +40,22 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage &amp; Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="account.html">Account</a></li>
-<li class="toctree-l1"><a class="reference internal" href="entities.html">Entities &amp; Entity Endpoints</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Entries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
-<li class="toctree-l1"><a class="reference internal" href="games_and_logs.html">Games &amp; Game Logs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Entries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#entry-endpoints">Entry Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#entry-object">Entry Object</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="positions.html">Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="games_and_logs.html">Games &amp; Game Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.html">Entities &amp; Entity Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">jockmkt_sdk</a></li>
 </ul>
 
         </div>
@@ -78,14 +84,89 @@
              
   <section id="entries">
 <h1>Entries<a class="headerlink" href="#entries" title="Permalink to this headline"></a></h1>
+<section id="entry-endpoints">
+<h2>Entry Endpoints<a class="headerlink" href="#entry-endpoints" title="Permalink to this headline"></a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_entries">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_payouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tradeables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jockmkt_sdk.objects.Entry" title="jockmkt_sdk.objects.Entry"><span class="pre">jockmkt_sdk.objects.Entry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_entries" title="Permalink to this definition"></a></dt>
+<dd><p>obtain information about events a user has entered</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Page at which the user wants to start their search,
+default: 0 (first page of entries)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Number of entities the user wants to display, default: 10 (displays 10 recent
+and upcoming entries)</p></li>
+<li><p><strong>include_payouts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Option to include payouts of completed entries, default: False</p></li>
+<li><p><strong>include_tradeables</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Option to include entry-relevant <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Tradeable</span></code> objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entry</span></code> objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object.Entity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_entry">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_payouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tradeables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jockmkt_sdk.objects.Entry" title="jockmkt_sdk.objects.Entry"><span class="pre">jockmkt_sdk.objects.Entry</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Method to obtain information about an event that a user has entered</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>required</em>) – The entry_id for which the user wishes to get information
+(e.g. evt_60dbec530d2197a973c5dddcf6f65e12)</p></li>
+<li><p><strong>include_event</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Include <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Event</span></code> information related to the entry</p></li>
+<li><p><strong>include_payouts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Include payouts for the user’s holdings of a completed event</p></li>
+<li><p><strong>include_tradeables</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Include relevant event <code class="xref py py-class docutils literal notranslate"><span class="pre">object.Tradeable</span></code> objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entry</span></code> objects, containing the user’s chosen fields</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="entities.html#jockmkt_sdk.objects.Entity" title="jockmkt_sdk.objects.Entity">objects.Entity</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>These methods will return a list of entries, and information about a specific entry respectively.</p>
+<p>They return <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Entry</span></code> objects.</p>
+</section>
+<section id="entry-object">
+<h2>Entry Object<a class="headerlink" href="#entry-object" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jockmkt_sdk.objects.Entry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jockmkt_sdk.objects.</span></span><span class="sig-name descname"><span class="pre">Entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.objects.Entry" title="Permalink to this definition"></a></dt>
+<dd><p>object containing information about a user’s entry into an event, such as profit, leaderboard position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> – the entry’s identifier</p></li>
+<li><p><strong>event_id</strong> – the event’s identifier</p></li>
+<li><p><strong>leaderboard_pos</strong> – the user’s leaderboard position</p></li>
+<li><p><strong>profit</strong> – the user’s profit in this entry, not including fees</p></li>
+<li><p><strong>updated_at</strong> – when this entry was last updated</p></li>
+<li><p><strong>favorites</strong> – a list of favorited tradeables</p></li>
+<li><p><strong>event</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.Event</span></code> object containing event specific information</p></li>
+<li><p><strong>payouts</strong> – after the event is finished, a list of payouts made to the user for their holdings</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="entities.html" class="btn btn-neutral float-left" title="Entities &amp; Entity Endpoints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="events.html" class="btn btn-neutral float-right" title="Events" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="orders.html" class="btn btn-neutral float-left" title="Orders" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="positions.html" class="btn btn-neutral float-right" title="Positions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

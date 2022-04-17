@@ -18,7 +18,9 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Teams" href="teams.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,11 +38,22 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Account</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage &amp; Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entries.html">Entries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="positions.html">Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="games_and_logs.html">Games &amp; Game Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.html">Entities &amp; Entity Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">jockmkt_sdk</a></li>
 </ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -69,10 +82,38 @@
 <h1>Account<a class="headerlink" href="#account" title="Permalink to this headline"></a></h1>
 <p>Account data is generated automatically when you call Client.</p>
 <p>it can be accessed as follows:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_auth_token">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_auth_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_auth_token" title="Permalink to this definition"></a></dt>
+<dd><p>obtains the user’s auth token using provided api and secret keys, generating a BearerAuth header. It also allows the user to call .get_account to retreive relevant information about their accounts, including balances etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>secret_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>required</em>) – The user’s Jock MKT provided secret key.</p></li>
+<li><p><strong>api_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>required</em>) – The user’s api key, starting with jm_key_</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_account">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_account" title="Permalink to this definition"></a></dt>
+<dd><p>method for retreiving a user’s account information. Must be run AFTER get_auth_token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dict of relevant account information</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>
 <span class="n">client</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">(</span><span class="n">secret_key</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">ACCOUNT</span><span class="p">)</span>
+<span class="n">account</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_account</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Returns a dictionary of account information:</p>
@@ -98,11 +139,32 @@
 <span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;keys&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;secret_key&#39;</span><span class="p">:</span> <span class="s1">&#39;xxx&#39;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;api_key&#39;</span><span class="p">:</span> <span class="s1">&#39;jm_key_xxx&#39;</span><span class="p">},</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer xxx&#39;</span><span class="p">}</span>
-<span class="go">        }</span>
-<span class="go">    }</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">}</span>
 </pre></div>
 </div>
 <p>Account Activity data is a little bit different.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jockmkt_sdk.client.Client.get_account_activity">
+<span class="sig-prename descclassname"><span class="pre">Client.</span></span><span class="sig-name descname"><span class="pre">get_account_activity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">jockmkt_sdk.objects.AccountActivity</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jockmkt_sdk.client.Client.get_account_activity" title="Permalink to this definition"></a></dt>
+<dd><p>returns a user’s most recent account activity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the page of account activity which the user wants to display,
+default = 0 (first page of responses)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the quantitiy of account activity objects the user wants to see, default = 100</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">objects.AccountActivity</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a>[AccountActivity]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">account_activity</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_account_activity</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -114,12 +176,11 @@
 </pre></div>
 </div>
 <p>Returns:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; &lt;class &#39;list&#39;&gt; &lt;- returns a list of AccountActivity objects
-</pre></div>
-</div>
-<p>For example:</p>
+<blockquote>
+<div><p>For example:</p>
 <blockquote>
 <div><p>Payout:</p>
+</div></blockquote>
 </div></blockquote>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;aact_6247ed15ed7f8339ead03a510517512c&#39;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;account_activity:payout&#39;</span><span class="p">,</span>
@@ -132,11 +193,9 @@
 <span class="gp">&gt;&gt;&gt; </span>               <span class="s1">&#39;tradeable&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">objects</span><span class="o">.</span><span class="n">Tradeable</span><span class="p">},</span> <span class="o">...</span><span class="p">]}</span>
 </pre></div>
 </div>
+<p>A payout is a list of all payouts and respective tradeables from a single event</p>
 <blockquote>
-<div><blockquote>
-<div><p>account_activity:payout is a list of all payouts and respective tradeables from a single event</p>
-</div></blockquote>
-<p>Order:</p>
+<div><p>Order:</p>
 </div></blockquote>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;aact_624878935119dbbb29858440504c989e&#39;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;account_activity:order&#39;</span><span class="p">,</span>
@@ -154,7 +213,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="teams.html" class="btn btn-neutral float-left" title="Teams" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

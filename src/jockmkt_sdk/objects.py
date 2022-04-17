@@ -127,6 +127,7 @@ class NFLEntity(Entity):
 class NASCAREntity(Entity):
     """
     Nascar-specific entity data
+
     :ivar team_id:         the entity's team_id for use collecting team info
     :ivar team:            a dict containing team-related information
     :ivar points_eligible: is the driver eligible to score points
@@ -138,6 +139,7 @@ class NASCAREntity(Entity):
     :ivar status:          is the driver active or inactive
     :ivar injury_status:   is driver in, out or questionable (day-to-day, etc.)
     :ivar injury_type:     type of injury the driver is experiencing
+
     """
     def __init__(self, entity):
         super().__init__(entity)
@@ -400,25 +402,20 @@ class Event(object):
     Class dedicated to storing event-related info. May contain list of Game objects, Tradeable objects and other
     information related to payouts and whether the event is a contest.
 
-    :ivar event_id:     event_id for the chosen event, accessed via self.event_id. Used to access other event-specific
-                            info
+    :ivar event_id:     event_id for the chosen event, accessed via self.event_id. Used to access other event-specific info
     :ivar name:         the event's name as displayed on the app
     :ivar description:  the event's description
     :ivar type:         the type of event, either a contest or a cash market
-    :ivar status:       the event's status. One of: scheduled, cancelled, halted, ipo, ipo_closed, live, live_closed,
-                            payouts_completed, prizes_paid or contests_paid
+    :ivar status:       the event's status. One of: scheduled, cancelled, halted, ipo, ipo_closed, live, live_closed, payouts_completed, prizes_paid or contests_paid
     :ivar league:       the league to which this event's scoring, games and players apply
     :ivar ipo_start:    timestamp at which the ipo opens
     :ivar ipo_end:      estimated time at which the ipo should end
     :ivar amt_complted: percentage of the event completed
     :ivar updated_at:   last timestamp at which the event was updated
-    :ivar payouts:      a list of payouts for the event in the following format:
-                            {'status': 'success',
-                            'count': 120,
-                            'payouts': [{'position': 1, 'amount': 25},..., {'position': n, 'amount': k}]
+    :ivar payouts:      a list of payouts for the event in the following format: 'payouts': [{'position': 1, 'amount': 25},..., {'position': n, 'amount': k}]
     :ivar games:        a list of :class:`objects.Game` objects
     :ivar tradeables:   a list of :class`objects.Tradeable` objects
-    :ivar contest:      information about the contest, if it's a contest-type market see: :var:`objects.Event.type`
+    :ivar contest:      information about the contest, if it's a contest-type market see: `objects.Event.type`
     """
     def __init__(self, event):
         self.event_id = event.get('id')
@@ -500,6 +497,12 @@ class Tradeable(object):
         self.bid = price.get('bid')
         self.ask = price.get('ask')
         self.final = price.get('final')
+        ranks = tradeable.get('rank')
+        self.rank_proj_pregame = ranks.get('projected')
+        self.rank_proj_live = ranks.get('projected_live')
+        self.rank_scored = ranks.get('scored')
+        self.rank_price = ranks.get('price')
+        self.rank_final = ranks.get('final')
         self.stats = tradeable.get('stats', {})
         # if type(stats) != dict and len(stats) > 0:
         #     for key in stats[0]:
@@ -616,7 +619,7 @@ class Order(object):
     :ivar status:          current status, one of: created, accepted, filled, outbid, cancelled, or expired
     :ivar side:            side of the order (buy or sell)
     :ivar phase:           phase during which the order was placed (live or ipo)
-    ivar quantity:         amount of shares the user wants to buy
+    :ivar quantity:         amount of shares the user wants to buy
     :ivar limit_price:     the price the user specified in their order
     :ivar cost_basis:      how much the user spent on shares (only present on buy orders)
     :ivar fee_paid:        sum of fees paid for the order
