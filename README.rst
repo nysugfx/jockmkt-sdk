@@ -2,13 +2,13 @@
 Jock MKT SDK
 ============
 
-.. image:: https://img.shields.io/pypi/v/jockmkt-sdk
+.. image:: https://img.shields.io/pypi/v/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
-.. image:: https://img.shields.io/github/license/nysugfx/jockmkt-sdk
+.. image:: https://img.shields.io/github/license/nysugfx/jockmkt-sdk?style=for-the-badge
   :target: https://github.com/nysugfx/jockmkt-sdk/LICENSE.txt
 
-.. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk
+.. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
 
@@ -41,7 +41,7 @@ Installation (via PyPi)
 
     pip install jockmkt-sdk
 
-  - pypi link
+`PyPi Link <https://pypi.org/project/jockmkt-sdk/0.1.2/>`_
 
 Contribute
 -----------
@@ -50,7 +50,7 @@ Contribute
 
 Docs
 ----
-  - readthedocs
+  - readthedocs (coming soon)
 
 Features
 --------
