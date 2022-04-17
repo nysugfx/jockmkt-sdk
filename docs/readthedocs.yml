@@ -6,7 +6,19 @@ SphinxMkDocs
 # Required
 version: 2
 
-# Set the version of Python and other tools you might need
+python:
+
+  install:
+    - requirements: docs/requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+    - method: setuptools
+      path: src/jockmkt_sdk
+  system_packages: true
+
+  # Set the version of Python and other tools you might need
 build:
   os: ubuntu-20.04
   tools:
@@ -18,13 +30,16 @@ build:
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-   configuration: docs/conf.py
+  builder: html
+  configuration: docs/conf.py
+
+submodules:
+  include: all
+
 
 # If using Sphinx, optionally build your docs in additional formats such as PDF
 # formats:
 #    - pdf
 
 # Optionally declare the Python requirements required to build your docs
-python:
-   install:
-   - requirements: docs/requirements.txt
+
