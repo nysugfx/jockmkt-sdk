@@ -1,6 +1,7 @@
 import os
 import sys
-import sphinx_rtd_theme
+import sphinx_rtd
+import sphinx
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -35,6 +36,7 @@ extensions = ['sphinx.ext.duration',
               'sphinx.ext.intersphinx',
               'sphinx.ext.inheritance_diagram',
               'sphinx.ext.autosectionlabel',
+              'sphinx.ext.napoleon'
               ]
 
 intersphinx_mapping = {
