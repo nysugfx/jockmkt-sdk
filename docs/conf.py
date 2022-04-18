@@ -1,6 +1,6 @@
 import os
 import sys
-import sphinx_rtd
+import sphinx_rtd_theme
 import sphinx
 
 # Configuration file for the Sphinx documentation builder.
