@@ -18,7 +18,7 @@ import sphinx_rtd_theme
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath("/Users/alexfriedman/Documents/jockmkt-sdk/src/jockmkt_sdk"))
-sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../../src/'))
 # -- Project information -----------------------------------------------------
 
 project = 'jockmkt-sdk'
@@ -34,7 +34,7 @@ extensions = ['sphinx.ext.duration',
               'sphinx.ext.autosummary',
               'sphinx.ext.intersphinx',
               'sphinx.ext.inheritance_diagram',
-              'sphinx.ext.autosectionlabel'
+              'sphinx.ext.autosectionlabel',
               ]
 
 intersphinx_mapping = {
