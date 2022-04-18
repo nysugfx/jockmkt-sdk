@@ -13,6 +13,7 @@ Welcome to jockmkt-sdk's documentation!
    introduction
    usage
    events
+   tradeables
    orders
    entries
    positions
