@@ -10,7 +10,7 @@ class JockAPIException(Exception):
     404 -- not_found -- incorrect api endpoint
     429 -- rate_limit -- max 10 orders (post, delete) per minute, max 250 other requests per minute. This limit resets
     at the beginning of every new clock minute (e.g 12:00:00, 12:01:00)
-    50x -- internal_error -- request failed due to platform error
+    50x -- internal_error -- request failed due to platform or network error. This SDK will automatically retry 3 times.
     """
 
     def __init__(self, response):
@@ -19,12 +19,15 @@ class JockAPIException(Exception):
         _error_dict = {
             'bad_request': "try fixing your parameters, or check if you're missing one!",
             'not_authorized': 'Double check your secret keys, or that your auth token is valid',
-            'event_status': 'Please wait for the market to open at ...',
-            'invalid entry': '',
+            'event_status': "Please wait for the market to open, or check that you're attempting to trade in an event \
+                            that is currently open",
+            'invalid_entry': 'Please join this event before attempting to trade!',
             'not_found': '',
             'rate_limit': 'You have placed too many orders or requests since {}. Please wait until {}.'.format(
                 now, rate_limit_reset),
-            'request_failed': 'You have already entered the event or deleted your order'
+            'request_failed': 'You have already entered the event or deleted your order',
+            'bad_gateway': 'Maxmimum attempts made to resource with no valid response.\
+                                   Check your network or try again later.'
         }
         self.code = ""
         self.message = 'unknown error'
@@ -34,15 +37,10 @@ class JockAPIException(Exception):
         except ValueError:
             self.message = response.content
         else:
-            if 'error' in json_res and json_res['error'] != 'rate_limit' or 'error' in json_res and json_res['error'] \
-                    != 'request_failed':
+            if 'error' in json_res:
                 self.code = json_res['error']
                 self.message = json_res['message']
                 self.helper = _error_dict[json_res['error']]
-                # TODO add sleep function if rate limit error
-
-    def _order_error_handler(self):
-        pass
 
     def __str__(self):
         return 'JockAPIException {}: {} \n{}'.format(self.code, self.message, self.helper)

@@ -1,21 +1,24 @@
 import requests
-import json
 from datetime import datetime
-from .exception import JockAPIException
-from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+import time
+from exception import JockAPIException
+from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
 
 
 class Client(object):
     """The user should initialize an instance of this class and then call .get_auth_token(secret, api_key) to use other
     class methods.
-
+    THIS IS RETARDED
     :ivar ACCOUNT: The user's account information, including their balances and the auth token they generate.
     """
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
+    _API_KEYS = {}
     _AUTH_TOKEN = {}
+    _AUTH_TOKEN_MAP = {}
     _EXPIRATION = None
+    _ATTEMPTS = 0
     LEAGUES = ['nba', 'nfl', 'nhl', 'pga', 'mlb', 'nascar']
     MLB_SCORING = {'at_bat': 0.5, 'single': 2.5, 'double': 3, 'triple': 3.5, 'home_run': 4, 'walk': 2, 'run': 2,
                    'rbi': 2, 'stolen_base': 3, 'strikeout': -1}
@@ -33,8 +36,12 @@ class Client(object):
     NASCAR_SCORING = {'lap_complete': 1, 'position': -1, 'win': 10, 'start_bonus': 40}
     ACCOUNT = {}
 
-    def __init__(self, request_params=None):
+    def __init__(self, secret, api_key, request_params=None):
         self._request_params = request_params
+        self.secret = secret
+        self.api_key = api_key
+        user_auth = Client._AUTH_TOKEN_MAP.get(f'{api_key}:{secret}', None)
+        self.auth = user_auth
 
     def _create_path(self, path, api_version=None):
         """generates a path for self._request
@@ -42,53 +49,45 @@ class Client(object):
         api_version = api_version or self.API_VERSION
         return '/{}/{}'.format(api_version, path)
 
-    @staticmethod
-    def get_auth_token(secret_key: str, api_key: str) -> dict:
-        """obtains the user's auth token using provided api and secret keys, generating a BearerAuth header. It also allows the user to call .get_account to retreive relevant information about their accounts, including balances etc.
-
-        :param secret_key: The user's Jock MKT provided secret key.
-        :type secret_key:  str, required
-        :param api_key:    The user's api key, starting with jm\_key\_
-        :type api_key:     str, required
-        """
+    def _get_auth_token(self):
         payload = {
             'grant_type': 'client_credentials',
-            'key': str(api_key),
-            'secret': str(secret_key)
+            'key': str(self.api_key),
+            'secret': str(self.secret)
         }
-
         response = requests.post(f'{Client.BASE_URL}/{Client.API_VERSION}/oauth/tokens', data=payload).json()
         print(response)
         if response['status'] == 'error':
             raise KeyError("Your authorization keys are not valid!")
+        else:
+            print("Successfully obtained authtoken!")
 
-        expiry = response['token']['expired_at']/1000
-        print('Your token will expire at:', datetime.fromtimestamp(expiry).strftime("%Y-%m-%d %H:%M %p"))
-        Client._EXPIRATION = expiry
-        Client._AUTH_TOKEN = {'Authorization': 'Bearer ' + response['token']['access_token']}
+        auth_token_dict = {'token': response['token']['access_token'], 'expired_at': response['token']['expired_at']}
+        Client._AUTH_TOKEN_MAP[f'{self.api_key}:{self.secret}'] = auth_token_dict
+        self.auth = auth_token_dict
+        return auth_token_dict['token']
 
-        account = requests.get(f'{Client.BASE_URL}/{Client.API_VERSION}/account', headers=Client._AUTH_TOKEN).json()
-        acct = account['account']
-        balance = requests.get(f'{Client.BASE_URL}/{Client.API_VERSION}/balances', headers=Client._AUTH_TOKEN).json()
-        bal = balance['balances']
+    @staticmethod
+    def _build_auth_header(token):
+        return {'Authorization': 'Bearer ' + token}
 
-        account_dict = {
-            acct['display_name']: {
-                'info': acct,
-                'balances': bal,
-                'keys': {'secret_key': secret_key, 'api_key': api_key},
-                'token': Client._AUTH_TOKEN
-            }
-        }
-        Client.ACCOUNT = account_dict
-
-    def _request(self, method, path, api_version=None, **kwargs) -> dict:
+    def _request(self, method, path, api_version=None, attempt_number=0, **kwargs) -> dict:
         """method by which all requests are made
         """
+        response = {}
+        auth = self.auth
+        if auth is None:
+            token = self._get_auth_token()
+        elif auth['expired_at'] < round(time.time()*1000):
+            token = self._get_auth_token()
+        else:
+            token = auth['token']
+
         if self._request_params:
             kwargs.update(self._request_params)
         kwargs['data'] = kwargs.get('data', {})
         kwargs['params'] = kwargs.get('params', {})
+        kwargs['payload'] = kwargs.get('payload', {})
 
         full_path = self._create_path(path, api_version)
 
@@ -98,9 +97,9 @@ class Client(object):
             elif kwargs['params']:
                 kwargs['payload'] = kwargs['params']
             else:
-                kwargs['payload'] = {}
+                kwargs['payload'] = kwargs['payload']
             response = requests.get('{}{}'.format(self.BASE_URL, full_path), params=kwargs['payload'],
-                                    headers=self._AUTH_TOKEN)
+                                    headers=self._build_auth_header(token))
 
         if method == 'post':
             if kwargs['data']:
@@ -108,32 +107,54 @@ class Client(object):
             elif kwargs['params']:
                 kwargs['payload'] = kwargs['params']
             else:
-                kwargs['payload'] = {}
+                kwargs['payload'] = kwargs['payload']
             response = requests.post('{}{}'.format(self.BASE_URL, full_path), data=kwargs['payload'],
-                                     headers=self._AUTH_TOKEN)
+                                     headers=self._build_auth_header(token))
 
         if method == 'delete':
-            response = requests.delete('{}{}'.format(self.BASE_URL, full_path), headers=self._AUTH_TOKEN)
-
-        res = self._handle_response(response)
+            response = requests.delete('{}{}'.format(self.BASE_URL, full_path), headers=self._build_auth_header(token))
+        res = self._handle_response(response, method, path, attempt_number=attempt_number, payload=kwargs)
         return res
 
-    @staticmethod
-    def _handle_response(json_response):
+    def _handle_response(self, json_response, method, path, attempt_number, **kwargs):
         """helper to handle api responses and determine exceptions
         """
-        if not str(json_response.status_code).startswith('2'):
+
+        if json_response.status_code == 429:
+            order = kwargs.get('payload')
+            return self._retry_order(order['data'])
+
+        elif str(json_response.status_code).startswith('50'):
+            payload = kwargs.get('payload')
+            return self._retry_request(json_response, method, path, payload, attempt_number)
+
+        elif not str(json_response.status_code).startswith('2'):
             raise JockAPIException(json_response)
+
         try:
             res = json_response.json()
             return res
         except ValueError:
             raise JockAPIException('Invalid Response: %s' % json_response.text)
 
-    def _throttle_requests(self, func):
-        """method designed to throttle certain user requests
-        """
-        pass
+    def _retry_request(self, json_response, method, path, payload, attempt_number):
+        max_attempts = 3
+        if attempt_number >= max_attempts:
+            raise JockAPIException(json_response)
+        backoff_times = [3, 10, 30]
+        print(f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying "
+              f"in {backoff_times[attempt_number]} seconds")
+        time.sleep(backoff_times[attempt_number])
+        response = self._request(method, path, attempt_number=attempt_number+1, payload=payload['payload'])
+
+        if str(response.status_code).startswith("2"):
+            return response
+
+    def _retry_order(self, order):
+        next_minute = 60-datetime.now().second
+        print(f"You've placed too many orders in the past minute. Sleeping for {next_minute} seconds")
+        time.sleep(next_minute)
+        return self._post('orders', data=order)
 
     def _get(self, path, api_version=None, **kwargs):
         """method for get requests
@@ -154,15 +175,6 @@ class Client(object):
         """method retreiving user's USD balance
         """
         return self._get("balances")['balances']
-
-    def get_account(self):
-        """
-        method for retreiving a user's account information. Must be run AFTER get_auth_token.
-
-        :returns: a dict of relevant account information
-        :rtype:   dict
-        """
-        return self.ACCOUNT
 
     def get_scoring(self, league):
         """
