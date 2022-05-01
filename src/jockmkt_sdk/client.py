@@ -60,7 +60,7 @@ class Client(object):
         if response['status'] == 'error':
             raise KeyError("Your authorization keys are not valid!")
         else:
-            print("Successfully obtained authtoken!")
+            print("Successfully obtained an auth token!")
 
         auth_token_dict = {'token': response['token']['access_token'], 'expired_at': response['token']['expired_at']}
         Client._AUTH_TOKEN_MAP[f'{self.api_key}:{self.secret}'] = auth_token_dict
@@ -77,6 +77,7 @@ class Client(object):
         response = {}
         auth = self.auth
         if auth is None:
+            print('no auth token')
             token = self._get_auth_token()
         elif auth['expired_at'] < round(time.time()*1000):
             token = self._get_auth_token()

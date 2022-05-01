@@ -5,8 +5,14 @@ __pycache__
 venv
 venv2
 venv3
-src/keys.py
 .idea
 docs/_build
 docs/_static
 docs/_templates
+src/jockmkt_sdk/scratch.py
+docs
+dist
+.pytest_cache
+src/jockmkt_sdk.egg-info
+scratch.py
+

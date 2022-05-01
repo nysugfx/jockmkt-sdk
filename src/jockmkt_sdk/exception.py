@@ -27,7 +27,7 @@ class JockAPIException(Exception):
                 now, rate_limit_reset),
             'request_failed': 'You have already entered the event or deleted your order',
             'bad_gateway': 'Maxmimum attempts made to resource with no valid response.\
-                                   Check your network or try again later.'
+                                 Check your network or try again later.'
         }
         self.code = ""
         self.message = 'unknown error'

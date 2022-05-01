@@ -368,13 +368,13 @@ class GameLog(object):
         self.team_id = game_log.get('team_id')
         self.scheduled_start = game_log.get('scheduled_start')
         self.updated_at = game_log.get('updated_at')
-        self.projected_stats = game_log.get('projected_stats', {'league': None})
+        projected_stats = game_log.get('projected_stats', {'league': None})
         # for key in projected_stats:
         #     self.__dict__['projected_' + key] = projected_stats[key]
-        self.actual_stats = game_log.get('stats', {'league': None})
+        actual_stats = game_log.get('stats', {'league': None})
         # for k in stats:
         #     self.__dict__['actual_' + k] = stats[k]
-        self.league = stats.get('league', projected_stats.get('league'))
+        self.league = actual_stats.get('league', projected_stats.get('league'))
         entity = game_log.get('entity', {})
         self.entity = _case_switch_ent(entity)
         game = game_log.get('game', {})
