@@ -9,7 +9,6 @@ venv3
 docs/_build
 docs/_static
 docs/_templates
-src/jockmkt_sdk/scratch.py
 docs
 dist
 .pytest_cache
