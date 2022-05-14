@@ -343,6 +343,7 @@ class Game(object):
 
 class GameLog(object):
     """
+    TODO: HANDLING OF horse racing sim entities
     different leagues will return different dictionaries of stats/projected. There is currently no league identifier.
 
     use GameLog.available_attributes() to see what attributes can be called.
@@ -368,15 +369,16 @@ class GameLog(object):
         self.team_id = game_log.get('team_id')
         self.scheduled_start = game_log.get('scheduled_start')
         self.updated_at = game_log.get('updated_at')
-        self.projected_stats = game_log.get('projected_stats', {'league': None})
+        projected_stats = game_log.get('projected_stats', {'league': None})
         # for key in projected_stats:
         #     self.__dict__['projected_' + key] = projected_stats[key]
-        self.actual_stats = game_log.get('stats', {'league': None})
+        actual_stats = game_log.get('stats', {'league': None})
         # for k in stats:
         #     self.__dict__['actual_' + k] = stats[k]
-        self.league = stats.get('league', projected_stats.get('league'))
+        self.league = actual_stats.get('league', projected_stats.get('league'))
         entity = game_log.get('entity', {})
-        self.entity = _case_switch_ent(entity)
+        if entity is not None:
+            self.entity = _case_switch_ent(entity)
         game = game_log.get('game', {})
         self.game = Game(game)
         team = game_log.get('team', {})
@@ -489,7 +491,7 @@ class Tradeable(object):
         self.fpts_proj_live = points.get('projected_live')
         self.fpts_scored = points.get('scored')
         price = tradeable.get('price', {})
-        self.ipo = price.get('ipo')
+        self.ipo = price.get('ipo', 1)
         self.high = price.get('high')
         self.low = price.get('low')
         self.last = price.get('last')
@@ -646,6 +648,15 @@ class Order(object):
         self.fee_paid = order.get('fee_paid', 0)
         self.proceeds = order.get('proceeds', 0)
         self.filled_quantity = order.get('filled_quantity', 0)
+        tradeable = order.get('tradeable', {})
+        if len(tradeable) > 0:
+            self.tradeable = Tradeable(tradeable)
+        entity = order.get('entity', {})
+        if len(entity) > 0:
+            self.entity = _case_switch_ent(entity)
+        event = order.get('event', {})
+        if len(event) > 0:
+            self.event = Event(event)
         self.created_at = order.get('created_at')
         self.accepted_at = order.get('accepted_at')
         self.updated_at = order.get('updated_at')
