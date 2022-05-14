@@ -26,10 +26,10 @@ Getting started:
     api_key = "<api_key: jm_api_xxx>"
 
     # Initialize an instance of the client class:
-    client = Client()
+    client = Client(secret_key, api_key)
 
-    # Get your authorization token
-    client.get_auth_token(secret_key, api_key)
+    # Call any method and it will automatically retrieve your auth token.
+    client.get_events()
 
 
 You are creating an instance of the Client class and generating an auth-token,

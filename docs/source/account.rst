@@ -1,9 +1,9 @@
 =======
 Account
 =======
-.. Account Data_
+.. Account Balance_
 
-Account data is generated automatically when you call Client.
+The user should call call client.get_account_balance() to retreive balances. May in the future make this automatic.
 
 it can be accessed as follows:
 
@@ -11,35 +11,12 @@ it can be accessed as follows:
 
 .. code-block:: python
 
-    client = Client()
-    print(account)
+    client = Client(secret_key, api_key)
+    client.get_account_balance()
 
-Returns a dictionary of account information:
+    #you can access this information:
 
->>> {'DISPLAY_NAME': {'info':
->>>  {'id': 'acct_xxx',
->>>   'object': 'account',
->>>   'tags': [],
->>>   'email': 'xxx@xxx.com',
->>>   'status': 'active',
->>>   'display_name': 'xxx',
->>>   'language': 'en',
->>>   'experience_level': 'expert',
->>>   'created_at': 1614735755967,
->>>   'updated_at': 1649599679285},
->>>  'balances': [{'currency': 'usd',
->>>    'object': 'balance',
->>>    'type': 'fiat',
->>>    'total': 600.00,
->>>    'buying_power': 600.00,
->>>    'pending': 0,
->>>    'updated_at': 1649571297672}],
->>>     # there may also be information about contest balances as well
->>>  'keys': {'secret_key': 'xxx',
->>>   'api_key': 'jm_key_xxx'},
->>>  'token': {'Authorization': 'Bearer xxx'}
->>>        }
->>>    }
+    print(client.balance)
 
 .. Account Activity_
 
