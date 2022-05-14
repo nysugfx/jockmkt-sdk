@@ -27,8 +27,7 @@ The aim of this SDK is to build a host of easy-to-use tools for users to interac
 
     # the following code will buy $50 worth of shares for every player in an event
     # whose last traded price is less than the estimated price
-    client = Client()
-    client.get_auth_token(secret_key, api_key)
+    client = Client(secret_key, api_key)
     event = client.get_event(event_id, include_tradeables=True)
     for tradeable in event.tradeables:
          if tradeable.last < tradeable.estimated:
