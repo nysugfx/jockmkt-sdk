@@ -74,8 +74,9 @@ Authorization & basic calls:
     api_key = '<jm_key_xxx>'
     secret_key = '<xxx>'
 
-    client = Client()
-    client.get_auth_token(secret_key, api_key)
+    client = Client(secret_key, api_key)
+    
+    # after initializing Client, call any method to obtain an auth token. 
 
     #display the first 100 nba entities
     players = client.get_entities(start=0, league='nba')
