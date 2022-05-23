@@ -10,18 +10,18 @@ from jockmkt_sdk import client, objects
 
 # TODO: ADD GITHUB ACTIONS
 
-authorization_res = json.load(open('./test_resources/authorization.json'))
-account_activity_res = json.load(open('./test_resources/account_activity.json'))
-entities_res = json.load(open('./test_resources/entities.json'))
-entry_res = json.load(open('./test_resources/entry.json'))
-event_res = json.load(open('./test_resources/event.json'))
-events_res = json.load(open('./test_resources/events.json'))
-game_logs_res = json.load(open('./test_resources/game_logs.json'))
-games_res = json.load(open('./test_resources/games.json'))
-orders_res = json.load(open('./test_resources/orders.json'))
-position_res = json.load(open('./test_resources/position.json'))
-place_order_res = json.load(open('./test_resources/order_place.json'))
-order_limit_res = json.load(open('./test_resources/order_rate_limit.json'))
+authorization_res = json.load(open('./tests/test_resources/authorization.json'))
+account_activity_res = json.load(open('./tests/test_resources/account_activity.json'))
+entities_res = json.load(open('./tests/test_resources/entities.json'))
+entry_res = json.load(open('./tests/test_resources/entry.json'))
+event_res = json.load(open('./tests/test_resources/event.json'))
+events_res = json.load(open('./tests/test_resources/events.json'))
+game_logs_res = json.load(open('./tests/test_resources/game_logs.json'))
+games_res = json.load(open('./tests/test_resources/games.json'))
+orders_res = json.load(open('./tests/test_resources/orders.json'))
+position_res = json.load(open('./tests/test_resources/position.json'))
+place_order_res = json.load(open('./tests/test_resources/order_place.json'))
+order_limit_res = json.load(open('./tests/test_resources/order_rate_limit.json'))
 
 _test_api_key = "jm_key_xxx"
 _test_secret_key = "xxx"
