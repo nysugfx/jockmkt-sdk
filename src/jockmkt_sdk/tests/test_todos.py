@@ -5,9 +5,8 @@ import sys
 import json
 from datetime import datetime
 
-sys.path.insert(1, '../jockmkt_sdk')
-import src.jockmkt_sdk.client as client
-import src.jockmkt_sdk.objects as objects
+# sys.path.insert(1, '../jockmkt_sdk')
+from jockmkt_sdk import client, objects
 
 # TODO: ADD GITHUB ACTIONS
 
