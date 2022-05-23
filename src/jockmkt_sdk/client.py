@@ -1,8 +1,8 @@
 import requests
 from datetime import datetime
 import time
-from exception import JockAPIException
-from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+from .exception import JockAPIException
+from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
 
 
