@@ -5,23 +5,21 @@ import sys
 import json
 from datetime import datetime
 
-# sys.path.insert(1, '../jockmkt_sdk')
 from jockmkt_sdk import client, objects
 
-# TODO: ADD GITHUB ACTIONS
 
-authorization_res = json.load(open('./tests/test_resources/authorization.json'))
-account_activity_res = json.load(open('./tests/test_resources/account_activity.json'))
-entities_res = json.load(open('./tests/test_resources/entities.json'))
-entry_res = json.load(open('./tests/test_resources/entry.json'))
-event_res = json.load(open('./tests/test_resources/event.json'))
-events_res = json.load(open('./tests/test_resources/events.json'))
-game_logs_res = json.load(open('./tests/test_resources/game_logs.json'))
-games_res = json.load(open('./tests/test_resources/games.json'))
-orders_res = json.load(open('./tests/test_resources/orders.json'))
-position_res = json.load(open('./tests/test_resources/position.json'))
-place_order_res = json.load(open('./tests/test_resources/order_place.json'))
-order_limit_res = json.load(open('./tests/test_resources/order_rate_limit.json'))
+authorization_res = json.load(open('./test_resources/authorization.json'))
+account_activity_res = json.load(open('./test_resources/account_activity.json'))
+entities_res = json.load(open('./test_resources/entities.json'))
+entry_res = json.load(open('./test_resources/entry.json'))
+event_res = json.load(open('./test_resources/event.json'))
+events_res = json.load(open('./test_resources/events.json'))
+game_logs_res = json.load(open('./test_resources/game_logs.json'))
+games_res = json.load(open('./test_resources/games.json'))
+orders_res = json.load(open('./test_resources/orders.json'))
+position_res = json.load(open('./test_resources/position.json'))
+place_order_res = json.load(open('./test_resources/order_place.json'))
+order_limit_res = json.load(open('./test_resources/order_rate_limit.json'))
 
 _test_api_key = "jm_key_xxx"
 _test_secret_key = "xxx"
@@ -41,7 +39,7 @@ class TestClient(TestCase):
         test_header = self.mock_init._build_auth_header(_test_auth_token)
         self.assertEqual(test_header['Authorization'], _test_bearer_object)
 
-    @mock.patch("client.requests.post")
+    @mock.patch("jockmkt_sdk.client.requests.post")
     def test_get_auth_token(self, get_auth_token_mock):
         mock_auth_response = mock.Mock(status_code=200)
         mock_auth_response.json.return_value = authorization_res
@@ -56,7 +54,7 @@ class TestClient(TestCase):
         self.assertIn(mock_key_map, self.mock_init._AUTH_TOKEN_MAP)
         self.assertEqual(self.mock_init._AUTH_TOKEN_MAP[mock_key_map], mock_auth_dict)
 
-    @mock.patch("client.requests.post")
+    @mock.patch("jockmkt_sdk.client.requests.post")
     def test_place_order(self, place_order_mock):
         mock_place_order_response = mock.Mock(status_code=200)
         mock_place_order_response.json.return_value = place_order_res
@@ -65,7 +63,7 @@ class TestClient(TestCase):
         mock_order_place = self.mock_init.place_order('tdbl_xxx', price=10, side='buy', phase='ipo', quantity=10)
         self.assertEqual(mock_order_place, mock_order_place)
 
-    @mock.patch('client.requests.post')
+    @mock.patch('jockmkt_sdk.client.requests.post')
     def test_handle_429_response(self, handle_response_mock):
         mock_order_error_res = mock.Mock(status_code=429)
         mock_order_error_res.json.return_value = order_limit_res
@@ -75,7 +73,7 @@ class TestClient(TestCase):
                                                       is_test=True)
         self.assertEqual(mock_order_place, 'successfully rerouted an order that would have failed.')
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_events(self, get_events_mock):
         mock_events_response = mock.Mock(status_code=200)
         mock_events_response.json.return_value = events_res
@@ -88,7 +86,7 @@ class TestClient(TestCase):
         self.assertEqual(mock_events_request[2].name, objects.Event(events_res['events'][2]).name)
         self.assertIsInstance(mock_events_request[0], objects.Event)
 
-    @mock.patch("client.requests.get")
+    @mock.patch("jockmkt_sdk.client.requests.get")
     def test_get_event(self, get_event_mock):
         mock_event_response = mock.Mock(status_code=200)
         mock_event_response.json.return_value = event_res
@@ -100,7 +98,7 @@ class TestClient(TestCase):
         self.assertIsInstance(mock_event_request.games[0], objects.Game)
         self.assertIsInstance(mock_event_request.tradeables[0].entity, objects.Entity)
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_entry(self, get_entry_mock):
         mock_entry_response = mock.Mock(status_code=200)
         mock_entry_response.json.return_value = entry_res
@@ -111,7 +109,7 @@ class TestClient(TestCase):
 
         self.assertEqual(mock_entry_request[0].profit, entry_res['entries'][0]['leaderboard']['amount'])
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_entities(self, get_entities_mock):
         mock_entities_response = mock.Mock(status_code=200)
         mock_entities_response.json.return_value = entities_res
@@ -123,7 +121,7 @@ class TestClient(TestCase):
         self.assertIsInstance(mock_entities_request[0].team, objects.Team)
         self.assertEqual(mock_entities_request[0].name, 'Kevin Durant')
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_game_logs(self, get_game_logs_mock):
         mock_game_log_response = mock.Mock(status_code=200)
         mock_game_log_response.json.return_value = game_logs_res
@@ -137,7 +135,7 @@ class TestClient(TestCase):
         self.assertIsInstance(mock_game_log_request[15].game, objects.Game)
         self.assertIsInstance(mock_game_log_request[15].team, objects.Team)
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_orders(self, get_orders_mock):
         mock_orders_response = mock.Mock(status_code=200)
         mock_orders_response.json.return_value = orders_res
@@ -149,7 +147,7 @@ class TestClient(TestCase):
         self.assertIsInstance(mock_orders_request[0], objects.Order)
         self.assertEqual(mock_orders_request[2].tradeable_id, objects.Order(orders_res['orders'][2]).tradeable_id)
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_positions(self, get_positions_mock):
         mock_positions_response = mock.Mock(status_code=200)
         mock_positions_response.json.return_value = position_res
@@ -162,7 +160,7 @@ class TestClient(TestCase):
         self.assertEqual(mock_positions_request[0].cost_basis_all_time,
                          position_res['positions'][0]['cost_basis_all_time'])
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_games(self, get_games_mock):
         mock_games_response = mock.Mock(status_code=200)
         mock_games_response.json.return_value = games_res
@@ -174,7 +172,7 @@ class TestClient(TestCase):
         self.assertIsInstance(mock_games_request[0], objects.Game)
         self.assertEqual(mock_games_request[0].venue, games_res['games'][0]['venue'])
 
-    @mock.patch('client.requests.get')
+    @mock.patch('jockmkt_sdk.client.requests.get')
     def test_get_account_activity(self, get_account_activity_mock):
         mock_aact_response = mock.Mock(status_code=200)
         mock_aact_response.json.return_value = account_activity_res
