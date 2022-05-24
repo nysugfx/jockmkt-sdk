@@ -75,9 +75,6 @@ Authorization & basic calls:
 
     client = Client(secret_key, api_key)
     
-    client.get_account_bal()
-    print(client.balance) # returns the user's balances
-    
     # after initializing Client, call any method to obtain an auth token. 
 
     #display the first 100 nba entities
