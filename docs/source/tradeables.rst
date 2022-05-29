@@ -11,4 +11,4 @@ The tradeable objects contain the following info:
 
 .. currentmodule:: jockmkt_sdk.objects
 
-.. automethod:: Tradeable
+.. autoclass:: Tradeable
