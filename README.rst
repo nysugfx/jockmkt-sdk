@@ -46,6 +46,13 @@ Contribute
 -----------
   - Source: https://github.com/nysugfx/jockmkt-sdk
   - Issue Tracker: https://github.com/nysugfx/jockmkt-sdk/issues
+  
+  **How to Contribute:**
+    - Reach out via email or in the Jockmkt Discord
+      - nysu.gfx@gmail.com
+      - adf#8401
+    - Open an issue if there's something you want fixed
+    - Open a pull request if you've made changes!
 
 Docs
 ----
