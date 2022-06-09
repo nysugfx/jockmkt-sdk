@@ -6,11 +6,12 @@ import objects
 from jm_sockets import sockets
 import asyncio
 import time
-client = Client('<secret>', '<api>')
+client = Client('5dvS7qravedGv8AeM6Y1nEGTffbKySbc', 'jm_key_mCxk2jho8hhaTgk3')
 # print(client.get_ws_topics())
 
 async def main():
     queue = asyncio.Queue()
+    list_msgs = []
     global loop
     global client
 
@@ -22,16 +23,19 @@ async def main():
     # sm = await jm_sockets.JockmktSocketClient(loop, client, 'b')
     # await sm.subscribe('account')
 
-    sm = await sockets.JockmktSocketManager.create(loop, client, callback=handle_evt)
+    sm = await client.ws_connect(loop, list_msgs, callback=queue.put)
     await sm.subscribe('account')
+    # sm = await sockets.JockmktSocketManager.create(loop, client, callback=handle_evt)
+    # await sm.subscribe('account')®
     # await asyncio.sleep(1)
     await sm.subscribe('games', league='mlb')
     # await asyncio.sleep(1)
-    await sm.subscribe('event', id='evt_629ecd4c8864714554e8665bdd7f7da8')
+    await sm.subscribe('event', id='evt_629e60b5726370c78750fddb138863b7')
     counter = 0
     while True:
-        # print('sleeping to keep open')
         await asyncio.sleep(0)
+        # if len(sm.messages)>0:
+        #     print(sm.messages)
 
         counter += 1
         # print(counter)

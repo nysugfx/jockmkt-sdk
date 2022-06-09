@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import time
+import typing
 
 import websockets as ws
 
@@ -18,7 +19,7 @@ class ReconnectWebsocket:
     PROTOCOL_VERSION = "1.0.0"
     AUTH_DICT = {}
 
-    def __init__(self, loop, client, coroutine, private=False):
+    def __init__(self, loop, client, coroutine):
         self._loop = loop
         self._log = logging.getLogger(__name__)
         self._coroutine = coroutine
@@ -27,7 +28,6 @@ class ReconnectWebsocket:
         self._ws_details = None
         self._connect_id = None
         self._client = client
-        self._private = private
         self._last_ping = None
         self._socket = None
         self.__build_auth_dict(client.ws_token_generator())
@@ -147,38 +147,41 @@ class JockmktSocketManager:
         "games": "league"
     }
 
-    def __init__(self):
+    def __init__(self, iterable):
         """Initialize the SocketManager
         """
         self._subscriptions = []
+        self.messages = iterable
         self._callback = None
         self._conn = None
         self._loop = None
         self._client = None
-        self._private = False
         self._log = logging.getLogger(__name__)
 
     @classmethod
-    async def create(cls, loop, client, callback, private=False):
+    async def create(cls, loop: asyncio.Event, client, queue: list, callback: typing.Callable = None):
         """
         create instance of socket manager and reconnect websocket
         """
-        self = JockmktSocketManager()
+        self = JockmktSocketManager(queue)
         self._loop = loop
-        self._private = private
         self._callback = callback
-        self._conn = ReconnectWebsocket(loop, client, self._recv, private)
+        self._conn = ReconnectWebsocket(loop, client, self._recv)
         return self
 
     async def _recv(self, msg):
         """
         handle incoming messages. The user should pass their event handling function in as an arg to callback
         """
-        await self._callback(msg)
+        if self.messages is not None:
+            self.messages.append(json.loads(msg))
+        if self._callback is not None:
+            print('callback')
+            await self._callback(msg)
 
-    async def subscribe(self, topic, id=None, league=None):
+    async def subscribe(self, topic: str, id: str = None, league: str = None):
         """
-        self explanatory
+        self-explanatory
         """
         topics = self.PUBLIC_TOPICS.keys()
         if topic not in topics:
@@ -191,7 +194,7 @@ class JockmktSocketManager:
                                 'league': league}}
         await self._conn.send_message(msg)
 
-    async def unsubscribe(self, topic, id=None, league=None):
+    async def unsubscribe(self, topic: str, id: str = None, league: str = None):
         """
         unsubscribe method
         """

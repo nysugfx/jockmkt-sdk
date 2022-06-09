@@ -4,13 +4,17 @@ import time
 from exception import JockAPIException
 from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
-
+import asyncio
+import websockets
+from jm_sockets import sockets
 
 class Client(object):
-    """The user should initialize an instance of this class and then call .get_auth_token(secret, api_key) to use other
-    class methods.
-    THIS IS RETARDED
-    :ivar ACCOUNT: The user's account information, including their balances and the auth token they generate.
+    """The user should initialize an instance of this class:
+        e.g. Client(secret, api_key)
+        and then they should call whichever method they wish. The class will automatically obtain an auth token.
+        Functionality included to auto update expired auth tokens or retreive new one if necessary.
+    :ivar secret: The user's secret key: xxx
+    :ivar api_key: the user's api key: jm_api_xxx
     """
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
@@ -35,6 +39,7 @@ class Client(object):
                    'triple_bogey': -2, 'quadruple_bogey': -3, 'quintuple_bogey': -4}
     NASCAR_SCORING = {'lap_complete': 1, 'position': -1, 'win': 10, 'start_bonus': 40}
     ACCOUNT = {}
+    balance = {}
 
     def __init__(self, secret, api_key, request_params=None):
         self._request_params = request_params
@@ -42,6 +47,7 @@ class Client(object):
         self.api_key = api_key
         user_auth = Client._AUTH_TOKEN_MAP.get(f'{api_key}:{secret}', None)
         self.auth = user_auth
+        self.balance = 0
 
     def _create_path(self, path, api_version=None):
         """generates a path for self._request
@@ -79,7 +85,7 @@ class Client(object):
         if auth is None:
             print('no auth token')
             token = self._get_auth_token()
-        elif auth['expired_at'] < round(time.time()*1000):
+        elif auth['expired_at'] < round(time.time() * 1000):
             token = self._get_auth_token()
         else:
             token = auth['token']
@@ -89,6 +95,7 @@ class Client(object):
         kwargs['data'] = kwargs.get('data', {})
         kwargs['params'] = kwargs.get('params', {})
         kwargs['payload'] = kwargs.get('payload', {})
+        kwargs['is_test'] = kwargs.get('is_test', {})
 
         full_path = self._create_path(path, api_version)
 
@@ -114,16 +121,18 @@ class Client(object):
 
         if method == 'delete':
             response = requests.delete('{}{}'.format(self.BASE_URL, full_path), headers=self._build_auth_header(token))
+
         res = self._handle_response(response, method, path, attempt_number=attempt_number, payload=kwargs)
+
         return res
 
     def _handle_response(self, json_response, method, path, attempt_number, **kwargs):
         """helper to handle api responses and determine exceptions
         """
-
         if json_response.status_code == 429:
             order = kwargs.get('payload')
-            return self._retry_order(order['data'])
+            is_test = order['is_test']
+            return self._retry_order(order['data'], is_test=is_test)
 
         elif str(json_response.status_code).startswith('50'):
             payload = kwargs.get('payload')
@@ -143,18 +152,23 @@ class Client(object):
         if attempt_number >= max_attempts:
             raise JockAPIException(json_response)
         backoff_times = [3, 10, 30]
-        print(f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying "
+        print(f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying"
               f"in {backoff_times[attempt_number]} seconds")
         time.sleep(backoff_times[attempt_number])
-        response = self._request(method, path, attempt_number=attempt_number+1, payload=payload['payload'])
+        response = self._request(method, path, attempt_number=attempt_number + 1, payload=payload['payload'])
 
-        if str(response.status_code).startswith("2"):
+        if response['status'] == 'success':
             return response
 
-    def _retry_order(self, order):
-        next_minute = 60-datetime.now().second
+    def _retry_order(self, order, **kwargs):
+        next_minute = 60 - datetime.now().second
         print(f"You've placed too many orders in the past minute. Sleeping for {next_minute} seconds")
-        time.sleep(next_minute)
+        is_test = kwargs.get('is_test', False)
+        if is_test:
+            print('sleeping...')
+            return 'successfully rerouted an order that would have failed.'
+        else:
+            time.sleep(next_minute)
         return self._post('orders', data=order)
 
     def _get(self, path, api_version=None, **kwargs):
@@ -172,10 +186,15 @@ class Client(object):
         """
         return self._request('delete', path, api_version, **kwargs)
 
-    def _get_account_bal(self):
+    def get_account_bal(self):
         """method retreiving user's USD balance
         """
+        Client.balance = self._get("balances")['balances']
         return self._get("balances")['balances']
+
+    def get_account(self):
+        Client.ACCOUNT = self._get('account')['account']
+        return self._get('account')['account']
 
     def get_scoring(self, league):
         """
@@ -224,7 +243,7 @@ class Client(object):
     def get_team(self, team_id: str) -> Team:
         """fetch a specific team based on their team id
 
-        :param team_id: a team id, starting with team\_ (e.g. "team_8fe94ef0d1f0a00e1285301c4092650f")
+        :param team_id: a team id, starting with team_ (e.g. "team_8fe94ef0d1f0a00e1285301c4092650f")
         :type team_id: str, required
 
         :returns: a dictionary with team information
@@ -328,7 +347,7 @@ class Client(object):
         return Game(self._get(f"games/{game_id}")['game'])
 
     def get_game_logs(self, start: int = 0, limit: int = 100, log_id: str = None, entity_id: str = None,
-                      game_id: str = None, include_ent: bool = False, include_game: bool = False,
+                      game_id: str = None, include_ent: bool = True, include_game: bool = False,
                       include_team: bool = False) -> list[GameLog]:
         """fetch game logs
 
@@ -382,7 +401,6 @@ class Client(object):
         print('limit: ' + str(res['limit']))
         print('count: ' + str(res['count']))
         for log in res['game_logs']:
-            print(log)
             response.append(GameLog(log))
         return response
 
@@ -503,7 +521,6 @@ class Client(object):
         if include_tradeables:
             include.append('payouts.tradeable')
         params['include'] = str(include)
-        print(params)
         response_list = []
         res = self._get("entries", params=params)
         print('status: ' + res['status'])
@@ -511,12 +528,13 @@ class Client(object):
         print('limit: ' + str(res['limit']))
         print('count: ' + str(res['count']))
         for entry in res['entries']:
-            response_list.append(entry)
+            response_list.append(Entry(entry))
         return response_list
 
     def get_entry(self, entry_id: str, include_event: bool = False, include_payouts: bool = False,
                   include_tradeables: bool = False) -> Entry:
-        """Method to obtain information about an event that a user has entered
+        """Method to obtain information about an event that a user has entered. include_payouts and include_tradeables
+        will only provide info after the event is paid out.
 
         :param entry_id: The entry_id for which the user wishes to get information
             (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)
@@ -542,13 +560,14 @@ class Client(object):
             include.append('payouts.tradeable')
         if len(include) != 0:
             params['include'] = str(include)
-        print(params)
         entry = self._get(f"entries/{entry_id}", params=params)
-        print(entry)
         return Entry(entry['entry'])
 
     def create_entry(self, event_id: str) -> dict:
         """create an entry to an event given an event_id e.g. evt_60dbec530d2197a973c5dddcf6f65e12
+
+        :param event_id: the event_id for which the user would like to create an entry to
+        :type event_id: str, required
         """
         return self._post(f"entries", data={'event_id': event_id})
 
@@ -586,7 +605,7 @@ class Client(object):
 
         order = {'tradeable_id': id, 'side': side, 'type': 'limit', 'phase': phase, 'quantity': str(qty),
                  'limit_price': str(price)}
-        order_response = self._post('orders', data=order)
+        order_response = self._post('orders', data=order, is_test=kwargs.get('is_test', False))
         print(order_response)
 
         return order_response
@@ -690,3 +709,20 @@ class Client(object):
         for aact in activity_res['activity']:
             acct_activity.append(AccountActivity(aact))
         return acct_activity
+
+    def ws_token_generator(self):
+        self._get('account')
+        return self.auth['token']
+
+    def get_ws_topics(self):
+        topics = {'event': {'required_args': 'event_id'},
+                  'event_activity': {'required_args': 'event_id'},
+                  'account': {'required_args': None},
+                  'notifications': {'required_args': None},
+                  'games': {'required_args': 'league', 'options':
+                            self.LEAGUES}}
+        return topics
+
+    def ws_connect(self, loop, queue, callback=None):
+        return sockets.JockmktSocketManager.create(loop, self, queue, callback)
+
