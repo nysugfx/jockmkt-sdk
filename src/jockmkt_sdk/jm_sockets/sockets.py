@@ -185,8 +185,8 @@ class JockmktSocketManager:
         """
         topics = self.PUBLIC_TOPICS.keys()
         if topic not in topics:
-            print(f'please choose from the following topics: {topics}')
-            return
+            # print(f'please choose from the following topics: {topics}')
+            raise KeyError(f'please choose from the following topics: {topics}')
         self._subscriptions.append((topic, id, league))
         msg = {"action": "subscribe",
                "subscription": {"type": str(topic),

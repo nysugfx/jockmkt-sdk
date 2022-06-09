@@ -6,7 +6,7 @@ import objects
 from jm_sockets import sockets
 import asyncio
 import time
-client = Client('---', '---')
+client = Client('--', '--')
 # print(client.get_ws_topics())
 
 async def main():

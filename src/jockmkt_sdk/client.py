@@ -721,6 +721,7 @@ class Client(object):
                   'notifications': {'required_args': None},
                   'games': {'required_args': 'league', 'options':
                             self.LEAGUES}}
+
         return topics
 
     def ws_connect(self, loop, queue, callback=None):
