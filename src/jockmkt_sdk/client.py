@@ -92,30 +92,20 @@ class Client(object):
 
         if self._request_params:
             kwargs.update(self._request_params)
+
         kwargs['data'] = kwargs.get('data', {})
         kwargs['params'] = kwargs.get('params', {})
         kwargs['payload'] = kwargs.get('payload', {})
         kwargs['is_test'] = kwargs.get('is_test', {})
 
         full_path = self._create_path(path, api_version)
-
         if method == 'get':
-            if kwargs['data']:
-                kwargs['payload'] = kwargs['data']
-            elif kwargs['params']:
-                kwargs['payload'] = kwargs['params']
-            else:
-                kwargs['payload'] = kwargs['payload']
+            kwargs['payload'] = kwargs.get('params')
             response = requests.get('{}{}'.format(self.BASE_URL, full_path), params=kwargs['payload'],
                                     headers=self._build_auth_header(token))
 
         if method == 'post':
-            if kwargs['data']:
-                kwargs['payload'] = kwargs['data']
-            elif kwargs['params']:
-                kwargs['payload'] = kwargs['params']
-            else:
-                kwargs['payload'] = kwargs['payload']
+            kwargs['payload'] = kwargs.get('data')
             response = requests.post('{}{}'.format(self.BASE_URL, full_path), data=kwargs['payload'],
                                      headers=self._build_auth_header(token))
 
@@ -129,7 +119,7 @@ class Client(object):
     def _handle_response(self, json_response, method, path, attempt_number, **kwargs):
         """helper to handle api responses and determine exceptions
         """
-        if json_response.status_code == 429:
+        if json_response.status_code == 429 and 'tradeable_id' in kwargs['payload']['data']:
             order = kwargs.get('payload')
             is_test = order['is_test']
             return self._retry_order(order['data'], is_test=is_test)
@@ -724,6 +714,6 @@ class Client(object):
 
         return topics
 
-    def ws_connect(self, loop, queue, callback=None):
-        return sockets.JockmktSocketManager.create(loop, self, queue, callback)
+    def ws_connect(self, loop, queue, error_handler, callback=None):
+        return sockets.JockmktSocketManager.create(loop, self, queue, error_handler, callback)
 

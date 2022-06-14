@@ -3,7 +3,8 @@ import json
 import logging
 import time
 import typing
-
+from src.jockmkt_sdk.objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+    _case_switch_ent
 import websockets as ws
 
 
@@ -12,24 +13,19 @@ class JMWebsocketException(Exception):
 
 
 class ReconnectWebsocket:
-    MAX_RECONNECTS = 5
-    MAX_RECONNECT_SECS = 60
-    MAX_RECONNECT_WAIT = 0.1
-    TIMEOUT = 10
-    PROTOCOL_VERSION = "1.0.0"
     AUTH_DICT = {}
 
-    def __init__(self, loop, client, coroutine):
+    def __init__(self, loop, client, coroutine, error_handler):
         self._loop = loop
-        self._log = logging.getLogger(__name__)
         self._coroutine = coroutine
-        self._reconnect_attempts = 0
         self._conn = None
-        self._ws_details = None
-        self._connect_id = None
         self._client = client
-        self._last_ping = None
         self._socket = None
+        self.log = logging.getLogger(__name__)
+        if not error_handler:
+            self._error_handler = self.reconnect()
+        else:
+            self._error_handler = error_handler
         self.__build_auth_dict(client.ws_token_generator())
         self._connect()
 
@@ -58,64 +54,23 @@ class ReconnectWebsocket:
             print("async with called")
             self._socket = socket
             self._reconnect_attempts = 0
-            await self.send_message(self.AUTH_DICT)
-            await self._socket.recv()
-            async for message in socket:
-                await self._coroutine(message)
+            try:
+                await self.send_message(self.AUTH_DICT)
+                await self._socket.recv()
+                async for message in socket:
+                    await self._coroutine(message)
 
-            # try:
-            #     while keep_waiting:
-            #         print("waiting")
-            #         try:
-            #             evt = await self._socket.recv()
-            #             print('evt', evt)
-            #         except asyncio.TimeoutError:
-            #             self._log.debug(f"no message in {self._get_ws_ping_timeout()} seconds")
-            #             await self.send_ping()
-            #         except asyncio.CancelledError:
-            #             self._log.debug("cancelled error")
-            #             await self._socket.ping()
-            #         else:
-            #             try:
-            #                 evt_obj = json.loads(evt)
-            #             except ValueError:
-            #                 pass
-            #             else:
-            #                 await self._coroutine(evt_obj)
-            # except ws.ConnectionClosed:
-            #     keep_waiting = False
-            #     await self._reconnect()
-            # except Exception as e:
-            #     self._log.debug(f"ws exception:{e}")
-            #     keep_waiting = False
-            #     await self._reconnect()
+            except ws.ConnectionClosedError as on_close:
+                self.log.debug(f'Connection terminated with an error: {on_close}')
+                await self._error_handler(message, on_close)
 
-    def _get_ws_ping_timeout(self):
-        pass
-        if not self._ws_details:
-            raise Exception("Unknown Websocket details")
+            except Exception as e:
+                self.log.debug(f'unknown ws exception: {e}')
+                await self._error_handler(message, e)
 
-        ping_timeout = 10
-        return ping_timeout
-
-    async def _reconnect(self):
-        """
-        not yet implemented
-        """
+    async def reconnect(self):
         await self.cancel()
-        self._reconnect_attempts += 1
-        if self._reconnect_attempts < self.MAX_RECONNECTS:
-            self._log.debug(f"Websocket reconnecting. {self.MAX_RECONNECTS - self._reconnect_attempts} attempts left.")
-            self._get_reconnect_wait(self._reconnect_attempts)
-
-        else:
-            self._log.error(f"websocket could not reconnect after {self._reconnect_attempts} attempts")
-            pass
-
-    @staticmethod
-    def _get_reconnect_wait(attempts):
-        wait_times = [1, 10, 50, 100]
-        return wait_times[attempts]
+        self._connect()
 
     async def send_message(self, msg, retry_count=0):
         """
@@ -156,25 +111,55 @@ class JockmktSocketManager:
         self._conn = None
         self._loop = None
         self._client = None
-        self._log = logging.getLogger(__name__)
 
     @classmethod
-    async def create(cls, loop: asyncio.Event, client, queue: list, callback: typing.Callable = None):
+    async def create(cls, loop: asyncio.Event, client, queue: list, exception_handler: typing.Callable,
+                     callback: typing.Callable = None):
         """
         create instance of socket manager and reconnect websocket
+        **KWARGS uses
         """
         self = JockmktSocketManager(queue)
         self._loop = loop
         self._callback = callback
-        self._conn = ReconnectWebsocket(loop, client, self._recv)
+        self._error_handler = exception_handler
+        self._conn = ReconnectWebsocket(loop, client, self._recv, self._error_handler)
         return self
+
+    async def reconnect(self):
+        await self._conn.reconnect()
+
+    @staticmethod
+    def _wsfeed_case_switcher(obj, msg):
+        match obj:
+            case 'error':
+                raise Exception(f'{msg}')
+            case 'tradeable':
+                return Tradeable(msg['tradeable'])
+            case 'game':
+                return Game(msg['game'])
+            case 'event':
+                return Event(msg['event'])
+            case 'entry':
+                return Entry(msg['entry'])
+            case 'position':
+                return Position(msg['position'])
+            case 'order':
+                return Order(msg['order'])
+
+    async def exception_handler(self, **kwargs):
+        await self._error_handler(kwargs)
 
     async def _recv(self, msg):
         """
         handle incoming messages. The user should pass their event handling function in as an arg to callback
         """
         if self.messages is not None:
-            self.messages.append(json.loads(msg))
+            messsage = json.loads(msg)
+            type = messsage['object']
+            obj = self._wsfeed_case_switcher(type, messsage)
+            messsage[type] = obj
+            self.messages.append(messsage)
         if self._callback is not None:
             print('callback')
             await self._callback(msg)
@@ -185,8 +170,7 @@ class JockmktSocketManager:
         """
         topics = self.PUBLIC_TOPICS.keys()
         if topic not in topics:
-            # print(f'please choose from the following topics: {topics}')
-            raise KeyError(f'please choose from the following topics: {topics}')
+            raise KeyError(f'please choose from the following topics: {list(topics)}')
         self._subscriptions.append((topic, id, league))
         msg = {"action": "subscribe",
                "subscription": {"type": str(topic),
