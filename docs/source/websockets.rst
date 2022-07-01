@@ -29,7 +29,7 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
 .. automethod:: Client.ws_connect
 
-.. currentmodule:: jockmkt_sdk.jm_sockets.websockets
+.. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
 .. autoclass:: JockmktSocketManager
 
