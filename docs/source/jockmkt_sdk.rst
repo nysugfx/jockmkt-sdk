@@ -30,8 +30,8 @@ jockmkt\_sdk.objects module
    :undoc-members:
    :show-inheritance:
 
-jockmkt\_sdk.sockets module
----------------------------
+jockmkt\_sdk.jm_sockets.sockets module
+--------------------------------------
 
 .. automodule:: jockmkt_sdk.jm_sockets.sockets
    :members: JockmktSocketManager, ReconnectWebsocket
@@ -43,6 +43,6 @@ Module contents
 ---------------
 
 .. automodule:: jockmkt_sdk
-   :members: client, exception, objects, jm_sockets.sockets
+   :members: client, exception, objects, jm_sockets
    :undoc-members:
    :show-inheritance:

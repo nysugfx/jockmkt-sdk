@@ -3,6 +3,7 @@ Websockets
 ==========
 
 .. websockets_
+
 Websockets allow the user to connect to a range of endpoints and receive continuous updates without having to ping the api again. Most websocket messages containing Tradeables, Games, Events, Entries, Positions, Orders and Trades will be converted to objects instead of just dictionaries. Their attributes can be accessed via a '.'
 
 **the available sockets are as follows:**
@@ -23,25 +24,74 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 - notification
     - notifications about order fills, events closing, and outbids
 
-.. currentmodule:: jockmkt_sdk.client
+.. py:currentmodule:: jockmkt_sdk.client
 
 .. automethod:: Client.get_ws_topics
 
+**Browse websocket topics:**
+
+.. code-block::
+
+    client.get_ws_topics()
+
 .. automethod:: Client.ws_connect
+
+**Connect to a websocket:**
+
+    client.ws_connect(loop, queue, error_handler)
+
+- Client.ws_connect()
+
+- args:
+    - *loop:* an asyncio loop. see example below.
+    - *queue:* an iterable (usually a list) in which you want your messages to be stored.
+    - *error_handler:* an async function that handles errors. Defaults to .reconnect.
+
+.. code-block::
+
+    socket_manager = await client.ws_connect(loop, queue=msg_list, error_handler=error_handler)
+
+.. important::
+
+    you must **await** client.ws_connect()! You cannot simply call it, since it is an asynchronous function.
 
 .. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
 .. autoclass:: JockmktSocketManager
 
+**JockmktSocketManager**
+
+- *available instance variables:*
+    - *messages:* the iterable to which the user wants to append messages
+    - *balances:* regularly updated balances, including cash and contest balances.
+
+- **available methods within the JockmktSocketManager class**
+
 .. automethod:: JockmktSocketManager.subscribe
+
+- *JockmktSocketManager.subscribe()*
+    - Subscribe to a single topic
+    - *params:*
+        - *topic:* str, required, the user's chosen topic. use client.get_ws_topics() for info.
+        - *id:* str, required if you are subscribing to 'event' or 'event_activity'
+        - *league:* str, required if you are subscribing to 'games'
 
 .. automethod:: JockmktSocketManager.unsubscribe
 
+- *JockmktSocketManager.unsubscribe()*
+    - unsubscribe from a single topic
+    - *params:*
+        - *topic:* str, required, the user's chosen topic. use client.get_ws_topics() for info.
+        - *id:* str, required if you are subscribing to 'event' or 'event_activity'
+        - *league:* str, required if you are subscribing to 'games'
+
 .. automethod:: JockmktSocketManager.unsubscribe_all
+
+- *JockmktSocketManager.unsubscribe_all()*
+    - unsubscribe from a single topic
 
 .. automethod:: JockmktSocketManager.reconnect
 
-.. automethod:: ReconnectWebsockets.subscribe
 
 .. websocket examples_
 
