@@ -2,5 +2,5 @@ requests >= 2.27.1
 DateTime >= 4.3
 pytest~=7.1.2
 websockets >= 10.3
-logging
-asyncio
+typing>=3.7.4.3
+typing_extensions>=4.0.1
