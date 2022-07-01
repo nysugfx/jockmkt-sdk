@@ -18,7 +18,7 @@ import sphinx
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../..')
+sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../src/jockmkt_sdk/'))
 sys.path.insert(0, os.path.abspath('../../src/jockmkt_sdk/jm_sockets/'))
 # -- Project information -----------------------------------------------------
