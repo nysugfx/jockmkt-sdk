@@ -33,7 +33,7 @@ jockmkt\_sdk.objects module
 jockmkt\_sdk.websockets module
 ---------------------------
 
-.. automodule:: jockmkt_sdk.websockets
+.. automodule:: jockmkt_sdk.jm_sockets.sockets
    :members: JockmktSocketManager, ReconnectWebsocket
    :noindex:
    :undoc-members:
