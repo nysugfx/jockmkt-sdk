@@ -1,12 +1,12 @@
 import requests
 from datetime import datetime
 import time
-from .exception import JockAPIException
-from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+from exception import JockAPIException
+from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
 import asyncio
 import websockets
-from .jm_sockets import sockets
+from jm_sockets import sockets
 
 class Client(object):
     """The user should initialize an instance of this class:
