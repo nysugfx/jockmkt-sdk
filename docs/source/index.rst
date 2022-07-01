@@ -7,7 +7,7 @@ Welcome to jockmkt-sdk's documentation!
 =======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    introduction
@@ -23,6 +23,7 @@ Welcome to jockmkt-sdk's documentation!
    account
    examples
    modules
+   websockets
 
 
 

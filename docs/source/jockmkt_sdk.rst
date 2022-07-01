@@ -25,7 +25,16 @@ jockmkt\_sdk.objects module
 ---------------------------
 
 .. automodule:: jockmkt_sdk.objects
-   :members: Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, NBAEntity, NFLEntity, PGAEntity, NHLEntity, NASCAREntity, MLBEntity
+   :members: Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, Trade, PublicOrder, NBAEntity, NFLEntity, PGAEntity, NHLEntity, NASCAREntity, MLBEntity
+   :noindex:
+   :undoc-members:
+   :show-inheritance:
+
+jockmkt\_sdk.websockets module
+---------------------------
+
+.. automodule:: jockmkt_sdk.websockets
+   :members: JockmktSocketManager, ReconnectWebsocket
    :noindex:
    :undoc-members:
    :show-inheritance:
@@ -34,6 +43,6 @@ Module contents
 ---------------
 
 .. automodule:: jockmkt_sdk
-   :members: client, exception, objects
+   :members: client, exception, objects, websockets
    :undoc-members:
    :show-inheritance:

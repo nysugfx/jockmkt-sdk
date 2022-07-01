@@ -11,7 +11,7 @@ Order Endpoints
 
 .. important::
 
-    The user is limited to 10 orders per minute, with a refresh at the start of each new minute. See :ref:`Examples` for information about how to handle this.
+    The user is limited to 10 orders per minute, with a refresh at the start of each new minute. The SDK will automatically handle this.
 
 .. automethod:: Client.place_order
 
@@ -45,9 +45,13 @@ Can only be used if the order was placed during live trading. Will return inform
 
 .. order object_
 
-Order Object
-============
+Order Objects
+=============
 
 .. currentmodule:: jockmkt_sdk.objects
 
 .. autoclass:: Order
+
+.. autoclass:: PublicOrder
+
+.. autoclass:: Trade
