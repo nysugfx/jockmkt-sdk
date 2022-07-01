@@ -4,7 +4,9 @@ import time
 from .exception import JockAPIException
 from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
-
+import asyncio
+import websockets
+from .jm_sockets import sockets
 
 class Client(object):
     """The user should initialize an instance of this class:
@@ -83,36 +85,27 @@ class Client(object):
         if auth is None:
             print('no auth token')
             token = self._get_auth_token()
-        elif auth['expired_at'] < round(time.time()*1000):
+        elif auth['expired_at'] < round(time.time() * 1000):
             token = self._get_auth_token()
         else:
             token = auth['token']
 
         if self._request_params:
             kwargs.update(self._request_params)
+
         kwargs['data'] = kwargs.get('data', {})
         kwargs['params'] = kwargs.get('params', {})
         kwargs['payload'] = kwargs.get('payload', {})
+        kwargs['is_test'] = kwargs.get('is_test', {})
 
         full_path = self._create_path(path, api_version)
-
         if method == 'get':
-            if kwargs['data']:
-                kwargs['payload'] = kwargs['data']
-            elif kwargs['params']:
-                kwargs['payload'] = kwargs['params']
-            else:
-                kwargs['payload'] = kwargs['payload']
+            kwargs['payload'] = kwargs.get('params')
             response = requests.get('{}{}'.format(self.BASE_URL, full_path), params=kwargs['payload'],
                                     headers=self._build_auth_header(token))
 
         if method == 'post':
-            if kwargs['data']:
-                kwargs['payload'] = kwargs['data']
-            elif kwargs['params']:
-                kwargs['payload'] = kwargs['params']
-            else:
-                kwargs['payload'] = kwargs['payload']
+            kwargs['payload'] = kwargs.get('data')
             response = requests.post('{}{}'.format(self.BASE_URL, full_path), data=kwargs['payload'],
                                      headers=self._build_auth_header(token))
 
@@ -126,16 +119,16 @@ class Client(object):
     def _handle_response(self, json_response, method, path, attempt_number, **kwargs):
         """helper to handle api responses and determine exceptions
         """
-        if json_response.status_code == 429:
+        if json_response.status_code == 429 and 'tradeable_id' in kwargs['payload']['data']:
             order = kwargs.get('payload')
-            return self._retry_order(order['data'])
+            is_test = order['is_test']
+            return self._retry_order(order['data'], is_test=is_test)
 
         elif str(json_response.status_code).startswith('50'):
             payload = kwargs.get('payload')
             return self._retry_request(json_response, method, path, payload, attempt_number)
 
         elif not str(json_response.status_code).startswith('2'):
-            print(str(json_response.status_code))
             raise JockAPIException(json_response)
 
         try:
@@ -149,18 +142,23 @@ class Client(object):
         if attempt_number >= max_attempts:
             raise JockAPIException(json_response)
         backoff_times = [3, 10, 30]
-        print(f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying "
+        print(f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying"
               f"in {backoff_times[attempt_number]} seconds")
         time.sleep(backoff_times[attempt_number])
-        response = self._request(method, path, attempt_number=attempt_number+1, payload=payload['payload'])
+        response = self._request(method, path, attempt_number=attempt_number + 1, payload=payload['payload'])
 
         if response['status'] == 'success':
             return response
 
-    def _retry_order(self, order):
-        next_minute = 60-datetime.now().second
+    def _retry_order(self, order, **kwargs):
+        next_minute = 60 - datetime.now().second
         print(f"You've placed too many orders in the past minute. Sleeping for {next_minute} seconds")
-        time.sleep(next_minute)
+        is_test = kwargs.get('is_test', False)
+        if is_test:
+            print('sleeping...')
+            return 'successfully rerouted an order that would have failed.'
+        else:
+            time.sleep(next_minute)
         return self._post('orders', data=order)
 
     def _get(self, path, api_version=None, **kwargs):
@@ -183,6 +181,10 @@ class Client(object):
         """
         Client.balance = self._get("balances")['balances']
         return self._get("balances")['balances']
+
+    def get_account(self):
+        Client.ACCOUNT = self._get('account')['account']
+        return self._get('account')['account']
 
     def get_scoring(self, league):
         """
@@ -335,7 +337,7 @@ class Client(object):
         return Game(self._get(f"games/{game_id}")['game'])
 
     def get_game_logs(self, start: int = 0, limit: int = 100, log_id: str = None, entity_id: str = None,
-                      game_id: str = None, include_ent: bool = False, include_game: bool = False,
+                      game_id: str = None, include_ent: bool = True, include_game: bool = False,
                       include_team: bool = False) -> list[GameLog]:
         """fetch game logs
 
@@ -383,7 +385,6 @@ class Client(object):
             params['include'] = str(include)
         params['start'] = start * limit
         params['limit'] = limit
-        print(params)
         res = self._get("game_logs", params=params)
         print('status: ' + res['status'])
         print('start: ' + str(res['start']))
@@ -411,6 +412,7 @@ class Client(object):
         :rtype: list[objects.Event]
 
         """
+        print('fetching events')
         list_events = []
         data = {'start': str(start * limit), 'limit': limit}
         if league is not None:
@@ -522,7 +524,8 @@ class Client(object):
 
     def get_entry(self, entry_id: str, include_event: bool = False, include_payouts: bool = False,
                   include_tradeables: bool = False) -> Entry:
-        """Method to obtain information about an event that a user has entered
+        """Method to obtain information about an event that a user has entered. include_payouts and include_tradeables
+        will only provide info after the event is paid out.
 
         :param entry_id: The entry_id for which the user wishes to get information
             (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)
@@ -548,13 +551,14 @@ class Client(object):
             include.append('payouts.tradeable')
         if len(include) != 0:
             params['include'] = str(include)
-        print(params)
         entry = self._get(f"entries/{entry_id}", params=params)
-        print(entry)
         return Entry(entry['entry'])
 
     def create_entry(self, event_id: str) -> dict:
         """create an entry to an event given an event_id e.g. evt_60dbec530d2197a973c5dddcf6f65e12
+
+        :param event_id: the event_id for which the user would like to create an entry to
+        :type event_id: str, required
         """
         return self._post(f"entries", data={'event_id': event_id})
 
@@ -592,7 +596,7 @@ class Client(object):
 
         order = {'tradeable_id': id, 'side': side, 'type': 'limit', 'phase': phase, 'quantity': str(qty),
                  'limit_price': str(price)}
-        order_response = self._post('orders', data=order)
+        order_response = self._post('orders', data=order, is_test=kwargs.get('is_test', False))
         print(order_response)
 
         return order_response
@@ -696,3 +700,35 @@ class Client(object):
         for aact in activity_res['activity']:
             acct_activity.append(AccountActivity(aact))
         return acct_activity
+
+    def ws_token_generator(self):
+        self._get('account')
+        return self.auth['token']
+
+    def get_ws_topics(self):
+        """
+        returns a dictionary of websocket topics and their required arguments
+        """
+        topics = {'event': {'required_args': 'event_id'},
+                  'event_activity': {'required_args': 'event_id'},
+                  'account': {'required_args': None},
+                  'notifications': {'required_args': None},
+                  'games': {'required_args': 'league', 'options':
+                            self.LEAGUES}}
+
+        return topics
+
+    def ws_connect(self, loop, queue, error_handler, callback=None):
+        """
+        Initialize a websocket connection. See docs for example code.
+
+        :param loop:          An asyncio loop, i.e. asyncio.get_event_loop
+        :type loop:           asyncio.Event, required
+        :param queue:         A list that websocket messages will be pushed to
+        :type queue:          iterable, required
+        :param error_handler: a method for handling errors. The user can pass socket.reconnect here
+        :type error_handler:  Callable, required
+        """
+
+        return sockets.JockmktSocketManager.create(loop, self, queue, error_handler, callback)
+

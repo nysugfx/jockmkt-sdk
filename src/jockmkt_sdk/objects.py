@@ -41,6 +41,7 @@ class Entity(object):
         self.first_name = entity.get('first_name')
         self.last_name = entity.get('last_name')
         self.updated_at = entity.get('updated_at')
+        self.image_url = entity.get('image_url')
         self.news = entity.get('latest_news', {})
 
     def __repr__(self):
@@ -343,7 +344,6 @@ class Game(object):
 
 class GameLog(object):
     """
-    TODO: HANDLING OF horse racing sim entities
     different leagues will return different dictionaries of stats/projected. There is currently no league identifier.
 
     use GameLog.available_attributes() to see what attributes can be called.
@@ -362,7 +362,7 @@ class GameLog(object):
     :ivar team:            :class:`objects.Team` information about the team this player is on
     """
 
-    def __init__(self, game_log):
+    def __init__(self, game_log: dict):
         self.id = game_log.get('id')
         self.entity_id = game_log.get('entity_id')
         self.game_id = game_log.get('game_id')
@@ -370,15 +370,12 @@ class GameLog(object):
         self.scheduled_start = game_log.get('scheduled_start')
         self.updated_at = game_log.get('updated_at')
         projected_stats = game_log.get('projected_stats', {'league': None})
-        # for key in projected_stats:
-        #     self.__dict__['projected_' + key] = projected_stats[key]
+        self.projected_stats = projected_stats
         actual_stats = game_log.get('stats', {'league': None})
-        # for k in stats:
-        #     self.__dict__['actual_' + k] = stats[k]
+        self.actual_stats = actual_stats
         self.league = actual_stats.get('league', projected_stats.get('league'))
-        entity = game_log.get('entity', {})
-        if entity is not None:
-            self.entity = _case_switch_ent(entity)
+        entity = game_log.get('entity', {'league': self.league})
+        self.entity = _case_switch_ent(entity)
         game = game_log.get('game', {})
         self.game = Game(game)
         team = game_log.get('team', {})
@@ -404,22 +401,23 @@ class Event(object):
     Class dedicated to storing event-related info. May contain list of Game objects, Tradeable objects and other
     information related to payouts and whether the event is a contest.
 
-    :ivar event_id:     event_id for the chosen event, accessed via self.event_id. Used to access other event-specific info
-    :ivar name:         the event's name as displayed on the app
-    :ivar description:  the event's description
-    :ivar type:         the type of event, either a contest or a cash market
-    :ivar status:       the event's status. One of: scheduled, cancelled, halted, ipo, ipo_closed, live, live_closed, payouts_completed, prizes_paid or contests_paid
-    :ivar league:       the league to which this event's scoring, games and players apply
-    :ivar ipo_start:    timestamp at which the ipo opens
-    :ivar ipo_end:      estimated time at which the ipo should end
-    :ivar amt_complted: percentage of the event completed
-    :ivar updated_at:   last timestamp at which the event was updated
-    :ivar payouts:      a list of payouts for the event in the following format: 'payouts': [{'position': 1, 'amount': 25},..., {'position': n, 'amount': k}]
-    :ivar games:        a list of :class:`objects.Game` objects
-    :ivar tradeables:   a list of :class`objects.Tradeable` objects
-    :ivar contest:      information about the contest, if it's a contest-type market see: `objects.Event.type`
+    :ivar event_id:      event_id for the chosen event, accessed via self.event_id. Used to access other event-specific info
+    :ivar name:          the event's name as displayed on the app
+    :ivar description:   the event's description
+    :ivar type:          the type of event, either a contest or a cash market
+    :ivar status:        the event's status. One of: scheduled, cancelled, halted, ipo, ipo_closed, live, live_closed, payouts_completed, prizes_paid or contests_paid
+    :ivar league:        the league to which this event's scoring, games and players apply
+    :ivar ipo_start:     timestamp at which the ipo opens
+    :ivar ipo_end:       estimated time at which the ipo should end
+    :ivar est_close:     estimated time the event will close
+    :ivar amt_completed: percentage of the event completed
+    :ivar updated_at:    last timestamp at which the event was updated
+    :ivar payouts:       a list of payouts for the event in the following format: 'payouts': [{'position': 1, 'amount': 25},..., {'position': n, 'amount': k}]
+    :ivar games:         a list of :class:`objects.Game` objects
+    :ivar tradeables:    a list of :class`objects.Tradeable` objects
+    :ivar contest:       information about the contest, if it's a contest-type market see: `objects.Event.type`
     """
-    def __init__(self, event):
+    def __init__(self, event: dict):
         self.event_id = event.get('id')
         self.name = event.get('name')
         self.description = event.get('description')
@@ -428,6 +426,7 @@ class Event(object):
         self.league = event.get('league')
         self.ipo_start = event.get('ipo_open_at')
         self.ipo_end = event.get('live_at_estimated')
+        self.est_close = event.get('close_at_estimated')
         self.amt_completed = event.get('amount_completed')
         self.updated_at = event.get('updated_at')
         self.payouts = event.get('payouts', [])
@@ -464,6 +463,9 @@ class Tradeable(object):
     :ivar entity_id:         the entity's unique identifier, event-agnostic
     :ivar event_id:          event to which this tradeable_id applies
     :ivar game_id:           game to which this tradeable applies
+    :ivar next_game_id:      only exists when there's a double header in MLB - player's next game
+    :ivar projected_games_remaining: how many games the player has left to play in this slate (exclusive to MLB double headers)
+    :ivar projected_games_total: total number of games the player will play in this slate (exclusive to MLB double headers)
     :ivar fpts_proj_pregame: the tradeable's pregame projected fantasy points
     :ivar fpts_proj_live:    tradeable's live projected fantasy points
     :ivar fpts_scored:       tradeable's fantasy points scored
@@ -480,12 +482,15 @@ class Tradeable(object):
     :ivar name:              the player's name
     :ivar entity:            :class:`object.Entity` object containing entity info
     """
-    def __init__(self, tradeable):
+    def __init__(self, tradeable: dict):
         self.tradeable_id = tradeable.get('id')
         self.league = tradeable.get('league')
         self.entity_id = tradeable.get('entity_id')
         self.event_id = tradeable.get('event_id')
         self.game_id = tradeable.get('focus_game_id')
+        self.next_game_id = tradeable.get('next_game_id')
+        self.games_remaining = tradeable.get('projected_games_remaining')
+        self.total_games = tradeable.get('projected_games_total')
         points = tradeable.get('points', {})
         self.fpts_proj_pregame = points.get('projected')
         self.fpts_proj_live = points.get('projected_live')
@@ -514,6 +519,7 @@ class Tradeable(object):
         #         self.__dict__[key] = stats[key]
         entity = tradeable.get('entity', {'league': tradeable['league']})
         self.name = entity.get('name')
+        self.image = entity.get('image_url')
         self.entity = _case_switch_ent(entity)
 
     def available_attributes(self):
@@ -542,7 +548,7 @@ class Entry(object):
     :ivar event:            :class:`objects.Event` object containing event specific information
     :ivar payouts:          after the event is finished, a list of payouts made to the user for their holdings
     """
-    def __init__(self, entry):
+    def __init__(self, entry: dict):
         self.entry_id = entry.get('id')
         self.event_id = entry.get('event_id')
         leaderboard = entry.get('leaderboard')
@@ -583,7 +589,7 @@ class Position(object):
     :ivar cost_basis_all_time: total amount spent on shares of the player whether they are currently owned or not
     :ivar proceeds_all_time:   total realized profit and loss for selling shares of this tradeable
     """
-    def __init__(self, position):
+    def __init__(self, position: dict):
         self.tradeable_id = position.get('tradeable_id')
         self.event_id = position.get('event_id')
         self.bought_count = position.get('bought_count')
@@ -614,6 +620,7 @@ class Order(object):
     """
     object dedicated to storing information about orders that the user has placed
 
+    :ivar account:         The account associated with the order, only available from event_activity endpoint from ws feed.
     :ivar order_id:        the order's specific identification
     :ivar tradeable_id:    the tradeable that the order was placed for
     :ivar entity_id:       the underlying entity_id for which the order was placed
@@ -633,7 +640,9 @@ class Order(object):
     :ivar filled_at:       time at which the order was completely filled
     :ivar cancellation_requested_at: when a cancellation was requested
     """
-    def __init__(self, order):
+    def __init__(self, order: dict):
+        account = order.get('account', {})
+        self.account = account
         self.order_id = order.get('id')
         self.tradeable_id = order.get('tradeable_id')
         self.entity_id = order.get('entity_id')
@@ -662,6 +671,78 @@ class Order(object):
         self.updated_at = order.get('updated_at')
         self.filled_at = order.get('filled_at')
         self.cancellation_requested_at = order.get('cancellation_requested_at')
+
+    def available_attributes(self):
+        """
+        The purpose of this method is to display the available instance variables so the user knows what they can access
+        in each instance of the class
+        """
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
+    def __str__(self):
+        return str(self.__dict__) + '\n'
+
+class PublicOrder(object):
+    """
+    Public order object for use with websockets
+
+    :ivar user_id:      the user's unique identifier
+    :ivar user_tags:    the user's tags (if they are a marketmaker, etc.)
+    :ivar username:     the user's display name
+    :ivar member_since: when the user joined
+    :ivar event_id:     the event id to which this order applies
+    :ivar tradeable_id: the player who is being traded's event-specific id
+    :ivar entity_id:    the player's global JM identifier
+    :ivar side:         the side of the order (buy or sell)
+    :ivar phase:        the phase in which the order was placed (ipo or live)
+    :ivar created_at:   when the order was created
+    """
+
+    def __init__(self, order: dict):
+        account = order.get('account', {})
+        self.user_id = account.get('id')
+        self.user_tags = account.get('tags')
+        self.username = account.get('display_name')
+        self.member_since = account.get('created_at')
+        self.event_id = order.get('event_id')
+        self.tradeable_id = order.get('tradeable_id')
+        self.entity_id = order.get('entity_id')
+        self.side = order.get('side')
+        self.phase = order.get('phase')
+        self.created_at = order.get('created_at')
+
+    def available_attributes(self):
+        """
+        The purpose of this method is to display the available instance variables so the user knows what they can access
+        in each instance of the class
+        """
+        print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
+    def __str__(self):
+        return str(self.__dict__) + '\n'
+
+class Trade(object):
+    """
+    Public trade info including price and quantity. Available only with websockets.
+
+    :ivar trade_id:      The id of the trade
+    :ivar price:         The price at which the trade went through
+    :ivar quantity:      The size of the trade
+    :ivar tradeable_id:  The id of the player stock that was traded
+    :ivar created_at:    Time at which the order went through
+    """
+    def __init__(self, trade):
+        self.trade_id = trade.get('id')
+        self.price = trade.get('price')
+        self.quantity = trade.get('quantity')
+        self.tradeable_id = trade.get('tradeable_id')
+        self.created_at = trade.get('created_at')
 
     def available_attributes(self):
         """

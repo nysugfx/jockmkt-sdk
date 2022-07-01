@@ -23,7 +23,7 @@ class JockAPIException(Exception):
                             that is currently open",
             'invalid_entry': 'Please join this event before attempting to trade!',
             'not_found': '',
-            'rate_limit': 'You have placed too many orders or requests since {}. Please wait until {}.'.format(
+            'rate_limit': 'You have placed too many requests since {}. Please wait until {}.'.format(
                 now, rate_limit_reset),
             'request_failed': 'You have already entered the event or deleted your order',
             'bad_gateway': 'Maxmimum attempts made to resource with no valid response.\
@@ -37,7 +37,9 @@ class JockAPIException(Exception):
         except ValueError:
             self.message = response.content
         else:
+            print(json_res)
             if 'error' in json_res:
+
                 self.code = json_res['error']
                 self.message = json_res['message']
                 self.helper = _error_dict[json_res['error']]
