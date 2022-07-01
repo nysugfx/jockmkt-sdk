@@ -43,11 +43,8 @@ Module contents
 ---------------
 
 .. automodule:: jockmkt_sdk
-   :members: client, exception, objects
+   :members: client, exception, objects, jm_sockets
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: jockmkt_sdk.jm_sockets
-   :members: sockets
-   :undoc-members:
-   :show-inheritance:
+
