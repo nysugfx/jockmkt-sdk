@@ -5,4 +5,3 @@ jockmkt_sdk
    :maxdepth: 4
 
    jockmkt_sdk
-   jockmkt_sdk/*
