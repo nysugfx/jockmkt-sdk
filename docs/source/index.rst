@@ -21,9 +21,10 @@ Welcome to jockmkt-sdk's documentation!
    entities
    teams
    account
+   websockets
    examples
    modules
-   websockets
+
 
 
 
