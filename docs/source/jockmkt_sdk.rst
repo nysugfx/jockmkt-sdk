@@ -30,7 +30,7 @@ jockmkt\_sdk.objects module
    :undoc-members:
    :show-inheritance:
 
-jockmkt\_sdk.websockets module
+jockmkt\_sdk.sockets module
 ---------------------------
 
 .. automodule:: jockmkt_sdk.jm_sockets.sockets
