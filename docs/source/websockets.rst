@@ -38,6 +38,8 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
 **Connect to a websocket:**
 
+.. code-block::
+
     client.ws_connect(loop, queue, error_handler)
 
 - Client.ws_connect()
