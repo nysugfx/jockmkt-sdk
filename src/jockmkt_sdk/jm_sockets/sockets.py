@@ -3,7 +3,7 @@ import json
 import logging
 import time
 import typing
-from src.jockmkt_sdk.objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade
+from jockmkt_sdk.objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade
 
 import websockets as ws
 
