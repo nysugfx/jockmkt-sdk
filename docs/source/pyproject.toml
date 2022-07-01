@@ -1,5 +1,5 @@
 [build-system]
-requires = ["requests >= 2.27.1", "DateTime >= 4.3"]
+requires = ["requests >= 2.27.1", "DateTime >= 4.3", "websockets>=10.3"]
 
 [project]
 name = "jockmkt-sdk"
