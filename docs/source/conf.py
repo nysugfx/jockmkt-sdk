@@ -29,7 +29,7 @@ author = 'Alex Friedman/nysugfx'
 
 release = '1.0'
 
-extensions = ['readthedocs_ext.readthedocs,
+extensions = ['readthedocs_ext.readthedocs',
               'sphinx.ext.duration',
               'sphinx.ext.doctest',
               'sphinx.ext.autodoc',
