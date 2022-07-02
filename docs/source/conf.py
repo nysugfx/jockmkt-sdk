@@ -27,7 +27,7 @@ project = 'jockmkt-sdk'
 copyright = '2022, Alex Friedman/nysugfx'
 author = 'Alex Friedman/nysugfx'
 
-release = '1.0'
+release = '0.2.0'
 
 extensions = ['readthedocs_ext.readthedocs',
               'sphinx.ext.duration',
