@@ -59,15 +59,13 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
 .. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
+** The Socket Manager: ** 
+
 .. autoclass:: JockmktSocketManager
 
-**JockmktSocketManager**
-
-- *available instance variables:*
+- **Variables:**
     - *messages:* the iterable to which the user wants to append messages
     - *balances:* regularly updated balances, including cash and contest balances.
-
-- **available methods within the JockmktSocketManager class**
 
 .. automethod:: JockmktSocketManager.subscribe
 
