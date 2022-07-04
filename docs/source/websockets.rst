@@ -63,32 +63,31 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
 .. autoclass:: JockmktSocketManager
 
-- **Variables:**
-    - *messages:* the iterable to which the user wants to append messages
+- **Instance Variables:**
+    - *messages:* the iterable to which the user wants to append websocket messages
     - *balances:* regularly updated balances, including cash and contest balances.
+
+**Subscribe to a single topic or event:**
 
 .. automethod:: JockmktSocketManager.subscribe
 
-- *JockmktSocketManager.subscribe()*
-    - Subscribe to a single topic
-    - *params:*
-        - *topic:* str, required, the user's chosen topic. use client.get_ws_topics() for info.
-        - *id:* str, required if you are subscribing to 'event' or 'event_activity'
-        - *league:* str, required if you are subscribing to 'games'
+.. code-block::
+
+    socket_manager.subscribe('games', league='mlb')
+
+**Unsubscribe from a single topic:**
 
 .. automethod:: JockmktSocketManager.unsubscribe
 
-- *JockmktSocketManager.unsubscribe()*
-    - unsubscribe from a single topic
-    - *params:*
-        - *topic:* str, required, the user's chosen topic. use client.get_ws_topics() for info.
-        - *id:* str, required if you are subscribing to 'event' or 'event_activity'
-        - *league:* str, required if you are subscribing to 'games'
+.. code-block::
+
+    socket_manager.unsubscribe('games', league='mlb')
+
+**Unsubscribe from all topics:**
 
 .. automethod:: JockmktSocketManager.unsubscribe_all
 
-- *JockmktSocketManager.unsubscribe_all()*
-    - unsubscribe from a single topic
+**Error Handling Function:**
 
 .. automethod:: JockmktSocketManager.reconnect
 
