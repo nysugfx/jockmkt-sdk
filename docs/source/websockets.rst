@@ -59,7 +59,7 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
 .. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
-** The Socket Manager: ** 
+**The Socket Manager:** 
 
 .. autoclass:: JockmktSocketManager
 
