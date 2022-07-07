@@ -21,6 +21,8 @@ The aim of this SDK is to build a host of easy-to-use tools for users to interac
 
 `JockMKT Official API Docs <https://docs.jockmkt.com/>`_
 
+`Changelog <https://github.com/nysugfx/jockmkt-sdk/blob/entity/changelog.rst>`_
+
 **Code snippet**
 
 .. code-block:: python
