@@ -1,13 +1,11 @@
 Metadata-Version: 2.1
 Name: jockmkt-sdk
-Version: 0.1.5
+Version: 0.2.1
 Summary: A basic package allowing the user to interact with Jock MKTs API
 Home-page: https://github.com/nysugfx/jockmkt-sdk
 Author: Alex Friedman
 Author-email: nysu.gfx@gmail.com
-License: UNKNOWN
 Project-URL: BugTracker, https://github.com/nysugfx/jockmkt-sdk/issues
-Platform: UNKNOWN
 Classifier: Intended Audience :: Developers
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Classifier: License :: OSI Approved :: MIT License
@@ -21,13 +19,13 @@ License-File: LICENSE.txt
 Jock MKT SDK
 ============
 
-.. image:: https://img.shields.io/pypi/v/jockmkt-sdk
+.. image:: https://img.shields.io/pypi/v/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
-.. image:: https://img.shields.io/github/license/nysugfx/jockmkt-sdk
+.. image:: https://img.shields.io/github/license/nysugfx/jockmkt-sdk?style=for-the-badge
   :target: https://github.com/nysugfx/jockmkt-sdk/LICENSE.txt
 
-.. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk
+.. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
 
@@ -60,7 +58,7 @@ Installation (via PyPi)
 
     pip install jockmkt-sdk
 
-  - pypi link
+`PyPi Link <https://pypi.org/project/jockmkt-sdk/0.1.2/>`_
 
 Contribute
 -----------
@@ -69,7 +67,7 @@ Contribute
 
 Docs
 ----
-  - readthedocs
+  - `ReadTheDocs <https://jockmkt-sdk.readthedocs.io/en/latest/index.html>`_
 
 Features
 --------
@@ -78,11 +76,6 @@ Features
 - Simple auth token generation & use
 - Simple order placement
 
-Todo
-----
-- implement different order types (i.e. market & immediate or cancel)
-- user uploaded projections
-- filter players, events, games, etc. based on team, position, if playing today, etc.
 
 Getting Started
 ===============
@@ -98,8 +91,7 @@ Authorization & basic calls:
     api_key = '<jm_key_xxx>'
     secret_key = '<xxx>'
 
-    client = Client()
-    client.get_auth_token(secret_key, api_key)
+    client = Client(secret_key, api_key)
 
     #display the first 100 nba entities
     players = client.get_entities(start=0, league='nba')
@@ -140,4 +132,3 @@ Authorization & basic calls:
 Contact
 -------
 nysu.gfx@gmail.com
-

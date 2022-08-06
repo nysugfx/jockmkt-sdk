@@ -3,17 +3,27 @@ import json
 import logging
 import time
 import typing
-from src.jockmkt_sdk.objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
-    _case_switch_ent
+
+from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
 
 import websockets as ws
 
 
 class JMWebsocketException(Exception):
+    """
+    a class for JM websocket specific exceptions. Currently not in use.
+
+    """
     pass
 
 
 class ReconnectWebsocket:
+    """
+    Class handling the websocket connection
+
+    :ivar log: an instance of logging containing log info about exceptions.
+    """
+    MAX_RECONNECTS = 5
     AUTH_DICT = {}
 
     def __init__(self, loop, client, coroutine, error_handler):
@@ -22,6 +32,7 @@ class ReconnectWebsocket:
         self._conn = None
         self._client = client
         self._socket = None
+        self._reconnect_attempts = 0
         self.log = logging.getLogger(__name__)
         if not error_handler:
             self._error_handler = self.reconnect()
@@ -47,12 +58,11 @@ class ReconnectWebsocket:
 
     async def _run(self):
         """
-        performs authorizes websocket and receives messages
+        authorizes websocket and receives messages
         """
-        print("running")
-        keep_waiting = True
+        # print("running")
         async with ws.connect("wss://api.jockmkt.net/streaming/") as socket:
-            print("async with called")
+            # print("async with called")
             self._socket = socket
             self._reconnect_attempts = 0
             try:
@@ -70,12 +80,27 @@ class ReconnectWebsocket:
                 await self._error_handler(message, e)
 
     async def reconnect(self):
+        """
+        An error handler is required, so this is a good option! it just attempts to reconnect upon failure
+        """
         await self.cancel()
-        self._connect()
+        self._reconnect_attempts += 1
+        if self._reconnect_attempts < self.MAX_RECONNECTS:
+            wait = self._get_reconnect_wait(self._reconnect_attempts)
+            self.log.debug(f'websockets reconnecting. Attempting {self._reconnect_attempts} more times after waiting '
+                           f'{wait} seconds')
+            self._connect()
+        else:
+            self.log.error('websocket could not reconnect after 5 attempts.')
+
+    @staticmethod
+    def _get_reconnect_wait(attempts):
+        wait = [0.1, 3, 10, 30, 60]
+        return wait[attempts]
 
     async def send_message(self, msg, retry_count=0):
         """
-        send a message to the websocket (i.e. subscribe or unsubscribe)
+        send a message to the websocket (i.e. subscribe or unsubscribe). The user typically should not need to use this.
         """
         if not self._socket:
             if retry_count < 5:
@@ -95,6 +120,9 @@ class ReconnectWebsocket:
 
 
 class JockmktSocketManager:
+    """
+    Create and manage the socket connection.
+    """
     PUBLIC_TOPICS = {
         "event_activity": "event_id",
         "event": "event_id",
@@ -105,9 +133,13 @@ class JockmktSocketManager:
 
     def __init__(self, iterable):
         """Initialize the SocketManager
+
+        :ivar messages: the iterable to which the user wants to append their messages
+        :ivar balances: regularly updated balances each time the balance changes
         """
         self._subscriptions = []
         self.messages = iterable
+        self.balances = {}
         self._callback = None
         self._conn = None
         self._loop = None
@@ -118,38 +150,51 @@ class JockmktSocketManager:
                      callback: typing.Callable = None):
         """
         create instance of socket manager and reconnect websocket
-        **KWARGS uses
+
         """
         self = JockmktSocketManager(queue)
         self._loop = loop
         self._callback = callback
         self._error_handler = exception_handler
-        self._conn = ReconnectWebsocket(loop, client, self._recv, self._error_handler)
+        self._conn = ReconnectWebsocket(loop, client, self._recv, self.exception_handler)
         return self
 
     async def reconnect(self):
+        """
+        Function that can be passed through the error handler
+        """
         await self._conn.reconnect()
 
-    @staticmethod
-    def _wsfeed_case_switcher(obj, msg):
+    def _wsfeed_case_switcher(self, obj, msg):
         match obj:
             case 'error':
                 raise Exception(f'{msg}')
             case 'tradeable':
-                return Tradeable(msg['tradeable'])
+                return Tradeable(msg[obj])
             case 'game':
-                return Game(msg['game'])
+                return Game(msg[obj])
             case 'event':
-                return Event(msg['event'])
+                return Event(msg[obj])
             case 'entry':
-                return Entry(msg['entry'])
+                return Entry(msg[obj])
             case 'position':
-                return Position(msg['position'])
+                return Position(msg[obj])
             case 'order':
-                return Order(msg['order'])
+                if 'limit_price' in msg[obj]:
+                    return Order(msg[obj])
+                else:
+                    return PublicOrder(msg[obj])
+            case 'trade':
+                return Trade(msg[obj])
+            case 'balance':
+                self.balances[msg[obj]['currency']] = msg[obj]['buying_power']
+                return Balance(msg[obj])
 
     async def exception_handler(self, **kwargs):
-        await self._error_handler(kwargs)
+        """
+        Exception handler passed in by the user
+        """
+        await self._error_handler(**kwargs)
 
     async def _recv(self, msg):
         """
@@ -162,12 +207,19 @@ class JockmktSocketManager:
             messsage[type] = obj
             self.messages.append(messsage)
         if self._callback is not None:
-            print('callback')
+            # print(msg)
             await self._callback(msg)
 
     async def subscribe(self, topic: str, id: str = None, league: str = None):
         """
-        self-explanatory
+        Subscribe to a chosen topic or event.
+
+        :param topic:  The user's chosen topic. Use client.get_ws_topics() for available topics.
+        :type topic:   str, required
+        :param id:     The event ID, required if you are subscribing to event or event_activity.
+        :type id:      str, optional
+        :param league: the league for which the user wants game data, required for 'games' subscription
+        :type league:  str, optional
         """
         topics = self.PUBLIC_TOPICS.keys()
         if topic not in topics:
@@ -182,6 +234,13 @@ class JockmktSocketManager:
     async def unsubscribe(self, topic: str, id: str = None, league: str = None):
         """
         unsubscribe method
+
+        :param topic:  The user's chosen topic. Use client.get_ws_topics() for available topics.
+        :type topic:   str, required
+        :param id:     The event ID, required if you are subscribing to event or event_activity.
+        :type id:      str, optional
+        :param league: the league for which the user wants game data, required for 'games' subscription
+        :type league:  str, optional
         """
         msg = {"action": "unsubscribe",
                "subscription": {"topic": topic,

@@ -1,21 +1,23 @@
 import requests
 from datetime import datetime
 import time
-from exception import JockAPIException
-from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+from .exception import JockAPIException
+from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
-import asyncio
-import websockets
-from jm_sockets import sockets
+from .jm_sockets import sockets
+from decimal import Decimal, ROUND_UP
 
 class Client(object):
     """The user should initialize an instance of this class:
-        e.g. Client(secret, api_key)
-        and then they should call whichever method they wish. The class will automatically obtain an auth token.
-        Functionality included to auto update expired auth tokens or retreive new one if necessary.
+    e.g. Client(secret, api_key)
+    and then they should call whichever method they wish. The class will automatically obtain an auth token.
+    Functionality included to auto update expired auth tokens or retreive new one if necessary.
+
     :ivar secret: The user's secret key: xxx
     :ivar api_key: the user's api key: jm_api_xxx
+
     """
+
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
     _API_KEYS = {}
@@ -233,7 +235,7 @@ class Client(object):
     def get_team(self, team_id: str) -> Team:
         """fetch a specific team based on their team id
 
-        :param team_id: a team id, starting with team_ (e.g. "team_8fe94ef0d1f0a00e1285301c4092650f")
+        :param team_id: a team id, starting with team (e.g. "team_8fe94ef0d1f0a00e1285301c4092650f")
         :type team_id: str, required
 
         :returns: a dictionary with team information
@@ -412,11 +414,16 @@ class Client(object):
         :rtype: list[objects.Event]
 
         """
+        print('fetching events')
         list_events = []
         data = {'start': str(start * limit), 'limit': limit}
         if league is not None:
             data['league'] = league
-        res = self._get('events', data=data)
+        res = self._get('events', params=data)
+        print('status: ' + res['status'])
+        print('start: ' + str(res['start']))
+        print('limit: ' + str(res['limit']))
+        print('count: ' + str(res['count']))
         for event in res['events']:
             if event['league'] != 'simulated_horse_racing':
                 list_events.append(Event(event))
@@ -561,7 +568,8 @@ class Client(object):
         """
         return self._post(f"entries", data={'event_id': event_id})
 
-    def place_order(self, id: str, price: int, side: str = 'buy', phase: str = 'ipo', qty: int = 1, **kwargs) -> dict:
+    def place_order(self, id: str, price: float, qty: int = 1, side: str = 'buy', phase: str = 'ipo', **kwargs) \
+            -> Order:
         """
         Places an order of the user's chosen tradeable (player) and the chosen price. It defaults to  buy 1 share
         during the ipo phase. The user may specify an amount of money they want to buy and automatically buy x shares at
@@ -591,14 +599,14 @@ class Client(object):
             size = kwargs.get('order_size', 0)
             qty = size // price
 
-        price = "{:.2f}".format(price)
+        price = float(Decimal(price).quantize(Decimal('0.00'), rounding=ROUND_UP))
 
         order = {'tradeable_id': id, 'side': side, 'type': 'limit', 'phase': phase, 'quantity': str(qty),
                  'limit_price': str(price)}
         order_response = self._post('orders', data=order, is_test=kwargs.get('is_test', False))
         print(order_response)
 
-        return order_response
+        return Order(order_response['order'])
 
     # NOTE: the docs for order object > status contain 'outbid' twice
 
@@ -705,6 +713,9 @@ class Client(object):
         return self.auth['token']
 
     def get_ws_topics(self):
+        """
+        returns a dictionary of websocket topics and their required arguments
+        """
         topics = {'event': {'required_args': 'event_id'},
                   'event_activity': {'required_args': 'event_id'},
                   'account': {'required_args': None},
@@ -715,5 +726,16 @@ class Client(object):
         return topics
 
     def ws_connect(self, loop, queue, error_handler, callback=None):
+        """
+        Initialize a websocket connection. See docs for example code.
+
+        :param loop:          An asyncio loop, i.e. asyncio.get_event_loop
+        :type loop:           asyncio.Event, required
+        :param queue:         A list that websocket messages will be pushed to
+        :type queue:          iterable, required
+        :param error_handler: a method for handling errors. The user can pass socket.reconnect here
+        :type error_handler:  Callable, required
+        """
+
         return sockets.JockmktSocketManager.create(loop, self, queue, error_handler, callback)
 

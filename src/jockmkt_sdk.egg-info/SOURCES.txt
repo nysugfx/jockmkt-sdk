@@ -11,3 +11,5 @@ src/jockmkt_sdk.egg-info/SOURCES.txt
 src/jockmkt_sdk.egg-info/dependency_links.txt
 src/jockmkt_sdk.egg-info/requires.txt
 src/jockmkt_sdk.egg-info/top_level.txt
+src/jockmkt_sdk/jm_sockets/__init__.py
+src/jockmkt_sdk/jm_sockets/sockets.py

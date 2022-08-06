@@ -13,5 +13,7 @@ docs
 dist
 .pytest_cache
 src/jockmkt_sdk.egg-info
-scratch.py
+docs/build
+src/asyncio/websocket.ts
+
 
