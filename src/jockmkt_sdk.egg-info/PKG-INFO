@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: jockmkt-sdk
-Version: 0.2.1
+Version: 0.2.2
 Summary: A basic package allowing the user to interact with Jock MKTs API
 Home-page: https://github.com/nysugfx/jockmkt-sdk
 Author: Alex Friedman
