@@ -460,6 +460,7 @@ class Tradeable(object):
 
     :ivar tradeable_id:      this entity's event-specific identifier, used to place orders
     :ivar league:            league this entity participates in
+    :ivar updated_at:        when this tradeable was last updated
     :ivar entity_id:         the entity's unique identifier, event-agnostic
     :ivar event_id:          event to which this tradeable_id applies
     :ivar game_id:           game to which this tradeable applies
@@ -484,6 +485,7 @@ class Tradeable(object):
     """
     def __init__(self, tradeable: dict):
         self.tradeable_id = tradeable.get('id')
+        self.updated_at = tradeable.get('updated_at')
         self.league = tradeable.get('league')
         self.entity_id = tradeable.get('entity_id')
         self.event_id = tradeable.get('event_id')
@@ -555,7 +557,7 @@ class Entry(object):
         self.leaderboard_pos = leaderboard.get('position')
         self.profit = leaderboard.get('amount')
         self.updated_at = entry.get('updated_at')
-        self.favorites = entry.get('favorites')  # interact this with tradeable lookup
+        self.favorites = entry.get('favorites', [])  # interact this with tradeable lookup
         event = entry.get('event', {})
         self.event = Event(event)
         self.payouts = entry.get('payouts')
@@ -651,6 +653,8 @@ class Order(object):
         self.side = order.get('side')
         self.type = order.get('type')
         self.phase = order.get('phase')
+        self.direction = order.get('direction')
+        self.time_in_force = order.get('time_in_force')
         self.quantity = order.get('quantity')
         self.limit_price = order.get('limit_price')
         self.cost_basis = order.get('cost_basis', 0)
@@ -776,6 +780,32 @@ class AccountActivity(object):  # will need to get more advanced with the way aa
         in each instance of the class
         """
         print({key for key in self.__dict__.keys()})
+
+    def __repr__(self):
+        return str(self.__dict__) + '\n'
+
+    def __str__(self):
+        return str(self.__dict__) + '\n'
+
+class Balance(object):
+    """
+    Balance object
+
+    :ivar currency:      the currency, either usd or contest-specific currency
+    :ivar currency_type: currency type (either contest or fiat)
+    :ivar event_id:      only available if contest
+    :ivar total:         total available currency
+    :ivar buying_power:  total currency available for trading
+    :ivar pending:       any pending deposits
+    """
+    def __init__(self, balance):
+        self.currency = balance.get('currency')
+        self.currency_type = balance.get('type')
+        if self.currency_type == 'contest' and not self.currency:
+            self.event_id = 'evt_' + self.currency[4:]
+        self.total = balance.get('total')
+        self.buying_power = balance.get('buying_power')
+        self.pending = balance.get('pending')
 
     def __repr__(self):
         return str(self.__dict__) + '\n'
