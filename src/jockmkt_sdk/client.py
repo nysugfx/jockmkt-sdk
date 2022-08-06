@@ -606,6 +606,9 @@ class Client(object):
         order_response = self._post('orders', data=order, is_test=kwargs.get('is_test', False))
         print(order_response)
 
+        if type(order_response) == str:
+            return order_response
+        
         return Order(order_response['order'])
 
     # NOTE: the docs for order object > status contain 'outbid' twice
