@@ -582,6 +582,7 @@ class Position(object):
 
     :ivar tradeable_id:        the player's tradeable_id for the position
     :ivar event_id:            identifier for the event to which the position applies
+    :ivar sold_count:          total quantity sold over the course of the event
     :ivar bought_count:        total quantity purchased over the course of the event
     :ivar buy_interest:        amount of shares the user is currently trying to buy
     :ivar sell_interest:       amount of shares the user is currently trying to sell
@@ -595,6 +596,7 @@ class Position(object):
         self.tradeable_id = position.get('tradeable_id')
         self.event_id = position.get('event_id')
         self.bought_count = position.get('bought_count')
+        self.sold_count = position.get('sold_count')
         self.buy_interest = position.get('buy_interest')
         self.sell_interest = position.get('sell_interest')
         self.quantity_owned = position.get('quantity')
@@ -711,6 +713,7 @@ class PublicOrder(object):
         self.user_tags = account.get('tags')
         self.username = account.get('display_name')
         self.member_since = account.get('created_at')
+        self.order_id = order.get('id')
         self.event_id = order.get('event_id')
         self.tradeable_id = order.get('tradeable_id')
         self.entity_id = order.get('entity_id')
