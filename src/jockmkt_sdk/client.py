@@ -1,3 +1,5 @@
+import random
+
 import requests
 from datetime import datetime
 import time
@@ -5,7 +7,8 @@ from .exception import JockAPIException
 from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
 from .jm_sockets import sockets
-from decimal import Decimal, ROUND_UP
+from decimal import Decimal, ROUND_DOWN
+
 
 class Client(object):
     """The user should initialize an instance of this class:
@@ -599,12 +602,16 @@ class Client(object):
             size = kwargs.get('order_size', 0)
             qty = size // price
 
-        price = float(Decimal(price).quantize(Decimal('0.00'), rounding=ROUND_UP))
+        price = Decimal(price).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+
+        price = "{:.2f}".format(price)
 
         order = {'tradeable_id': id, 'side': side, 'type': 'limit', 'phase': phase, 'quantity': str(qty),
-                 'limit_price': str(price)}
+                 'limit_price': price}
         order_response = self._post('orders', data=order, is_test=kwargs.get('is_test', False))
-        print(order_response)
+
+        if type(order_response) == str:
+            return order_response
 
         return Order(order_response['order'])
 
