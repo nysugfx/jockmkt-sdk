@@ -9,6 +9,12 @@ The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`
 
 Docs available at: `Read The Docs <https://jockmkt-sdk.readthedocs.io/en/latest/>`_
 
+Release 0.2.6
+#############
+
+``ADDED:``
+- Added sold count to position object
+
 Release 0.2.5
 #############
 
