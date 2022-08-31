@@ -13,6 +13,7 @@ Release 0.2.6
 #############
 
 ``ADDED:``
+
 - Added sold count to position object
 
 Release 0.2.5
