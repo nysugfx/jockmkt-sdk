@@ -430,6 +430,7 @@ class Event(object):
         self.amt_completed = event.get('amount_completed')
         self.updated_at = event.get('updated_at')
         self.payouts = event.get('payouts', [])
+        self.current_shares = event.get('current_shares')
         games = event.get('games', {})
         self.games = []
         for game in games:
