@@ -3,6 +3,10 @@ import random
 import requests
 from datetime import datetime
 import time
+# from exception import JockAPIException
+# from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
+    # _case_switch_ent
+# from jm_sockets import sockets
 from .exception import JockAPIException
 from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
@@ -23,6 +27,7 @@ class Client(object):
 
     API_VERSION = 'v1'
     BASE_URL = 'https://api.jockmkt.net'
+    WS_BASE_URL = 'wss://api.jockmkt.net/streaming/'
     _API_KEYS = {}
     _AUTH_TOKEN = {}
     _AUTH_TOKEN_MAP = {}
@@ -744,5 +749,5 @@ class Client(object):
         :type error_handler:  Callable, required
         """
 
-        return sockets.JockmktSocketManager.create(loop, self, queue, error_handler, callback)
+        return sockets.JockmktSocketManager.create(loop, self, queue, error_handler, callback, ws_url=self.WS_BASE_URL)
 
