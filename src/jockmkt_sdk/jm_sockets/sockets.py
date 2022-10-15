@@ -1,16 +1,22 @@
 import asyncio
 import json
 import logging
+import socket
 import time
 import typing
-from jockmkt_sdk.objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade
-
+import sys
+# sys.path.insert(1, '..')
+# from objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
+from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
+import ssl
+import certifi
 import websockets as ws
 
 
 class JMWebsocketException(Exception):
     """
     a class for JM websocket specific exceptions. Currently not in use.
+
     """
     pass
 
@@ -24,7 +30,7 @@ class ReconnectWebsocket:
     MAX_RECONNECTS = 5
     AUTH_DICT = {}
 
-    def __init__(self, loop, client, coroutine, error_handler):
+    def __init__(self, loop, client, coroutine, error_handler, url):
         self._loop = loop
         self._coroutine = coroutine
         self._conn = None
@@ -32,6 +38,9 @@ class ReconnectWebsocket:
         self._socket = None
         self._reconnect_attempts = 0
         self.log = logging.getLogger(__name__)
+        self.url = url
+        self.ssl_context = ssl.create_default_context()
+        self.ssl_context.load_verify_locations(certifi.where())
         if not error_handler:
             self._error_handler = self.reconnect()
         else:
@@ -59,7 +68,7 @@ class ReconnectWebsocket:
         authorizes websocket and receives messages
         """
         # print("running")
-        async with ws.connect("wss://api.jockmkt.net/streaming/") as socket:
+        async with ws.connect(self.url, ssl=self.ssl_context) as socket:
             # print("async with called")
             self._socket = socket
             self._reconnect_attempts = 0
@@ -72,6 +81,10 @@ class ReconnectWebsocket:
             except ws.ConnectionClosedError as on_close:
                 self.log.debug(f'Connection terminated with an error: {on_close}')
                 await self._error_handler(message, on_close)
+
+            except asyncio.CancelledError:
+                await self.cancel()
+                exit(0)
 
             except Exception as e:
                 self.log.debug(f'unknown ws exception: {e}')
@@ -90,6 +103,7 @@ class ReconnectWebsocket:
             self._connect()
         else:
             self.log.error('websocket could not reconnect after 5 attempts.')
+            self._socket.close()
 
     @staticmethod
     def _get_reconnect_wait(attempts):
@@ -145,7 +159,7 @@ class JockmktSocketManager:
 
     @classmethod
     async def create(cls, loop: asyncio.Event, client, queue: list, exception_handler: typing.Callable,
-                     callback: typing.Callable = None):
+                     callback: typing.Callable = None, ws_url: str = 'wss://api.jockmkt.net/streaming/'):
         """
         create instance of socket manager and reconnect websocket
 
@@ -154,7 +168,7 @@ class JockmktSocketManager:
         self._loop = loop
         self._callback = callback
         self._error_handler = exception_handler
-        self._conn = ReconnectWebsocket(loop, client, self._recv, self.exception_handler)
+        self._conn = ReconnectWebsocket(loop, client, self._recv, self.exception_handler, ws_url)
         return self
 
     async def reconnect(self):
@@ -168,30 +182,31 @@ class JockmktSocketManager:
             case 'error':
                 raise Exception(f'{msg}')
             case 'tradeable':
-                return Tradeable(msg['tradeable'])
+                return Tradeable(msg[obj])
             case 'game':
-                return Game(msg['game'])
+                return Game(msg[obj])
             case 'event':
-                return Event(msg['event'])
+                return Event(msg[obj])
             case 'entry':
-                return Entry(msg['entry'])
+                return Entry(msg[obj])
             case 'position':
-                return Position(msg['position'])
+                return Position(msg[obj])
             case 'order':
-                if 'limit_price' in msg:
-                    return Order(msg['order'])
+                if 'limit_price' in msg[obj]:
+                    return Order(msg[obj])
                 else:
-                    return PublicOrder(msg['order'])
+                    return PublicOrder(msg[obj])
             case 'trade':
-                return Trade(msg['trade'])
+                return Trade(msg[obj])
             case 'balance':
                 self.balances[msg[obj]['currency']] = msg[obj]['buying_power']
+                return Balance(msg[obj])
 
     async def exception_handler(self, **kwargs):
         """
         Exception handler passed in by the user
         """
-        await self._error_handler(kwargs)
+        await self._error_handler(**kwargs)
 
     async def _recv(self, msg):
         """
