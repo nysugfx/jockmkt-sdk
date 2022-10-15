@@ -15,6 +15,7 @@ Release 0.2.7
 ``ADDED:``
 
 - Added current_shares attribute to Event object
+- ssl certification for websocket feed
 
 Release 0.2.6
 #############
