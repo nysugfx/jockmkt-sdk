@@ -21,15 +21,14 @@ The aim of this SDK is to build a host of easy-to-use tools for users to interac
 
 `JockMKT Official API Docs <https://docs.jockmkt.com/>`_
 
-`Changelog <https://github.com/nysugfx/jockmkt-sdk/blob/entity/changelog.rst>`_
-
 **Code snippet**
 
 .. code-block:: python
 
     # the following code will buy $50 worth of shares for every player in an event
     # whose last traded price is less than the estimated price
-    client = Client(secret_key, api_key)
+    client = Client()
+    client.get_auth_token(secret_key, api_key)
     event = client.get_event(event_id, include_tradeables=True)
     for tradeable in event.tradeables:
          if tradeable.last < tradeable.estimated:
@@ -42,19 +41,14 @@ Installation (via PyPi)
 
     pip install jockmkt-sdk
 
-`PyPi Link <https://pypi.org/project/jockmkt-sdk/0.1.8/>`_
+`PyPi Link <https://pypi.org/project/jockmkt-sdk/0.1.2/>`_
+
+Note: If you have problems installing, please ensure that you have updated pip and setuptools. If you still have trouble, please install requirements manually.
 
 Contribute
 -----------
   - Source: https://github.com/nysugfx/jockmkt-sdk
   - Issue Tracker: https://github.com/nysugfx/jockmkt-sdk/issues
-  
-  **How to Contribute:**
-    - Reach out via email or in the Jockmkt Discord
-      - nysu.gfx@gmail.com
-      - adf#8401
-    - Open an issue if there's something you want fixed
-    - Open a pull request if you've made changes!
 
 Docs
 ----
@@ -83,8 +77,6 @@ Authorization & basic calls:
     secret_key = '<xxx>'
 
     client = Client(secret_key, api_key)
-    
-    # after initializing Client, call any method to obtain an auth token. 
 
     #display the first 100 nba entities
     players = client.get_entities(start=0, league='nba')
