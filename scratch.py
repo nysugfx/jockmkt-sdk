@@ -1,8 +1,9 @@
 import sys
-# sys.path.insert(1, './src/jockmkt_sdk/')
-from jockmkt_sdk.client import Client
-# import exception
-# import objects
+sys.path.insert(1, './src/jockmkt_sdk/')
+from client import Client
+import exception
+import objects
+import json
 # from jm_sockets import sockets
 import asyncio
 import time
@@ -15,7 +16,7 @@ client = Client('5dvS7qravedGv8AeM6Y1nEGTffbKySbc', 'jm_key_mCxk2jho8hhaTgk3')
 #         event = client.get_event(i.event_id)
 
 async def main():
-    queue = asyncio.Queue()
+    queue = asyncio.Queue(-1)
     list_msgs = []
     global loop
     global client
@@ -29,24 +30,25 @@ async def main():
         print('handling_error')
         await sm.reconnect()
 
-
-    # sm = await jm_sockets.JockmktSocketClient(loop, client, 'b')
-    # await sm.subscribe('account')
-
     sm = await client.ws_connect(loop, list_msgs, handle_error, callback=queue.put)
     await sm.subscribe('account')
+    print('subscribed to acct')
     # sm = await sockets.JockmktSocketManager.create(loop, client, callback=handle_evt)
-    await asyncio.sleep(1)
-    # await sm.subscribe('games', league='mlb')
-    # await asyncio.sleep(1)
-    # await sm.subscribe('event', id='evt_629e60b5726370c78750fddb138863b7')
+    await sm.subscribe('games', league='pga')
+    print('subscribed to game')
+    await sm.subscribe('event_activity', id='evt_636b33d2014f61ebbe8c5dd468c8ebab')
+    print('event activity subscribed')
+    await sm.subscribe('event', id='evt_636b33d2014f61ebbe8c5dd468c8ebab')
+    print('event subscribe')
     # counter = 0
     # async def detect_change(old, new):
     #
     last_len = []
     while True:
-        await asyncio.sleep(5)
-        print(sm.messages)
+        await asyncio.sleep(0)
+        # print(sm.messages)
+        d = await queue.get()
+        print(d)
         # counter += 1
         # print(counter)
         # try:
@@ -58,5 +60,5 @@ async def main():
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(main())

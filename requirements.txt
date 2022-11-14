@@ -1,6 +1,4 @@
-requests >= 2.27.1
-DateTime >= 4.3
+requests>=0.27.1
 pytest~=7.1.2
-websockets >= 10.3
-logging
-asyncio
+websockets>=10.3
+certifi>=2021.10.8

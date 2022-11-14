@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: jockmkt-sdk
-Version: 0.2.2
+Version: 0.2.9.59
 Summary: A basic package allowing the user to interact with Jock MKTs API
 Home-page: https://github.com/nysugfx/jockmkt-sdk
 Author: Alex Friedman
@@ -9,9 +9,9 @@ Project-URL: BugTracker, https://github.com/nysugfx/jockmkt-sdk/issues
 Classifier: Intended Audience :: Developers
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Classifier: License :: OSI Approved :: MIT License
-Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.10
+Requires-Python: >=3.7
 Description-Content-Type: text/x-rst
 License-File: LICENSE.txt
 

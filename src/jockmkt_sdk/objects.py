@@ -2,19 +2,30 @@ def _case_switch_ent(entity: dict):
     """
     case switching for entity responses -- there is significant variation between entities & their data
     """
-    match entity['league']:
-        case 'nba':
-            return NBAEntity(entity)
-        case 'nfl':
-            return NFLEntity(entity)
-        case 'nhl':
-            return NHLEntity(entity)
-        case 'pga':
-            return PGAEntity(entity)
-        case 'mlb':
-            return MLBEntity(entity)
-        case 'nascar':
-            return NASCAREntity(entity)
+    entity_type_dict = {
+        'nba': NBAEntity,
+        'nfl': NFLEntity,
+        'nhl': NHLEntity,
+        'pga': PGAEntity,
+        'mlb': MLBEntity,
+        'nascar': NASCAREntity
+    }
+
+    return entity_type_dict[entity['league']](entity)
+    # Previous case switching logic, not working in python < 3.10
+    # match entity['league']:
+    #     case 'nba':
+    #         return NBAEntity(entity)
+    #     case 'nfl':
+    #         return NFLEntity(entity)
+    #     case 'nhl':
+    #         return NHLEntity(entity)
+    #     case 'pga':
+    #         return PGAEntity(entity)
+    #     case 'mlb':
+    #         return MLBEntity(entity)
+    #     case 'nascar':
+    #         return NASCAREntity(entity)
 
 
 class Entity(object):
@@ -416,6 +427,7 @@ class Event(object):
     :ivar games:         a list of :class:`objects.Game` objects
     :ivar tradeables:    a list of :class`objects.Tradeable` objects
     :ivar contest:       information about the contest, if it's a contest-type market see: `objects.Event.type`
+    :ivar share_count:   the number of shares available for that market
     """
     def __init__(self, event: dict):
         self.event_id = event.get('id')
@@ -428,8 +440,10 @@ class Event(object):
         self.ipo_end = event.get('live_at_estimated')
         self.est_close = event.get('close_at_estimated')
         self.amt_completed = event.get('amount_completed')
+        self.amount_completed = event.get('amount_completed')
         self.updated_at = event.get('updated_at')
         self.payouts = event.get('payouts', [])
+        self.current_shares = event.get('current_shares')
         games = event.get('games', {})
         self.games = []
         for game in games:

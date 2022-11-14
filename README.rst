@@ -43,6 +43,8 @@ Installation (via PyPi)
 
 `PyPi Link <https://pypi.org/project/jockmkt-sdk/0.1.2/>`_
 
+Note: If you have problems installing, please ensure that you have updated pip and setuptools. If you still have trouble, please install requirements manually.
+
 Contribute
 -----------
   - Source: https://github.com/nysugfx/jockmkt-sdk

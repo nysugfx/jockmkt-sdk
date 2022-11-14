@@ -9,6 +9,40 @@ The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`
 
 Docs available at: `Read The Docs <https://jockmkt-sdk.readthedocs.io/en/latest/>`_
 
+Release 0.2.8
+#############
+
+``ADDED:``
+
+- Compatibility with earlier versions of python (>=3.7)
+
+``FIXED:``
+
+- Missing requirements in requirements.txt and pyproject.toml
+
+Release 0.2.7
+#############
+
+``ADDED:``
+
+- Added current_shares attribute to Event object
+- ssl certification for websocket feed
+
+0.2.6
+#####
+
+- added sold count to position object
+
+Release 0.2.3 and 0.2.4
+#############
+
+``FIXED:``
+
+- Decimal rounding error for pricing
+
+- Github Actions
+
+
 Release 0.2.2
 #############
 
