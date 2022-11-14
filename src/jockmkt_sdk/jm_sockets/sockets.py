@@ -1,10 +1,8 @@
 import asyncio
 import json
 import logging
-import socket
-import time
 import typing
-import sys
+# import sys
 # sys.path.insert(1, '..')
 # from objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
 from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
@@ -67,9 +65,7 @@ class ReconnectWebsocket:
         """
         authorizes websocket and receives messages
         """
-        # print("running")
         async with ws.connect(self.url, ssl=self.ssl_context) as socket:
-            # print("async with called")
             self._socket = socket
             self._reconnect_attempts = 0
             try:
@@ -178,29 +174,53 @@ class JockmktSocketManager:
         await self._conn.reconnect()
 
     def _wsfeed_case_switcher(self, obj, msg):
-        match obj:
-            case 'error':
-                raise Exception(f'{msg}')
-            case 'tradeable':
-                return Tradeable(msg[obj])
-            case 'game':
-                return Game(msg[obj])
-            case 'event':
-                return Event(msg[obj])
-            case 'entry':
-                return Entry(msg[obj])
-            case 'position':
-                return Position(msg[obj])
-            case 'order':
-                if 'limit_price' in msg[obj]:
-                    return Order(msg[obj])
-                else:
-                    return PublicOrder(msg[obj])
-            case 'trade':
-                return Trade(msg[obj])
-            case 'balance':
-                self.balances[msg[obj]['currency']] = msg[obj]['buying_power']
-                return Balance(msg[obj])
+        if obj == 'error':
+            raise Exception(f'{msg}')
+        elif obj == 'balances':
+            self.balances[msg[obj]['currency']] = msg[obj]['buying_power']
+        elif obj == 'order':
+            if 'limit_price' in msg[obj]:
+                obj = 'user_order'
+            else:
+                obj = 'public_order'
+        elif obj == 'subscription':
+            return msg
+        ws_case_dict = {
+            'tradeable': Tradeable,
+            'game': Game,
+            'event': Event,
+            'entry': Entry,
+            'position': Position,
+            'user_order': Order,
+            'public_order': PublicOrder,
+            'trade': Trade,
+            'balance': Balance
+        }
+        return ws_case_dict[msg[obj]](msg)
+        #
+        # match obj:
+        #     case 'error':
+        #         raise Exception(f'{msg}')
+        #     case 'tradeable':
+        #         return Tradeable(msg[obj])
+        #     case 'game':
+        #         return Game(msg[obj])
+        #     case 'event':
+        #         return Event(msg[obj])
+        #     case 'entry':
+        #         return Entry(msg[obj])
+        #     case 'position':
+        #         return Position(msg[obj])
+        #     case 'order':
+        #         if 'limit_price' in msg[obj]:
+        #             return Order(msg[obj])
+        #         else:
+        #             return PublicOrder(msg[obj])
+        #     case 'trade':
+        #         return Trade(msg[obj])
+        #     case 'balance':
+        #         self.balances[msg[obj]['currency']] = msg[obj]['buying_power']
+        #         return Balance(msg[obj])
 
     async def exception_handler(self, **kwargs):
         """
@@ -219,7 +239,7 @@ class JockmktSocketManager:
             messsage[type] = obj
             self.messages.append(messsage)
         if self._callback is not None:
-            # print(msg)
+
             await self._callback(msg)
 
     async def subscribe(self, topic: str, id: str = None, league: str = None):
