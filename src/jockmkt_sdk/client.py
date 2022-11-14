@@ -1,11 +1,12 @@
+import asyncio
 import random
-
 import requests
 from datetime import datetime
 import time
+from typing import List, Dict
 # from exception import JockAPIException
 # from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
-    # _case_switch_ent
+#     _case_switch_ent
 # from jm_sockets import sockets
 from .exception import JockAPIException
 from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
@@ -87,7 +88,7 @@ class Client(object):
     def _build_auth_header(token):
         return {'Authorization': 'Bearer ' + token}
 
-    def _request(self, method, path, api_version=None, attempt_number=0, **kwargs) -> dict:
+    def _request(self, method, path, api_version=None, attempt_number=0, **kwargs) -> Dict:
         """method by which all requests are made
         """
         response = {}
@@ -186,17 +187,17 @@ class Client(object):
         """
         return self._request('delete', path, api_version, **kwargs)
 
-    def get_account_bal(self):
+    def get_account_bal(self) -> Dict:
         """method retreiving user's USD balance
         """
         Client.balance = self._get("balances")['balances']
         return self._get("balances")['balances']
 
-    def get_account(self):
+    def get_account(self) -> Dict:
         Client.ACCOUNT = self._get('account')['account']
         return self._get('account')['account']
 
-    def get_scoring(self, league):
+    def get_scoring(self, league: str) -> Dict[str, Dict[str, float]]:
         """
         method to retreive information about scoring for different league events
 
@@ -215,7 +216,7 @@ class Client(object):
 
         return scoring_dict[league]
 
-    def get_teams(self, start: int = 0, league: str = None) -> list[Team]:
+    def get_teams(self, start: int = 0, league: str = None) -> List[Team]:
         """provides a list of teams for all or chosen leagues that have team structure.
         displays only the first page, the user can paginate via:
 
@@ -225,7 +226,7 @@ class Client(object):
         :type league: str, optional
 
         :returns: a list of Team objects
-        :rtype: list[Team]
+        :rtype: List[Team]
         """
         teams = []
         params = {'start': str(start * 100), 'limit': '100'}
@@ -253,7 +254,7 @@ class Client(object):
         return Team(team)
 
     def get_entities(self, start: int = 0, limit: int = 100, include_team: bool = True, league: str = None) \
-            -> list[Entity]:
+            -> List[Entity]:
         """fetch entities (players of any sport). The user will have to paginate.
 
         :param start: page at which the user wants to start their search, default: 0 (first page of entities)
@@ -266,7 +267,7 @@ class Client(object):
         :type league: str, optional
 
         :return: a list of league-specific Entity objects
-        :rtype: list[objects.Entity]
+        :rtype: List[objects.Entity]
         """
         params = {}
         entities = []
@@ -304,7 +305,7 @@ class Client(object):
         ent = self._get(f"entities/{entity_id}", params=params)['entity']
         return _case_switch_ent(ent)
 
-    def get_games(self, start: int = 0, limit: int = 100, league: str = None) -> list[Game]:
+    def get_games(self, start: int = 0, limit: int = 100, league: str = None) -> List[Game]:
         """provides a list of teams for all or chosen leagues that have team structure
         the user will have to paginate.
 
@@ -348,7 +349,7 @@ class Client(object):
 
     def get_game_logs(self, start: int = 0, limit: int = 100, log_id: str = None, entity_id: str = None,
                       game_id: str = None, include_ent: bool = True, include_game: bool = False,
-                      include_team: bool = False) -> list[GameLog]:
+                      include_team: bool = False) -> List[GameLog]:
         """fetch game logs
 
         :param start: Page at which the user wants to start their search, default: 0
@@ -405,7 +406,7 @@ class Client(object):
         return response
 
     def get_events(self, start: int = 0, limit: int = 25, league: str = None, include_sims: bool = False) \
-            -> list[Event]:
+            -> List[Event]:
         """Populates event objects with recent and upcoming events
 
         :param start: Page at which the user wants to start their search, default: 0 (first page of events)
@@ -419,7 +420,7 @@ class Client(object):
         :type include_sims: bool, optional
 
         :returns: list of :class:`objects.Events`, containing the event_id and information for each
-        :rtype: list[objects.Event]
+        :rtype: List[objects.Event]
 
         """
         print('fetching events')
@@ -468,14 +469,14 @@ class Client(object):
         """
         return self._get(f"events/{event_id}/payouts")
 
-    def get_event_games(self, event_id: str) -> list[Game]:
+    def get_event_games(self, event_id: str) -> List[Game]:
         """get all games in an event
 
         :param event_id: the event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)
         :type event_id: str, required
 
         :returns: a list of event-relevant :class:`objects.Game` objects
-        :rtype: list[objects.Game]
+        :rtype: List[objects.Game]
 
         """
         games = []
@@ -484,14 +485,14 @@ class Client(object):
             games.append(Game(game))
         return games
 
-    def get_event_tradeables(self, event_id: str) -> list[Tradeable]:
+    def get_event_tradeables(self, event_id: str) -> List[Tradeable]:
         """get all tradeables in an event
 
         :param event_id: The event_id for your chosen event, (e.g. evt_60dbec530d2197a973c5dddcf6f65e12)
         :type event_id: str, required
 
         :returns: a list of :class:`objects.Tradeable` objects participating in the chosen event
-        :rtype: list[objects.Tradeable]
+        :rtype: List[objects.Tradeable]
 
         """
         res = self._get(f"events/{event_id}/tradeables")
@@ -501,7 +502,7 @@ class Client(object):
         return tradeables
 
     def get_entries(self, start: int = 0, limit: int = 10, include_payouts: bool = False,
-                    include_tradeables: bool = False) -> list[Entry]:
+                    include_tradeables: bool = False) -> List[Entry]:
         """obtain information about events a user has entered
 
         :param start: Page at which the user wants to start their search,
@@ -568,7 +569,7 @@ class Client(object):
         entry = self._get(f"entries/{entry_id}", params=params)
         return Entry(entry['entry'])
 
-    def create_entry(self, event_id: str) -> dict:
+    def create_entry(self, event_id: str) -> Dict:
         """create an entry to an event given an event_id e.g. evt_60dbec530d2197a973c5dddcf6f65e12
 
         :param event_id: the event_id for which the user would like to create an entry to
@@ -577,7 +578,7 @@ class Client(object):
         return self._post(f"entries", data={'event_id': event_id})
 
     def place_order(self, id: str, price: float, qty: int = 1, side: str = 'buy', phase: str = 'ipo', **kwargs) \
-            -> Order:
+            -> Order | Dict:
         """
         Places an order of the user's chosen tradeable (player) and the chosen price. It defaults to  buy 1 share
         during the ipo phase. The user may specify an amount of money they want to buy and automatically buy x shares at
@@ -623,7 +624,7 @@ class Client(object):
     # NOTE: the docs for order object > status contain 'outbid' twice
 
     def get_orders(self, start: int = 0, limit: int = 100, event_id: str = None, active: bool = False,
-                   updated_after: int = None):
+                   updated_after: int = None) -> List[Order]:
         """Get all of a user's orders. The user is required to paginate if they want to see more than 1 page
 
         :param start: Page at which the user wants to start their search, default: 0 (first page of entities)
@@ -672,7 +673,7 @@ class Client(object):
         """
         return Order(self._get(f"orders/{order_id}")['order'])
 
-    def delete_order(self, order_id: str) -> dict:
+    def delete_order(self, order_id: str) -> Dict:
         """delete a specific order
 
         :param order_id: order id for which the user is attempting to delete
@@ -688,7 +689,7 @@ class Client(object):
         print(deletion_res)
         return deletion_res
 
-    def get_positions(self) -> list[Position]:
+    def get_positions(self) -> List[Position]:
         """returns a user's open positions in all current events
         """
         positions = []
@@ -699,7 +700,7 @@ class Client(object):
             positions.append(Position(position))
         return positions
 
-    def get_account_activity(self, start: int = 0, limit: int = 100) -> list[AccountActivity]:
+    def get_account_activity(self, start: int = 0, limit: int = 100) -> List[AccountActivity]:
         """
         returns a user's most recent account activity
 
@@ -710,7 +711,7 @@ class Client(object):
         :type limit: int, optional
 
         :returns: a list of :class:`objects.AccountActivity`
-        :rtype: list[AccountActivity]
+        :rtype: List[AccountActivity]
 
         """
         params = {'start': str(start * limit), 'limit': limit}
@@ -724,7 +725,7 @@ class Client(object):
         self._get('account')
         return self.auth['token']
 
-    def get_ws_topics(self):
+    def get_ws_topics(self) -> Dict[str, Dict]:
         """
         returns a dictionary of websocket topics and their required arguments
         """
