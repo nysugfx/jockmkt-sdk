@@ -9,6 +9,21 @@ The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`
 
 Docs available at: `Read The Docs <https://jockmkt-sdk.readthedocs.io/en/latest/>`_
 
+Release 0.2.10
+##############
+
+``FIXED:``
+
+- Notifications from websockets not being pushed to messages
+- Websocket messages not being converted to objects correctly
+
+Release 0.2.9
+#############
+
+``FIXED:``
+
+- Small incompatibility bug with | in typing
+
 Release 0.2.8
 #############
 

@@ -174,6 +174,7 @@ class JockmktSocketManager:
         await self._conn.reconnect()
 
     def _wsfeed_case_switcher(self, obj, msg):
+        orig = obj
         if obj == 'error':
             raise Exception(f'{msg}')
         elif obj == 'balances':
@@ -194,9 +195,10 @@ class JockmktSocketManager:
             'user_order': Order,
             'public_order': PublicOrder,
             'trade': Trade,
-            'balance': Balance
+            'balance': Balance,
+            'notification': dict
         }
-        return ws_case_dict[msg[obj]](msg)
+        return ws_case_dict[obj](msg[orig])
         #
         # match obj:
         #     case 'error':
