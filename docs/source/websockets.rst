@@ -38,8 +38,6 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
 **Connect to a websocket:**
 
-.. code-block::
-
     client.ws_connect(loop, queue, error_handler)
 
 - Client.ws_connect()
@@ -57,37 +55,70 @@ Websockets allow the user to connect to a range of endpoints and receive continu
 
     you must **await** client.ws_connect()! You cannot simply call it, since it is an asynchronous function.
 
-.. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
-**The Socket Manager:** 
+**Alternative websocket connection method:**
+
+    client.ws_connect_new(loop, queue, error_handler, subscriptions)
+
+- args:
+    - *loop:* an asyncio loop. see example below.
+    - *queue:* an iterable (usually a list) in which you want your messages to be stored.
+    - *error_handler:* an async function that handles errors. Defaults to .reconnect.
+    - *subscriptions:* a list of subscriptions in the following format:
+- This function will handle all subscriptions in one go, rather than requiring the user to call .subscribe()
+
+.. code-block:: python
+
+    subscriptions = [
+        {'endpoint': 'account'},
+
+        {'endpoint': 'event',
+        'event_id': 'evt_xxx'},
+
+        {'endpoint': 'games',
+        'league': 'nfl'}
+    ]
+
+    sm = client.ws_connect_new(loop, queue: List, error_handler: Callable, subscriptions: List[Dict]=subscriptions)
+
+.. note::
+
+    You should **not** await Client.ws_connect_new().
+
+.. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
 .. autoclass:: JockmktSocketManager
 
-- **Instance Variables:**
-    - *messages:* the iterable to which the user wants to append websocket messages
+**JockmktSocketManager**
+
+- *available instance variables:*
+    - *messages:* the iterable to which the user wants to append messages
     - *balances:* regularly updated balances, including cash and contest balances.
 
-**Subscribe to a single topic or event:**
+- **available methods within the JockmktSocketManager class**
 
 .. automethod:: JockmktSocketManager.subscribe
 
-.. code-block::
-
-    socket_manager.subscribe('games', league='mlb')
-
-**Unsubscribe from a single topic:**
+- *JockmktSocketManager.subscribe()*
+    - Subscribe to a single topic
+    - *params:*
+        - *topic:* str, required, the user's chosen topic. use client.get_ws_topics() for info.
+        - *id:* str, required if you are subscribing to 'event' or 'event_activity'
+        - *league:* str, required if you are subscribing to 'games'
 
 .. automethod:: JockmktSocketManager.unsubscribe
 
-.. code-block::
-
-    socket_manager.unsubscribe('games', league='mlb')
-
-**Unsubscribe from all topics:**
+- *JockmktSocketManager.unsubscribe()*
+    - unsubscribe from a single topic
+    - *params:*
+        - *topic:* str, required, the user's chosen topic. use client.get_ws_topics() for info.
+        - *id:* str, required if you are subscribing to 'event' or 'event_activity'
+        - *league:* str, required if you are subscribing to 'games'
 
 .. automethod:: JockmktSocketManager.unsubscribe_all
 
-**Error Handling Function:**
+- *JockmktSocketManager.unsubscribe_all()*
+    - unsubscribe from a single topic
 
 .. automethod:: JockmktSocketManager.reconnect
 
