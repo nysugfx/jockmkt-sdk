@@ -79,11 +79,11 @@ Websockets allow the user to connect to a range of endpoints and receive continu
         'league': 'nfl'}
     ]
 
-    sm = client.ws_connect_new(loop, queue: List, error_handler: Callable, subscriptions: List[Dict]=subscriptions)
+    sm = await client.ws_connect_new(loop, queue: List, error_handler: Callable, subscriptions: List[Dict]=subscriptions)
 
 .. note::
 
-    You should **not** await Client.ws_connect_new().
+    You should await Client.ws_connect_new().
 
 .. currentmodule:: jockmkt_sdk.jm_sockets.sockets
 
