@@ -5,46 +5,54 @@ import typing
 import sys
 # sys.path.insert(1, '..')
 # from objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
+# from exception import JockAPIException
 from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
+from ..exception import JockAPIException
 import ssl
 import certifi
 import websockets as ws
 
 
-class JMWebsocketException(Exception):
-    """
-    a class for JM websocket specific exceptions. Currently not in use.
-
-    """
-    pass
-
-
-class ReconnectWebsocket:
-    """
-    Class handling the websocket connection
-
-    :ivar log: an instance of logging containing log info about exceptions.
-    """
+class JockmktSocketManager:
     MAX_RECONNECTS = 5
     AUTH_DICT = {}
+    PUBLIC_TOPICS = {
+        "event_activity": "event_id",
+        "event": "event_id",
+        "account": None,
+        "notification": None,
+        "games": "league"
+        }
 
-    def __init__(self, loop, client, coroutine, error_handler, url):
-        self._loop = loop
-        self._coroutine = coroutine
-        self.conn = None
-        self._client = client
+    def __init__(self, iterable, url: str='wss://api.jockmkt.net/streaming/'):
+        self._subscriptions = []
+        self.messages = iterable
+        self.balances = {}
+        self.close = False
+        self._coro = None
         self._socket = None
+        self.conn = None
+        self._loop = None
+        self._client = None
+        self._subscribed = []
         self._reconnect_attempts = 0
         self.log = logging.getLogger(__name__)
         self.url = url
         self.ssl_context = ssl.create_default_context()
         self.ssl_context.load_verify_locations(certifi.where())
-        if not error_handler:
-            self._error_handler = self.reconnect()
-        else:
-            self._error_handler = error_handler
+        self._error_handler = None
+
+    @classmethod
+    async def create(cls, loop, client, iterable, error_handler, subscriptions,  coro, ws_url):
+        self = JockmktSocketManager(iterable, ws_url)
+        self._client = client
+        self._loop = loop
+        self._error_handler = error_handler
+        self._coro = coro
+        self._subscriptions = subscriptions
         self.__build_auth_dict(client.ws_token_generator())
-        self._connect()
+        self.conn = asyncio.ensure_future(self._run(), loop=self._loop)
+        return self
 
     def __build_auth_dict(self, token):
         """
@@ -54,37 +62,53 @@ class ReconnectWebsocket:
         self.AUTH_DICT = auth_dict
         return auth_dict
 
-    def _connect(self):
-        """
-        instantiates a singular websocket task
-        """
-        print("connecting")
-        self.conn = asyncio.ensure_future(self._run(), loop=self._loop)
-
     async def _run(self):
         """
         authorizes websocket and receives messages
+
+        PUT SUBSCIPTIONS IN THE CONNECT METHOD
         """
         async with ws.connect(self.url, ssl=self.ssl_context) as socket:
             self._socket = socket
             self._reconnect_attempts = 0
             try:
                 await self.send_message(self.AUTH_DICT)
-                await self._socket.recv()
+                auth_response = await self._socket.recv()
+                auth_response = json.loads(auth_response)
+                if auth_response['status'] != 'success':
+                    raise JockAPIException('Unable to authorize the websocket connection')
+                else:
+                    if self._client.verbose:
+                        print('Successfully connected to websockets.')
+
+                for sub in self._subscriptions:
+                    endpoint = sub.get('endpoint')
+                    event_id = sub.get('event_id')
+                    league = sub.get('league')
+                    await self.subscribe(endpoint, event_id, league)
+                    if self._client.verbose:
+                        print('subscribed to {} {} {}'.format(endpoint,
+                                                          f'event_id={event_id}' if event_id is not None else "",
+                                                          f'league={league}' if league is not None else ""))
+
                 async for message in socket:
-                    await self._coroutine(message)
+                    await self._recv(message)
+            except ws.ConnectionClosed as on_close:
+                self.log.debug(f'Connection closed: {on_close}')
+                await self.cancel()
 
             except ws.ConnectionClosedError as on_close:
                 self.log.debug(f'Connection terminated with an error: {on_close}')
                 await self._error_handler(message, on_close)
 
             except asyncio.CancelledError:
-                await self.cancel()
-                exit(0)
+                pass
 
             except Exception as e:
-                self.log.debug(f'unknown ws exception: {e}')
+                self.log.debug(f'Unkown ws exception: {e}')
                 await self._error_handler(message, e)
+
+            await self.cancel()
 
     async def reconnect(self):
         """
@@ -96,7 +120,7 @@ class ReconnectWebsocket:
             wait = self._get_reconnect_wait(self._reconnect_attempts)
             self.log.debug(f'websockets reconnecting. Attempting {self._reconnect_attempts} more times after waiting '
                            f'{wait} seconds')
-            self._connect()
+            self.conn = asyncio.ensure_future(self._run(), loop=self._loop)
         else:
             self.log.error('websocket could not reconnect after 5 attempts.')
             self._socket.close()
@@ -123,56 +147,14 @@ class ReconnectWebsocket:
         """
         try:
             self.conn.cancel()
+            cancelled = self.conn.cancelled()
+            while not cancelled:
+                cancelled = self.conn.cancelled()
+                if self._client.verbose:
+                    print('Waiting for websocket connection cancellation')
+                await asyncio.sleep(1)
         except asyncio.CancelledError:
             pass
-
-
-class JockmktSocketManager:
-    """
-    Create and manage the socket connection.
-    """
-    PUBLIC_TOPICS = {
-        "event_activity": "event_id",
-        "event": "event_id",
-        "account": None,
-        "notification": None,
-        "games": "league"
-    }
-
-    def __init__(self, iterable):
-        """Initialize the SocketManager
-
-        :ivar messages: the iterable to which the user wants to append their messages
-        :ivar balances: regularly updated balances each time the balance changes
-        """
-        self._subscriptions = []
-        self.messages = iterable
-        self.balances = {}
-        self._callback = None
-        self.conn = None
-        self._loop = None
-        self._client = None
-
-    @classmethod
-    async def create(cls, loop, client, queue: list, exception_handler: typing.Callable,
-                     callback: typing.Callable = None, ws_url: str = 'wss://api.jockmkt.net/streaming/'):
-        """
-        create instance of socket manager and reconnect websocket
-
-        """
-        self = JockmktSocketManager(queue)
-        self._loop = loop
-        self._callback = callback
-        self._error_handler = exception_handler
-        self.conn = ReconnectWebsocket(loop, client, self._recv, self.exception_handler, ws_url)
-        # print(type(self.conn))
-        return self
-
-    async def reconnect(self):
-        """
-        Function that can be passed through the error handler
-        """
-        await self.conn.reconnect()
 
     def _wsfeed_case_switcher(self, obj, msg):
         orig = obj
@@ -200,36 +182,6 @@ class JockmktSocketManager:
             'notification': dict
         }
         return ws_case_dict[obj](msg[orig])
-        #
-        # match obj:
-        #     case 'error':
-        #         raise Exception(f'{msg}')
-        #     case 'tradeable':
-        #         return Tradeable(msg[obj])
-        #     case 'game':
-        #         return Game(msg[obj])
-        #     case 'event':
-        #         return Event(msg[obj])
-        #     case 'entry':
-        #         return Entry(msg[obj])
-        #     case 'position':
-        #         return Position(msg[obj])
-        #     case 'order':
-        #         if 'limit_price' in msg[obj]:
-        #             return Order(msg[obj])
-        #         else:
-        #             return PublicOrder(msg[obj])
-        #     case 'trade':
-        #         return Trade(msg[obj])
-        #     case 'balance':
-        #         self.balances[msg[obj]['currency']] = msg[obj]['buying_power']
-        #         return Balance(msg[obj])
-
-    async def exception_handler(self, **kwargs):
-        """
-        Exception handler passed in by the user
-        """
-        await self._error_handler(**kwargs)
 
     async def _recv(self, msg):
         """
@@ -241,9 +193,9 @@ class JockmktSocketManager:
             obj = self._wsfeed_case_switcher(type, messsage)
             messsage[type] = obj
             self.messages.append(messsage)
-        if self._callback is not None:
 
-            await self._callback(msg)
+        if self._coro is not None:
+            await self._coro(msg)
 
     async def subscribe(self, topic: str, id: str = None, league: str = None):
         """
@@ -259,12 +211,12 @@ class JockmktSocketManager:
         topics = self.PUBLIC_TOPICS.keys()
         if topic not in topics:
             raise KeyError(f'please choose from the following topics: {list(topics)}')
-        self._subscriptions.append((topic, id, league))
+        self._subscribed.append((topic, id, league))
         msg = {"action": "subscribe",
                "subscription": {"type": str(topic),
                                 'event_id': id,
                                 'league': league}}
-        await self.conn.send_message(msg)
+        await self.send_message(msg)
 
     async def unsubscribe(self, topic: str, id: str = None, league: str = None):
         """
@@ -281,7 +233,7 @@ class JockmktSocketManager:
                "subscription": {"topic": topic,
                                 "event_id": str(id),
                                 "league": str(league)}}
-        await self.conn.send_message(msg)
+        await self.send_message(msg)
 
     async def unsubscribe_all(self):
         """
