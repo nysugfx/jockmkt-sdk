@@ -9,6 +9,77 @@ The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`
 
 Docs available at: `Read The Docs <https://jockmkt-sdk.readthedocs.io/en/latest/>`_
 
+
+Release 0.2.15
+##############
+
+``ADDED:``
+
+- Option to include object count in your request.
+    - If you are trying to get all of your orders, for example, you can set ``include_count=True`` in your request to return the total number of orders. Assists with pagination.
+    - e.g.:
+
+```py The perfect number of requests to get all orders
+orders, order_count = client.get_orders(include_count=True)
+for i in range(order_count//100 + 1):
+    orders.extend(client.get_orders(start=i)
+```
+- verbosity feature to get rid of print statements
+
+``FIXED:``
+
+- Typo in Entry docs
+- Better self-documentation by renaming some variables within functions. Will not affect return values.
+- Fixed key problem in NHL entity
+
+Release 0.2.14
+##############
+
+``FIXED:``
+
+- Deleted an annoying print statement.
+
+Release 0.2.13
+##############
+
+``FIXED:``
+
+- Typing issue
+
+Release 0.2.12
+##############
+
+``FIXED``
+
+- File structure problem
+
+Release 0.2.11
+##############
+
+``FIXED``
+
+- No longer raises an exception if the user has already joined an event.
+- Now actually returns horse racing entities
+
+``ADDED``
+
+- New websocket connect method that should allow for a more graceful exit.
+
+Release 0.2.10
+##############
+
+``FIXED:``
+
+- Notifications from websockets not being pushed to messages
+- Websocket messages not being converted to objects correctly
+
+Release 0.2.9
+#############
+
+``FIXED:``
+
+- Small incompatibility bug with | in typing
+
 Release 0.2.8
 #############
 
