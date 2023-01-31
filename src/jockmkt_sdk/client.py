@@ -3,15 +3,15 @@ import random
 import requests
 from datetime import datetime
 import time
-from typing import List, Dict
+from typing import List, Dict, Union, Iterable, Callable, Tuple
 # from exception import JockAPIException
 # from objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
 #     _case_switch_ent
-# from jm_sockets import sockets
+# from jm_sockets import sockets, sockets_update
 from .exception import JockAPIException
 from .objects import Team, Game, GameLog, Event, Tradeable, Entry, Order, Position, AccountActivity, Entity, \
     _case_switch_ent
-from .jm_sockets import sockets
+from .jm_sockets import sockets, sockets_update
 from decimal import Decimal, ROUND_DOWN
 
 
@@ -52,12 +52,13 @@ class Client(object):
     ACCOUNT = {}
     balance = {}
 
-    def __init__(self, secret, api_key, request_params=None):
+    def __init__(self, secret, api_key, request_params=None, verbose=False):
         self._request_params = request_params
         self.secret = secret
         self.api_key = api_key
         user_auth = Client._AUTH_TOKEN_MAP.get(f'{api_key}:{secret}', None)
         self.auth = user_auth
+        self.verbose = verbose
         self.balance = 0
 
     def _create_path(self, path, api_version=None):
@@ -73,11 +74,13 @@ class Client(object):
             'secret': str(self.secret)
         }
         response = requests.post(f'{Client.BASE_URL}/{Client.API_VERSION}/oauth/tokens', data=payload).json()
-        print(response)
+        if self.verbose:
+            print(response)
         if response['status'] == 'error':
             raise KeyError("Your authorization keys are not valid!")
         else:
-            print("Successfully obtained an auth token!")
+            if self.verbose:
+                print("Successfully obtained an auth token!")
 
         auth_token_dict = {'token': response['token']['access_token'], 'expired_at': response['token']['expired_at']}
         Client._AUTH_TOKEN_MAP[f'{self.api_key}:{self.secret}'] = auth_token_dict
@@ -94,7 +97,8 @@ class Client(object):
         response = {}
         auth = self.auth
         if auth is None:
-            print('no auth token')
+            if self.verbose:
+                print('no auth token')
             token = self._get_auth_token()
         elif auth['expired_at'] < round(time.time() * 1000):
             token = self._get_auth_token()
@@ -153,8 +157,10 @@ class Client(object):
         if attempt_number >= max_attempts:
             raise JockAPIException(json_response)
         backoff_times = [3, 10, 30]
-        print(f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying"
-              f"in {backoff_times[attempt_number]} seconds")
+        if self.verbose:
+            print(
+                f"Request failed. Code: {json_response.status_code}, Message: {json_response.json()['message']}. Retrying"
+                f"in {backoff_times[attempt_number]} seconds")
         time.sleep(backoff_times[attempt_number])
         response = self._request(method, path, attempt_number=attempt_number + 1, payload=payload['payload'])
 
@@ -163,7 +169,8 @@ class Client(object):
 
     def _retry_order(self, order, **kwargs):
         next_minute = 60 - datetime.now().second
-        print(f"You've placed too many orders in the past minute. Sleeping for {next_minute} seconds")
+        if self.verbose:
+            print(f"You've placed too many orders in the past minute. Sleeping for {next_minute} seconds")
         is_test = kwargs.get('is_test', False)
         if is_test:
             print('sleeping...')
@@ -253,8 +260,8 @@ class Client(object):
         team = self._get(f"teams/{team_id}")['team']
         return Team(team)
 
-    def get_entities(self, start: int = 0, limit: int = 100, include_team: bool = True, league: str = None) \
-            -> List[Entity]:
+    def get_entities(self, start: int = 0, limit: int = 100, include_team: bool = True, league: str = None,
+                     include_count: bool = False) -> Union[List[Entity], Tuple[List[Entity], int]]:
         """fetch entities (players of any sport). The user will have to paginate.
 
         :param start: page at which the user wants to start their search, default: 0 (first page of entities)
@@ -265,9 +272,11 @@ class Client(object):
         :type include_team: bool, optional
         :param league: filter by league, must be one of: ['nba', 'nfl', 'nhl', 'pga', 'mlb', 'nascar']
         :type league: str, optional
+        :param include_count: include the count of available entities for this request as part of a tuple in the return value
+        :type include_count: bool, optional
 
-        :return: a list of league-specific Entity objects
-        :rtype: List[objects.Entity]
+        :return: a list of league-specific Entity objects, or a tuple of the list and the available entity count.
+        :rtype: List[objects.Entity] | Tuple[List[objects.Entity], int]
         """
         params = {}
         entities = []
@@ -278,12 +287,15 @@ class Client(object):
         params['start'] = start * limit
         params['limit'] = limit
         res = self._get("entities", params=params)
-        print('status: ' + res['status'])
-        print('start: ' + str(res['start']))
-        print('limit: ' + str(res['limit']))
-        print('count: ' + str(res['count']))
+        if self.verbose:
+            print('status: ' + res['status'])
+            print('start: ' + str(res['start']))
+            print('limit: ' + str(res['limit']))
+            print('count: ' + str(res['count']))
         for entity in res['entities']:
             entities.append(_case_switch_ent(entity))
+        if include_count:
+            return entities, res['count']
         return entities
 
     def get_entity(self, entity_id: str, include_team: bool = False) -> Entity:
@@ -305,7 +317,8 @@ class Client(object):
         ent = self._get(f"entities/{entity_id}", params=params)['entity']
         return _case_switch_ent(ent)
 
-    def get_games(self, start: int = 0, limit: int = 100, league: str = None) -> List[Game]:
+    def get_games(self, start: int = 0, limit: int = 100, league: str = None, include_count: bool = False) -> \
+            Union[List[Game], Tuple[List[Game], int]]:
         """provides a list of teams for all or chosen leagues that have team structure
         the user will have to paginate.
 
@@ -315,25 +328,30 @@ class Client(object):
         :type limit: int, optional
         :param league: filter by league, must be one of: ['nba', 'nfl', 'nhl', 'pga', 'mlb', 'nascar']
         :type league: str, optional
+        :param include_count: include the count of available games for this request as part of a tuple in the return value
+        :type include_count: bool, optional
 
         :returns: A list of :class:`objects.Game` objects
         :rtype: list
 
         """
         params = {}
-        response = []
+        games = []
         params['start'] = start * limit
         params['limit'] = limit
         if league is not None:
             params['league'] = league
         res = self._get('games', params=params)
-        print('status: ' + res['status'])
-        print('start: ' + str(res['start']))
-        print('limit: ' + str(res['limit']))
-        print('count: ' + str(res['count']))
+        if self.verbose:
+            print('status: ' + res['status'])
+            print('start: ' + str(res['start']))
+            print('limit: ' + str(res['limit']))
+            print('count: ' + str(res['count']))
         for game in res['games']:
-            response.append(Game(game))
-        return response
+            games.append(Game(game))
+        if include_count:
+            return games, res['count']
+        return games
 
     def get_game(self, game_id: str) -> Game:
         """fetch a specific entity based on their entity id
@@ -349,7 +367,8 @@ class Client(object):
 
     def get_game_logs(self, start: int = 0, limit: int = 100, log_id: str = None, entity_id: str = None,
                       game_id: str = None, include_ent: bool = True, include_game: bool = False,
-                      include_team: bool = False) -> List[GameLog]:
+                      include_team: bool = False, include_count: bool = False) -> Union[
+        List[GameLog], Tuple[List[GameLog], int]]:
         """fetch game logs
 
         :param start: Page at which the user wants to start their search, default: 0
@@ -372,14 +391,17 @@ class Client(object):
         :type include_game: bool, optional
         :param include_team: Returns team information (team name, location, league, etc.)
         :type include_team: bool, optional
+        :param include_count: include the count of available game logs for this request as part of a tuple in the return value
+        :type include_count: bool, optional
 
-        :returns: a list of :class:`objects.GameLogs`, containing scoring information for a player in a specific game
-        :rtype: objects.GameLog
+        :returns: a list of :class:`objects.GameLogs`, containing scoring information for a player in a specific game.
+        If include_count == True, it will be at tuple of the list of logs and an integer for count of game logs available.
+        :rtype: objects.GameLog | Tuple[objects.GameLog, int]
 
         """
         params = {}
         include = []
-        response = []
+        game_logs = []
         if log_id is not None:
             params['id'] = log_id
         if entity_id is not None:
@@ -397,16 +419,21 @@ class Client(object):
         params['start'] = start * limit
         params['limit'] = limit
         res = self._get("game_logs", params=params)
-        print('status: ' + res['status'])
-        print('start: ' + str(res['start']))
-        print('limit: ' + str(res['limit']))
-        print('count: ' + str(res['count']))
+        if self.verbose:
+            print('status: ' + res['status'])
+            print('start: ' + str(res['start']))
+            print('limit: ' + str(res['limit']))
+            print('count: ' + str(res['count']))
         for log in res['game_logs']:
-            response.append(GameLog(log))
-        return response
+            game_logs.append(GameLog(log))
+        if include_count:
+            return game_logs, res['count']
+        return game_logs
 
-    def get_events(self, start: int = 0, limit: int = 25, league: str = None, include_sims: bool = False) \
-            -> List[Event]:
+    def get_events(self, start: int = 0, limit: int = 25, league: str = None, include_sims: bool = False,
+                   include_count: bool = False) \
+            -> Union[
+                List[Event], Tuple[List[Event], int]]:
         """Populates event objects with recent and upcoming events
 
         :param start: Page at which the user wants to start their search, default: 0 (first page of events)
@@ -418,6 +445,8 @@ class Client(object):
         :type league: str, optional
         :param include_sims: Will return all events, including Horse Sims for test use
         :type include_sims: bool, optional
+        :param include_count: include the count of available events for this request as part of a tuple in the return value
+        :type include_count: bool, optional
 
         :returns: list of :class:`objects.Events`, containing the event_id and information for each
         :rtype: List[objects.Event]
@@ -429,15 +458,18 @@ class Client(object):
         if league is not None:
             data['league'] = league
         res = self._get('events', params=data)
-        print('status: ' + res['status'])
-        print('start: ' + str(res['start']))
-        print('limit: ' + str(res['limit']))
-        print('count: ' + str(res['count']))
+        if self.verbose:
+            print('status: ' + res['status'])
+            print('start: ' + str(res['start']))
+            print('limit: ' + str(res['limit']))
+            print('count: ' + str(res['count']))
         for event in res['events']:
             if event['league'] != 'simulated_horse_racing':
                 list_events.append(Event(event))
             elif include_sims:
                 list_events.append(Event(event))
+        if include_count:
+            return list_events, res['count']
         return list_events
 
     def get_event(self, event_id: str) -> Event:
@@ -502,7 +534,8 @@ class Client(object):
         return tradeables
 
     def get_entries(self, start: int = 0, limit: int = 10, include_payouts: bool = False,
-                    include_tradeables: bool = False) -> List[Entry]:
+                    include_tradeables: bool = False, include_count: bool = False) -> Union[
+        List[Entry], Tuple[List[Entry], int]]:
         """obtain information about events a user has entered
 
         :param start: Page at which the user wants to start their search,
@@ -515,9 +548,11 @@ class Client(object):
         :type include_payouts: bool, optional
         :param include_tradeables: Option to include entry-relevant :class:`objects.Tradeable` objects
         :type include_tradeables: bool, optional
+        :param include_count: Include the total entry count as part of a returned tuple
+        :type include_count: bool, optional
 
-        :returns: A list of :class:`objects.Entry` objects
-        :rtype: object.Entity
+        :returns: A list of :class:`objects.Entry` objects, or a tuple of the list and an int representing the total number of entries.
+        :rtype: object.Entry | tuple(list[object.Entry], int)
 
         """
         params = {'start': start * limit, 'limit': limit}
@@ -529,12 +564,15 @@ class Client(object):
         params['include'] = str(include)
         response_list = []
         res = self._get("entries", params=params)
-        print('status: ' + res['status'])
-        print('start: ' + str(res['start']))
-        print('limit: ' + str(res['limit']))
-        print('count: ' + str(res['count']))
+        if self.verbose:
+            print('status: ' + res['status'])
+            print('start: ' + str(res['start']))
+            print('limit: ' + str(res['limit']))
+            print('count: ' + str(res['count']))
         for entry in res['entries']:
             response_list.append(Entry(entry))
+        if include_count:
+            return response_list, res['count']
         return response_list
 
     def get_entry(self, entry_id: str, include_event: bool = False, include_payouts: bool = False,
@@ -553,7 +591,7 @@ class Client(object):
         :type include_tradeables: bool, optional
 
         :returns: a list of :class:`objects.Entry` objects, containing the user's chosen fields
-        :rtype: objects.Entity
+        :rtype: objects.Entry
 
         """
         params = {}
@@ -575,10 +613,13 @@ class Client(object):
         :param event_id: the event_id for which the user would like to create an entry to
         :type event_id: str, required
         """
-        return self._post(f"entries", data={'event_id': event_id})
+        try:
+            return self._post(f"entries", data={'event_id': event_id})
+        except JockAPIException:
+            print('Event already joined.')
 
     def place_order(self, id: str, price: float, qty: int = 1, side: str = 'buy', phase: str = 'ipo', **kwargs) \
-            -> Order | Dict:
+            -> Union[Order, Dict]:
         """
         Places an order of the user's chosen tradeable (player) and the chosen price. It defaults to  buy 1 share
         during the ipo phase. The user may specify an amount of money they want to buy and automatically buy x shares at
@@ -624,7 +665,7 @@ class Client(object):
     # NOTE: the docs for order object > status contain 'outbid' twice
 
     def get_orders(self, start: int = 0, limit: int = 100, event_id: str = None, active: bool = False,
-                   updated_after: int = None) -> List[Order]:
+                   updated_after: int = None, include_count=False) -> Union[List[Order], Tuple[List[Order], int]]:
         """Get all of a user's orders. The user is required to paginate if they want to see more than 1 page
 
         :param start: Page at which the user wants to start their search, default: 0 (first page of entities)
@@ -639,8 +680,10 @@ class Client(object):
         :param updated_after: filter orders updated after 13 digit epoch timestamp (orders with fills,
             partial fills, cancellations, outbids, etc. after that time)
         :type updated_after: int, optional
+        :param include_count: Include the number of TOTAL orders in the return value.
+        :type include_count: bool, option
 
-        :returns: a list of :class:`objects.Order` objects
+        :returns: a list of :class:`objects.Order` objects | a tuple of a list of :class:`objects.Order` and an int representing total order count.
         :rtype: objects.Order
 
         """
@@ -653,12 +696,15 @@ class Client(object):
         if updated_after is not None:
             params['updated_after'] = str(updated_after)
         orders_response = self._get('orders', params=params)
-        print('status: ' + orders_response['status'])
-        print('start: ' + str(orders_response['start']))
-        print('limit: ' + str(orders_response['limit']))
-        print('count: ' + str(orders_response['count']))
+        if self.verbose:
+            print('status: ' + orders_response['status'])
+            print('start: ' + str(orders_response['start']))
+            print('limit: ' + str(orders_response['limit']))
+            print('count: ' + str(orders_response['count']))
         for order in orders_response['orders']:
             orders.append(Order(order))
+        if include_count:
+            return orders, orders_response['count']
         return orders
 
     def get_order(self, order_id: str) -> Order:
@@ -685,19 +731,27 @@ class Client(object):
         """
         deletion_res = self._delete(f"orders/{order_id}")
         if deletion_res['status'] == 'success':
-            print('order successfully canceled')
+            if self.verbose:
+                print('order successfully canceled')
         print(deletion_res)
         return deletion_res
 
-    def get_positions(self) -> List[Position]:
-        """returns a user's open positions in all current events
+    def get_positions(self, include_count: bool = False) -> Union[List[Position], Tuple[List[Position], int]]:
+        """
+        :param include_count: Include the total positions count as the second part of a tuple in return value
+        :type include_count: bool, optional
+
+        :returns: a user's open positions in all current events, and if include_count==True, the total count of positions.
         """
         positions = []
         positions_res = self._get("positions")
-        print('status: ' + positions_res['status'])
-        print('count: ' + str(positions_res['count']))
+        if self.verbose:
+            print('status: ' + positions_res['status'])
+            print('count: ' + str(positions_res['count']))
         for position in positions_res['positions']:
             positions.append(Position(position))
+        if include_count:
+            return positions, positions_res['count']
         return positions
 
     def get_account_activity(self, start: int = 0, limit: int = 100) -> List[AccountActivity]:
@@ -734,11 +788,12 @@ class Client(object):
                   'account': {'required_args': None},
                   'notifications': {'required_args': None},
                   'games': {'required_args': 'league', 'options':
-                            self.LEAGUES}}
+                      self.LEAGUES}}
 
         return topics
 
-    def ws_connect(self, loop, queue, error_handler, callback=None):
+    def ws_connect(self, loop: Union[asyncio.AbstractEventLoop, asyncio.BaseEventLoop], queue: List,
+                   error_handler: Callable, callback=None):
         """
         Initialize a websocket connection. See docs for example code.
 
@@ -752,3 +807,20 @@ class Client(object):
 
         return sockets.JockmktSocketManager.create(loop, self, queue, error_handler, callback, ws_url=self.WS_BASE_URL)
 
+    def ws_connect_new(self, loop: Union[asyncio.AbstractEventLoop, asyncio.BaseEventLoop], queue: List,
+                       error_handler: Callable, subscriptions: List[Dict],
+                       callback: Callable = None):
+        """
+        Initialize a websocket connection. See docs for example code.
+
+        :param loop:          An asyncio loop, i.e. asyncio.get_event_loop
+        :type loop:           asyncio.Event, required
+        :param queue:         A list that websocket messages will be pushed to
+        :type queue:          iterable, required
+        :param error_handler: a method for handling errors. The user can pass socket.reconnect here
+        :type error_handler:  Callable, required
+        :param subscriptions: A list of subscriptions, each is a dictionary: {'endpoint': endpoint,
+                                                                              'event_id': event_id,                                                                   'league': league}
+        """
+        return sockets_update.JockmktSocketManager.create(loop, self, queue, error_handler, subscriptions, callback,
+                                                          ws_url=self.WS_BASE_URL)
