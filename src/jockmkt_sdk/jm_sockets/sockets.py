@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import typing
-# import sys
+import sys
 # sys.path.insert(1, '..')
 # from objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
 from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
@@ -31,7 +31,7 @@ class ReconnectWebsocket:
     def __init__(self, loop, client, coroutine, error_handler, url):
         self._loop = loop
         self._coroutine = coroutine
-        self._conn = None
+        self.conn = None
         self._client = client
         self._socket = None
         self._reconnect_attempts = 0
@@ -59,7 +59,7 @@ class ReconnectWebsocket:
         instantiates a singular websocket task
         """
         print("connecting")
-        self._conn = asyncio.ensure_future(self._run(), loop=self._loop)
+        self.conn = asyncio.ensure_future(self._run(), loop=self._loop)
 
     async def _run(self):
         """
@@ -122,7 +122,7 @@ class ReconnectWebsocket:
         cancels the instance of websocket connection
         """
         try:
-            self._conn.cancel()
+            self.conn.cancel()
         except asyncio.CancelledError:
             pass
 
@@ -149,12 +149,12 @@ class JockmktSocketManager:
         self.messages = iterable
         self.balances = {}
         self._callback = None
-        self._conn = None
+        self.conn = None
         self._loop = None
         self._client = None
 
     @classmethod
-    async def create(cls, loop: asyncio.Event, client, queue: list, exception_handler: typing.Callable,
+    async def create(cls, loop, client, queue: list, exception_handler: typing.Callable,
                      callback: typing.Callable = None, ws_url: str = 'wss://api.jockmkt.net/streaming/'):
         """
         create instance of socket manager and reconnect websocket
@@ -164,14 +164,15 @@ class JockmktSocketManager:
         self._loop = loop
         self._callback = callback
         self._error_handler = exception_handler
-        self._conn = ReconnectWebsocket(loop, client, self._recv, self.exception_handler, ws_url)
+        self.conn = ReconnectWebsocket(loop, client, self._recv, self.exception_handler, ws_url)
+        # print(type(self.conn))
         return self
 
     async def reconnect(self):
         """
         Function that can be passed through the error handler
         """
-        await self._conn.reconnect()
+        await self.conn.reconnect()
 
     def _wsfeed_case_switcher(self, obj, msg):
         orig = obj
@@ -263,7 +264,7 @@ class JockmktSocketManager:
                "subscription": {"type": str(topic),
                                 'event_id': id,
                                 'league': league}}
-        await self._conn.send_message(msg)
+        await self.conn.send_message(msg)
 
     async def unsubscribe(self, topic: str, id: str = None, league: str = None):
         """
@@ -280,7 +281,7 @@ class JockmktSocketManager:
                "subscription": {"topic": topic,
                                 "event_id": str(id),
                                 "league": str(league)}}
-        await self._conn.send_message(msg)
+        await self.conn.send_message(msg)
 
     async def unsubscribe_all(self):
         """

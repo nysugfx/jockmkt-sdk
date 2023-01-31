@@ -8,7 +8,8 @@ def _case_switch_ent(entity: dict):
         'nhl': NHLEntity,
         'pga': PGAEntity,
         'mlb': MLBEntity,
-        'nascar': NASCAREntity
+        'nascar': NASCAREntity,
+        'simulated_horse_racing': Entity
     }
 
     return entity_type_dict[entity['league']](entity)
@@ -197,7 +198,7 @@ class NHLEntity(Entity):
         self.height = entity.get('height')
         self.weight = entity.get('weight')
         self.jersey_number = entity.get('jersey_number')
-        self.handedness = entity['handedness']
+        self.handedness = entity.get('handedness')
         self.rookie_year = entity.get('rookie_year')
         self.status = entity.get('status')
         injury = entity.get('injury', {})

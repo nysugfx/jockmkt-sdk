@@ -3,14 +3,15 @@ import json
 import logging
 import typing
 import sys
-sys.path.insert(1, '..')
-from objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
-from exception import JockAPIException
-# from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
-# from ..exception import JockAPIException
+# sys.path.insert(1, '..')
+# from objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
+# from exception import JockAPIException
+from ..objects import Game, Event, Tradeable, Entry, Order, Position, PublicOrder, Trade, Balance
+from ..exception import JockAPIException
 import ssl
 import certifi
 import websockets as ws
+
 
 class JockmktSocketManager:
     MAX_RECONNECTS = 5
@@ -21,7 +22,7 @@ class JockmktSocketManager:
         "account": None,
         "notification": None,
         "games": "league"
-    }
+        }
 
     def __init__(self, iterable, url: str='wss://api.jockmkt.net/streaming/'):
         self._subscriptions = []
@@ -42,7 +43,7 @@ class JockmktSocketManager:
         self._error_handler = None
 
     @classmethod
-    def create(cls, loop, client, iterable, error_handler, subscriptions,  coro, ws_url):
+    async def create(cls, loop, client, iterable, error_handler, subscriptions,  coro, ws_url):
         self = JockmktSocketManager(iterable, ws_url)
         self._client = client
         self._loop = loop
@@ -72,43 +73,42 @@ class JockmktSocketManager:
             self._reconnect_attempts = 0
             try:
                 await self.send_message(self.AUTH_DICT)
-                auth_response = await socket.recv()
+                auth_response = await self._socket.recv()
                 auth_response = json.loads(auth_response)
-                print(auth_response)
                 if auth_response['status'] != 'success':
                     raise JockAPIException('Unable to authorize the websocket connection')
+                else:
+                    if self._client.verbose:
+                        print('Successfully connected to websockets.')
 
                 for sub in self._subscriptions:
                     endpoint = sub.get('endpoint')
                     event_id = sub.get('event_id')
                     league = sub.get('league')
                     await self.subscribe(endpoint, event_id, league)
-                    print(f'subscribed to {sub}')
+                    if self._client.verbose:
+                        print('subscribed to {} {} {}'.format(endpoint,
+                                                          f'event_id={event_id}' if event_id is not None else "",
+                                                          f'league={league}' if league is not None else ""))
 
                 async for message in socket:
                     await self._recv(message)
+            except ws.ConnectionClosed as on_close:
+                self.log.debug(f'Connection closed: {on_close}')
+                await self.cancel()
 
             except ws.ConnectionClosedError as on_close:
-                print(f'Connection terminated with an error: {on_close}')
                 self.log.debug(f'Connection terminated with an error: {on_close}')
                 await self._error_handler(message, on_close)
 
-            except ws.WebSocketProtocolError:
-                await self.cancel()
-
             except asyncio.CancelledError:
-                print('cancelled error')
-                await self.cancel()
-
-            except KeyboardInterrupt:
-                print('keyboard int')
-                await self.cancel()
+                pass
 
             except Exception as e:
-                print('unknown exception')
-                self.log.debug(f'unknown ws exception: {e}')
+                self.log.debug(f'Unkown ws exception: {e}')
                 await self._error_handler(message, e)
-            print('no exception')
+
+            await self.cancel()
 
     async def reconnect(self):
         """
@@ -135,7 +135,6 @@ class JockmktSocketManager:
         send a message to the websocket (i.e. subscribe or unsubscribe). The user typically should not need to use this.
         """
         if not self._socket:
-            print('no socket')
             if retry_count < 5:
                 await asyncio.sleep(1)
                 await self.send_message(msg, retry_count + 1)
@@ -146,21 +145,16 @@ class JockmktSocketManager:
         """
         cancels the instance of websocket connection
         """
-        print('called cancel')
         try:
-            ## ADD A WAIT FOR THE TASK TO CANCEL
-            self._socket.close()
             self.conn.cancel()
             cancelled = self.conn.cancelled()
-            print(cancelled)
             while not cancelled:
                 cancelled = self.conn.cancelled()
-                print('waiting for cancellation')
+                if self._client.verbose:
+                    print('Waiting for websocket connection cancellation')
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
             pass
-        self._loop.stop()
-        # if not self._loop.stopped():
 
     def _wsfeed_case_switcher(self, obj, msg):
         orig = obj
@@ -202,7 +196,6 @@ class JockmktSocketManager:
 
         if self._coro is not None:
             await self._coro(msg)
-        print('done receiving')
 
     async def subscribe(self, topic: str, id: str = None, league: str = None):
         """
