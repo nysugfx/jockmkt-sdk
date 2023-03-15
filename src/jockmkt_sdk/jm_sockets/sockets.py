@@ -199,6 +199,8 @@ class JockmktSocketManager:
             'balance': Balance,
             'notification': dict
         }
+        if type(msg) == str:
+            msg = json.loads(msg)
         return ws_case_dict[obj](msg[orig])
         #
         # match obj:

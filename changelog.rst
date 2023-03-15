@@ -19,11 +19,13 @@ Release 0.2.15
     - If you are trying to get all of your orders, for example, you can set ``include_count=True`` in your request to return the total number of orders. Assists with pagination.
     - e.g.:
 
-```py The perfect number of requests to get all orders
-orders, order_count = client.get_orders(include_count=True)
-for i in range(order_count//100 + 1):
-    orders.extend(client.get_orders(start=i)
-```
+The perfect number of requests to get all orders::
+
+    orders, order_count = client.get_orders(include_count=True)
+    for i in range(order_count//100 + 1):
+        orders.extend(client.get_orders(start=i)
+
+
 - verbosity feature to get rid of print statements
 
 ``FIXED:``
@@ -31,6 +33,7 @@ for i in range(order_count//100 + 1):
 - Typo in Entry docs
 - Better self-documentation by renaming some variables within functions. Will not affect return values.
 - Fixed key problem in NHL entity
+- Fixed NHL websocket problem
 
 Release 0.2.14
 ##############
