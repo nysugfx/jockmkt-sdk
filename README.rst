@@ -11,7 +11,8 @@ Jock MKT SDK
 .. image:: https://img.shields.io/pypi/pyversions/jockmkt-sdk?style=for-the-badge
   :target: https://pypi.python.org/pypi/jockmkt-sdk
 
-
+.. image:: https://static.pepy.tech/badge/jockmkt-sdk
+  :target: https://pepy.tech/project/jockmkt-sdk
 
 This is an unofficial wrapper built to interface with the Jock MKT API.
 
