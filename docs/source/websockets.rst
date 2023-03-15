@@ -160,7 +160,7 @@ Example
             if msg['subscription'] == 'event':
                 event_info.append(msg)
 
-        socket_manager = client.ws_connect(loop=loop, queue=queue, error_handler=error_handler)
+        socket_manager = await client.ws_connect(loop=loop, queue=queue, error_handler=error_handler)
 
         event_details = client.get_event(event_id)
 
